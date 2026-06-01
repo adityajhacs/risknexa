@@ -1,2 +1,4 @@
-# risknexa
-RiskNexa is a unified platform for managing cybersecurity risks, compliance requirements, vendor assessments, and security governance.
+# RiskNexa
+
+Enterprise Vendor Risk Management (VRM) and Governance, Risk & Compliance (GRC) platform developed to help organizations assess vendor security posture, automate compliance assessments, manage risks, and generate actionable governance insights.
+
