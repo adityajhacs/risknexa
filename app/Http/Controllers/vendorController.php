@@ -30,7 +30,18 @@ return view('vendors.index', compact('vendors'));
      */
     public function store(Request $request)
     {
-        //
+     Vendor::create([
+    'vendor_name' => $request->vendor_name,
+    'contact_person' => $request->contact_person,
+    'email' => $request->email,
+    'phone' => $request->phone,
+    'country' => $request->country,
+    'criticality' => $request->criticality,
+    'status' => $request->status,
+]);
+
+
+    return redirect('/vendors');
     }
 
     /**
@@ -46,7 +57,9 @@ return view('vendors.index', compact('vendors'));
      */
     public function edit(Vendor $vendor)
     {
-        //
+        return view('vendors.edit', compact('vendor'));
+
+   
     }
 
     /**
@@ -54,7 +67,15 @@ return view('vendors.index', compact('vendors'));
      */
     public function update(Request $request, Vendor $vendor)
     {
-        //
+        $vendor->update([
+        'vendor_name' => $request->vendor_name,
+        'contact_person' => $request->contact_person,
+        'email' => $request->email,
+        'phone' => $request->phone,
+        'country' => $request->country,
+    ]);
+
+    return redirect('/vendors');
     }
 
     /**
@@ -62,6 +83,8 @@ return view('vendors.index', compact('vendors'));
      */
     public function destroy(Vendor $vendor)
     {
-        //
+        $vendor->delete();
+
+    return redirect('/vendors');
     }
 }
