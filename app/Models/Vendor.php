@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Assessment;
 
 class Vendor extends Model
 {
@@ -16,4 +17,8 @@ class Vendor extends Model
     'criticality',
     'status'
 ];
+public function assessments()
+{
+    return $this->hasMany(Assessment::class);
+}
 }
