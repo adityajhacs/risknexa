@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Assessments List</title>
+
 </head>
 <th>Action</th>
 <body>
@@ -18,6 +19,8 @@
         <th>Assessment Name</th>
         <th>Due Date</th>
         <th>Status</th>
+        <th>Risk Score</th>
+<th>Risk Level</th>
     </tr>
 
     @foreach($assessments as $assessment)
@@ -26,7 +29,13 @@
         <td>{{ $assessment->assessment_name }}</td>
         <td>{{ $assessment->due_date }}</td>
         <td>{{ $assessment->status }}</td>
+        <td>{{ $assessment->risk_score ?? '-' }}</td>
+<td>{{ $assessment->risk_level ?? '-' }}</td>
+
         <td>
+             <a href="/assessments/{{ $assessment->id }}" class="btn btn-info btn-sm">
+        View
+    </a>
     <a href="/assessments/{{ $assessment->id }}/edit">Edit</a>
 </td>
 <form action="/assessments/{{ $assessment->id }}" method="POST">

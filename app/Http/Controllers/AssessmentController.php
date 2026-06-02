@@ -31,8 +31,14 @@ class AssessmentController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        Assessment::create([
+    {  $request->validate([
+        'vendor_id' => 'required',
+        'assessment_name' => 'required',
+        'due_date' => 'required',
+        'status' => 'required',
+    ]);
+
+    Assessment::create([
         'vendor_id' => $request->vendor_id,
         'assessment_name' => $request->assessment_name,
         'due_date' => $request->due_date,
@@ -47,7 +53,9 @@ class AssessmentController extends Controller
      */
     public function show(string $id)
     {
-        //
+         $assessment = Assessment::findOrFail($id);
+
+    return view('assessments.show', compact('assessment'));
     }
 
     /**
