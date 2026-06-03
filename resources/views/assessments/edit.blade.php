@@ -2,51 +2,68 @@
 <html>
 <head>
     <title>Edit Assessment</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body>
+<body class="bg-gray-100">
 
-<h1>Edit Assessment</h1>
+<div class="max-w-2xl mx-auto mt-10 bg-white shadow-lg rounded-lg p-6">
 
-<form action="/assessments/{{ $assessment->id }}" method="POST">
-    @csrf
-    @method('PUT')
+    <h1 class="text-2xl font-bold mb-6">Edit Assessment</h1>
 
-    <label>Vendor:</label>
-    <select name="vendor_id">
-        @foreach($vendors as $vendor)
-            <option value="{{ $vendor->id }}"
-                {{ $assessment->vendor_id == $vendor->id ? 'selected' : '' }}>
-                {{ $vendor->vendor_name }}
-            </option>
-        @endforeach
-    </select>
+    <form action="/assessments/{{ $assessment->id }}" method="POST">
+        @csrf
+        @method('PUT')
 
-    <br><br>
+        <div class="mb-4">
+            <label class="block mb-2 font-semibold">Vendor</label>
+            <select name="vendor_id" class="w-full border rounded p-2">
+                @foreach($vendors as $vendor)
+                    <option value="{{ $vendor->id }}"
+                        {{ $assessment->vendor_id == $vendor->id ? 'selected' : '' }}>
+                        {{ $vendor->vendor_name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
 
-    <label>Assessment Name:</label>
-    <input type="text" name="assessment_name"
-           value="{{ $assessment->assessment_name }}">
+        <div class="mb-4">
+            <label class="block mb-2 font-semibold">Assessment Name</label>
+            <input type="text"
+                   name="assessment_name"
+                   value="{{ $assessment->assessment_name }}"
+                   class="w-full border rounded p-2">
+        </div>
 
-    <br><br>
+        <div class="mb-4">
+            <label class="block mb-2 font-semibold">Due Date</label>
+            <input type="date"
+                   name="due_date"
+                   value="{{ $assessment->due_date }}"
+                   class="w-full border rounded p-2">
+        </div>
 
-    <label>Due Date:</label>
-    <input type="date" name="due_date"
-           value="{{ $assessment->due_date }}">
+        <div class="mb-4">
+            <label class="block mb-2 font-semibold">Status</label>
+            <select name="status" class="w-full border rounded p-2">
+                <option value="Pending" {{ $assessment->status == 'Pending' ? 'selected' : '' }}>Pending</option>
+                <option value="In Progress" {{ $assessment->status == 'In Progress' ? 'selected' : '' }}>In Progress</option>
+                <option value="Completed" {{ $assessment->status == 'Completed' ? 'selected' : '' }}>Completed</option>
+            </select>
+        </div>
 
-    <br><br>
+        <div class="flex gap-2">
+            <button type="submit" class="bg-yellow-500 text-white px-4 py-2 rounded">
+                Update Assessment
+            </button>
 
-    <label>Status:</label>
-    <select name="status">
-        <option value="Pending" {{ $assessment->status == 'Pending' ? 'selected' : '' }}>Pending</option>
-        <option value="In Progress" {{ $assessment->status == 'In Progress' ? 'selected' : '' }}>In Progress</option>
-        <option value="Completed" {{ $assessment->status == 'Completed' ? 'selected' : '' }}>Completed</option>
-    </select>
+            <a href="/assessments" class="bg-gray-500 text-white px-4 py-2 rounded">
+                Back
+            </a>
+        </div>
 
-    <br><br>
+    </form>
 
-    <button type="submit">Update Assessment</button>
-
-</form>
+</div>
 
 </body>
 </html>

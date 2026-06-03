@@ -30,6 +30,13 @@ return view('vendors.index', compact('vendors'));
      */
     public function store(Request $request)
     {
+        $request->validate([
+    'vendor_name' => 'required',
+    'email' => 'required|email',
+    'contact_person' => 'required',
+    'phone' => 'required',
+'country' => 'required'
+]);
      Vendor::create([
     'vendor_name' => $request->vendor_name,
     'contact_person' => $request->contact_person,
@@ -67,6 +74,13 @@ return view('vendors.index', compact('vendors'));
      */
     public function update(Request $request, Vendor $vendor)
     {
+        $request->validate([
+    'vendor_name' => 'required',
+    'email' => 'required|email',
+    'contact_person' => 'required',
+    'phone' => 'required',
+'country' => 'required'
+]);
         $vendor->update([
         'vendor_name' => $request->vendor_name,
         'contact_person' => $request->contact_person,
