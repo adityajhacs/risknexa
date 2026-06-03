@@ -33,6 +33,12 @@ class QuestionController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+    'category_id' => 'required',
+    'question' => 'required',
+    'risk_weight' => 'required|numeric|min:0|max:100',
+    'status' => 'required'
+]);
         Question::create([
         'category_id' => $request->category_id,
         'question' => $request->question,
@@ -63,6 +69,12 @@ class QuestionController extends Controller
 
 public function update(Request $request, Question $question)
 {
+    $request->validate([
+    'category_id' => 'required',
+    'question' => 'required',
+    'risk_weight' => 'required|numeric|min:0|max:100',
+    'status' => 'required'
+]);
     $question->update([
         'category_id' => $request->category_id,
         'question' => $request->question,

@@ -44,7 +44,7 @@ class AssessmentController extends Controller
         'due_date' => $request->due_date,
         'status' => $request->status,
     ]);
-
+   
     return redirect('/assessments');
     }
 
@@ -72,7 +72,13 @@ class AssessmentController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, Assessment $assessment)
-    {
+    {  
+         $request->validate([
+     'vendor_id' => 'required',
+    'assessment_name' => 'required',
+    'due_date' => 'required',
+    'status' => 'required'
+]);
         $assessment->update([
         'vendor_id' => $request->vendor_id,
         'assessment_name' => $request->assessment_name,
