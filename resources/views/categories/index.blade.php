@@ -1,59 +1,86 @@
-<h1>All Categories</h1>
-<h1>Add Category</h1>
-@if ($errors->any())
-    <div style="color:red;">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <title>Categories</title>
+</head>
+<body class="bg-gray-100">
+
+<div class="max-w-6xl mx-auto p-6">
+
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">All Categories</h1>
+
+        <a href="/categories/create"
+           class="bg-green-600 text-white px-4 py-2 rounded-lg">
+            Add Category
+        </a>
     </div>
-@endif
 
-<form action="{{ route('categories.store') }}" method="POST">
-    @csrf
+    <div class="bg-white shadow rounded-lg overflow-hidden">
 
-    <label>Name</label>
-    <input type="text" name="name">
+        <table class="w-full">
 
-    <br><br>
+            <thead class="bg-gray-200">
+                <tr>
+                    <th class="p-3 text-left">ID</th>
+                    <th class="p-3 text-left">Name</th>
+                    <th class="p-3 text-left">Description</th>
+                    <th class="p-3 text-left">Action</th>
+                </tr>
+            </thead>
 
-    <label>Description</label>
-    <textarea name="description"></textarea>
+            <tbody>
 
-    <br><br>
+            @foreach($categories as $category)
 
-    <button type="submit">Save</button>
-</form>
+            <tr class="border-t">
 
-<a href="/categories/create">Add Category</a>
+                <td class="p-3">{{ $category->id }}</td>
 
-<table border="1">
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Action</th>
-    </tr>
+                <td class="p-3">{{ $category->name }}</td>
 
-    @foreach($categories as $category)
-    <tr>
-        <td>{{ $category->id }}</td>
-        <td>{{ $category->name }}</td>
-        <td>{{ $category->description }}</td>
-        <td>
-    <a href="{{ route('categories.edit', $category->id) }}">Edit</a>
+                <td class="p-3">{{ $category->description }}</td>
 
-    <form action="{{ route('categories.destroy', $category->id) }}"
-          method="POST"
-          style="display:inline;">
-        @csrf
-        @method('DELETE')
+                <td class="p-3">
 
-        <button type="submit">Delete</button>
-    </form>
-</td>
-    </tr>
-    @endforeach
-   
-</table>
+                    <div class="flex gap-2">
+
+                        <a href="{{ route('categories.edit', $category->id) }}"
+                           class="bg-blue-600 text-white px-3 py-1 rounded">
+                            Edit
+                        </a>
+
+                        <form action="{{ route('categories.destroy', $category->id) }}"
+                              method="POST">
+
+                            @csrf
+                            @method('DELETE')
+
+                            <button type="submit"
+                                    class="bg-red-600 text-white px-3 py-1 rounded">
+                                Delete
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+            @endforeach
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>

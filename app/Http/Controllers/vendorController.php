@@ -32,7 +32,11 @@ return view('vendors.index', compact('vendors'));
     {
         $request->validate([
     'vendor_name' => 'required',
+<<<<<<< HEAD
   'email' => 'required|email|unique:vendors,email',
+=======
+    'email' => 'required|email',
+>>>>>>> origin/feature/compliance-question-bank
     'contact_person' => 'required',
     'phone' => 'required',
 'country' => 'required'
