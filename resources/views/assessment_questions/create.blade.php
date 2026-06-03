@@ -22,6 +22,19 @@
             </option>
         @endforeach
     </select>
+    <br><br>
+
+<label>Response</label>
+
+<select name="response">
+
+    <option value="Yes">Yes</option>
+
+    <option value="Partially">Partially</option>
+
+    <option value="No">No</option>
+
+</select>
 
     <br><br>
 
