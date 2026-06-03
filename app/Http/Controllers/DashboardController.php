@@ -37,6 +37,25 @@ class DashboardController extends Controller
             'status',
             'Completed'
         )->count();
+        $lowRiskAssessments = Assessment::where(
+    'risk_level',
+    'Low'
+)->count();
+
+$mediumRiskAssessments = Assessment::where(
+    'risk_level',
+    'Medium'
+)->count();
+
+$highRiskAssessments = Assessment::where(
+    'risk_level',
+    'High'
+)->count();
+
+$criticalRiskAssessments = Assessment::where(
+    'risk_level',
+    'Critical'
+)->count();
         $recentAssessments = Assessment::latest()
     ->take(5)
     ->get();
@@ -49,7 +68,11 @@ class DashboardController extends Controller
             'totalAssessments',
             'pendingAssessments',
             'completedAssessments',
-            'recentAssessments'
+            'recentAssessments',
+            'lowRiskAssessments',
+'mediumRiskAssessments',
+'highRiskAssessments',
+'criticalRiskAssessments'
         ));
     }
 

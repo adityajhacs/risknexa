@@ -12,9 +12,36 @@ class AssessmentController extends Controller
      */
     public function index()
     {
-         $assessments = Assessment::all();
+        
+    $assessments = Assessment::with(
+        'questions',
+        'vendor'
+    )->get();
 
-    return view('assessments.index', compact('assessments'));
+    foreach ($assessments as $assessment) {
+
+        $score = $assessment->questions->sum(
+            'risk_weight'
+        );
+
+        $assessment->risk_score = $score;
+
+        if ($score <= 25) {
+            $assessment->risk_level = 'Low';
+        } elseif ($score <= 50) {
+            $assessment->risk_level = 'Medium';
+        } elseif ($score <= 75) {
+            $assessment->risk_level = 'High';
+        } else {
+            $assessment->risk_level = 'Critical';
+        }
+    }
+
+    return view(
+        'assessments.index',
+        compact('assessments')
+    );
+
     }
 
     /**
@@ -55,7 +82,27 @@ class AssessmentController extends Controller
 {
     $assessment->load('questions');
 
-    return view('assessments.show', compact('assessment'));
+    $riskScore = $assessment->questions->sum('risk_weight');
+
+    if ($riskScore <= 25) {
+        $riskLevel = 'Low';
+    } elseif ($riskScore <= 50) {
+        $riskLevel = 'Medium';
+    } elseif ($riskScore <= 75) {
+        $riskLevel = 'High';
+    } else {
+        $riskLevel = 'Critical';
+    }
+
+    return view(
+        'assessments.show',
+        compact(
+            'assessment',
+            'riskScore',
+            'riskLevel'
+        )
+    );
+   
 }
 
     /**
