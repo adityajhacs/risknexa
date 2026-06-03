@@ -51,12 +51,12 @@ class AssessmentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
-         $assessment = Assessment::findOrFail($id);
+    public function show(Assessment $assessment)
+{
+    $assessment->load('questions');
 
     return view('assessments.show', compact('assessment'));
-    }
+}
 
     /**
      * Show the form for editing the specified resource.

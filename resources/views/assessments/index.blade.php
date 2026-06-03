@@ -4,7 +4,7 @@
     <title>Assessments List</title>
 
 </head>
-<th>Action</th>
+
 <body>
 
 <h1>All Assessments</h1>
@@ -21,6 +21,7 @@
         <th>Status</th>
         <th>Risk Score</th>
 <th>Risk Level</th>
+<th>Action</th>
     </tr>
 
     @foreach($assessments as $assessment)
@@ -35,15 +36,18 @@
         <td>
              <a href="/assessments/{{ $assessment->id }}" class="btn btn-info btn-sm">
         View
-    </a>
-    <a href="/assessments/{{ $assessment->id }}/edit">Edit</a>
-</td>
-<form action="/assessments/{{ $assessment->id }}" method="POST">
+    </a>|
+    
+    <a href="/assessments/{{ $assessment->id }}/edit">Edit</a>|
+    
+    <form action="/assessments/{{ $assessment->id }}" method="POST" style="display: inline;">
     @csrf
     @method('DELETE')
 
     <button type="submit">Delete</button>
 </form>
+</td>
+
     </tr>
     @endforeach
 

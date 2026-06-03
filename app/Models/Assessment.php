@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Vendor;
-
+use App\Models\Question;
 class Assessment extends Model
 {
     protected $fillable = [
@@ -18,5 +18,12 @@ class Assessment extends Model
     public function vendor()
 {
     return $this->belongsTo(Vendor::class);
+}
+public function questions()
+{
+    return $this->belongsToMany(
+        Question::class,
+        'assessment_questions'
+    );
 }
 }

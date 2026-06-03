@@ -18,7 +18,7 @@
             <p><strong>ID:</strong> {{ $assessment->id }}</p>
 
             <p><strong>Assessment Name:</strong>
-                {{ $assessment->name }}
+                {{ $assessment->assessment_name }}
             </p>
 
             <p><strong>Risk Score:</strong>
@@ -28,12 +28,23 @@
             <p><strong>Risk Level:</strong>
                 {{ $assessment->risk_level }}
             </p>
+<h3>Assigned Questions</h3>
 
+@if($assessment->questions->count())
+    <ol>
+        @foreach($assessment->questions as $question)
+            <li>{{ $question->question }}</li>
+        @endforeach
+    </ol>
+@else
+    <p>No questions assigned.</p>
+@endif
             <a href="/assessments" class="btn btn-secondary">
                 Back
             </a>
 
         </div>
+        
     </div>
 
 </div>
