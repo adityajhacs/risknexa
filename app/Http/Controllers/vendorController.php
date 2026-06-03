@@ -32,7 +32,7 @@ return view('vendors.index', compact('vendors'));
     {
         $request->validate([
     'vendor_name' => 'required',
-    'email' => 'required|email',
+  'email' => 'required|email|unique:vendors,email',
     'contact_person' => 'required',
     'phone' => 'required',
 'country' => 'required'
