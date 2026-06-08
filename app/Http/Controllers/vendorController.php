@@ -56,7 +56,9 @@ return view('vendors.index', compact('vendors'));
      */
     public function show(Vendor $vendor)
     {
-        //
+        $vendor->load('assessments');
+
+    return view('vendors.show', compact('vendor'));
     }
 
     /**

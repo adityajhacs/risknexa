@@ -55,31 +55,36 @@
                 <td class="p-3">{{ $vendor->criticality }}</td>
                 <td class="p-3">{{ $vendor->status }}</td>
 
-                <td class="p-3">
+               <td class="p-3">
 
-                    <div class="flex gap-2">
+    <div class="flex gap-2">
 
-                        <a href="/vendors/{{ $vendor->id }}/edit"
-                           class="bg-blue-600 text-white px-3 py-1 rounded">
-                            Edit
-                        </a>
+        <a href="/vendors/{{ $vendor->id }}"
+           class="bg-green-600 text-white px-3 py-1 rounded">
+            View
+        </a>
 
-                        <form action="/vendors/{{ $vendor->id }}"
-                              method="POST">
+        <a href="/vendors/{{ $vendor->id }}/edit"
+           class="bg-blue-600 text-white px-3 py-1 rounded">
+            Edit
+        </a>
 
-                            @csrf
-                            @method('DELETE')
+        <form action="/vendors/{{ $vendor->id }}"
+              method="POST">
 
-                            <button type="submit"
-                                    class="bg-red-600 text-white px-3 py-1 rounded">
-                                Delete
-                            </button>
+            @csrf
+            @method('DELETE')
 
-                        </form>
+            <button type="submit"
+                    class="bg-red-600 text-white px-3 py-1 rounded">
+                Delete
+            </button>
 
-                    </div>
+        </form>
 
-                </td>
+    </div>
+
+</td>
 
             </tr>
 
