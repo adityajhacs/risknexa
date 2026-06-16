@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\EvidenceUploadController;
 use App\Http\Controllers\AssessmentQuestionController;
 Route::get('/', function () {
     return view('welcome');
@@ -20,3 +21,12 @@ Route::resource('categories', CategoryController::class);
 Route::resource('questions', QuestionController::class);
 
 Route::resource( 'assessment-questions', AssessmentQuestionController::class);
+Route::get(
+    '/assessments/{assessment}/evidence/create',
+    [EvidenceUploadController::class, 'create']
+);
+
+Route::post(
+    '/assessments/{assessment}/evidence',
+    [EvidenceUploadController::class, 'store']
+);

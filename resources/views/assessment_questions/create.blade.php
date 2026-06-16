@@ -37,7 +37,7 @@
                 </select>
             </div>
 
-            <div class="mb-6">
+            <div class="mb-4">
                 <label class="block font-medium mb-1">
                     Question
                 </label>
@@ -54,8 +54,23 @@
                 </select>
             </div>
 
+            <div class="mb-6">
+                <label class="block font-medium mb-1">
+                    Response
+                </label>
+
+                <select name="response"
+                        class="w-full border rounded p-2">
+
+                    <option value="Yes">Yes</option>
+                    <option value="Partially">Partially</option>
+                    <option value="No">No</option>
+
+                </select>
+            </div>
+
             <button type="submit"
-                    class="bg-blue-600 text-white px-5 py-2 rounded">
+                    class="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700">
                 Assign Question
             </button>
 

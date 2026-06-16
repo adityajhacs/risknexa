@@ -78,21 +78,14 @@ class AssessmentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Assessment $assessment)
-{
-    $assessment->load('questions');
-
-    $riskScore = $assessment->questions->sum('risk_weight');
-
-    if ($riskScore <= 25) {
-        $riskLevel = 'Low';
-    } elseif ($riskScore <= 50) {
-        $riskLevel = 'Medium';
-    } elseif ($riskScore <= 75) {
-        $riskLevel = 'High';
-    } else {
-        $riskLevel = 'Critical';
-    }
+  public function show(Assessment $assessment)
+{$assessment->load([
+    'vendor',
+    'assessmentQuestions.question',
+    'evidenceUploads'
+]);
+    $riskScore = $assessment->risk_score;
+    $riskLevel = $assessment->risk_level;
 
     return view(
         'assessments.show',
@@ -102,7 +95,6 @@ class AssessmentController extends Controller
             'riskLevel'
         )
     );
-   
 }
 
     /**

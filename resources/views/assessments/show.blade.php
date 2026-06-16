@@ -78,37 +78,111 @@
 
             <h4>Assigned Questions</h4>
 
-            @if($assessment->questions->count())
+            @if($assessment->assessmentQuestions->count())
 
-                <ol>
+    <table class="table table-bordered">
 
-                    @foreach($assessment->questions as $question)
+        <thead>
 
-                        <li class="mb-2">
+            <tr>
+                <th>Question</th>
+                <th>Response</th>
+                <th>Score</th>
+            </tr>
 
-                            {{ $question->question }}
+        </thead>
 
-                            <span class="badge bg-primary">
-                                Weight: {{ $question->risk_weight }}
-                            </span>
+        <tbody>
 
-                        </li>
+        @foreach($assessment->assessmentQuestions as $item)
 
-                    @endforeach
+            <tr>
 
-                </ol>
+                <td>
+                    {{ $item->question->question }}
+                </td>
 
-            @else
+                <td>
 
-                <div class="alert alert-warning">
-                    No questions assigned.
-                </div>
+                    @if($item->response)
 
-            @endif
+                        {{ $item->response }}
 
-            <a href="/assessments" class="btn btn-secondary">
-                Back
-            </a>
+                    @else
+
+                        <span class="badge bg-secondary">
+                            Not Answered
+                        </span>
+
+                    @endif
+
+                </td>
+
+                <td>
+                    {{ $item->score }}
+                </td>
+
+            </tr>
+
+        @endforeach
+
+        </tbody>
+
+    </table>
+
+@else
+
+    <div class="alert alert-warning">
+        No questions assigned.
+    </div>
+
+@endif
+<a href="/assessments/{{ $assessment->id }}/evidence/create"
+   class="btn btn-success mb-3">
+    Upload Evidence
+</a>
+
+<br><br>
+<hr>
+
+<h4>Uploaded Evidence</h4>
+
+@if($assessment->evidenceUploads->count())
+
+    <table class="table table-bordered">
+
+        <thead>
+            <tr>
+                <th>File Name</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+        @foreach($assessment->evidenceUploads as $file)
+
+            <tr>
+                <td>
+                    {{ $file->file_name }}
+                </td>
+            </tr>
+
+        @endforeach
+
+        </tbody>
+
+    </table>
+
+@else
+
+    <div class="alert alert-warning">
+        No evidence uploaded.
+    </div>
+
+@endif
+<a href="/assessments" class="btn btn-secondary">
+    Back
+</a>
 
         </div>
 

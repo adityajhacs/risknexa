@@ -32,6 +32,8 @@
                 <tr>
                     <th class="p-3 text-left">Assessment</th>
                     <th class="p-3 text-left">Question</th>
+                    <th class="p-3 text-left">Response</th>
+                    <th class="p-3 text-left">Score</th>
                 </tr>
             </thead>
 
@@ -47,6 +49,14 @@
 
                 <td class="p-3">
                     {{ $item->question->question }}
+                </td>
+
+                <td class="p-3">
+                    {{ $item->response ?? 'Not Answered' }}
+                </td>
+
+                <td class="p-3">
+                    {{ $item->score ?? 0 }}
                 </td>
 
             </tr>
