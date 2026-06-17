@@ -30,3 +30,8 @@ Route::post(
     '/assessments/{assessment}/evidence',
     [EvidenceUploadController::class, 'store']
 );
+
+Route::delete(
+    '/evidence/{evidence}',
+    [EvidenceUploadController::class, 'destroy']
+)->name('evidence.destroy');

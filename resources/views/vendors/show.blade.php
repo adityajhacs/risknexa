@@ -173,6 +173,7 @@
                         <th class="text-left px-4 py-4">Status</th>
                         <th class="text-left px-4 py-4">Risk Score</th>
                         <th class="text-left px-4 py-4">Risk Level</th>
+                        <th class="text-left px-4 py-4">Action</th>
                     </tr>
 
                 </thead>
@@ -244,6 +245,14 @@
                             @endif
 
                         </td>
+                        <td class="px-4 py-4">
+
+    <a href="/assessments/{{ $assessment->id }}"
+       class="bg-blue-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-blue-700">
+        View
+    </a>
+
+</td>
 
                     </tr>
 

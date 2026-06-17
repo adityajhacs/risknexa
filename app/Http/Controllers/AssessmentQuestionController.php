@@ -108,7 +108,39 @@ class AssessmentQuestionController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+         $item = AssessmentQuestion::findOrFail($id);
+
+    $riskService = new RiskScoringService();
+
+    $score = $riskService->calculateScore(
+        $request->response
+    );
+
+   $item->update([
+    'response' => $request->response,
+    'score' => $score,
+    'reviewer_comment' => $request->reviewer_comment
+]);
+
+    $assessment = Assessment::find(
+        $item->assessment_id
+    );
+
+    $totalScore = AssessmentQuestion::where(
+        'assessment_id',
+        $assessment->id
+    )->sum('score');
+
+    $riskLevel = $riskService->calculateRiskLevel(
+        $totalScore
+    );
+
+    $assessment->update([
+        'risk_score' => $totalScore,
+        'risk_level' => $riskLevel
+    ]);
+
+    return back();
     }
 
     /**
