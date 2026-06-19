@@ -16,7 +16,12 @@ class Assessment extends Model
         'due_date',
         'status',
         'risk_score',
-        'risk_level'
+        'risk_level',
+          'questionnaire',
+    'priority',
+    'assigned_by',
+    'reviewer',
+    'review_status'
     ];
 
     public function vendor()

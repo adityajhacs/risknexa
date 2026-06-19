@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Assessment;
 use App\Models\Vendor;
+use App\Models\Category;
+use App\Models\Question;
+use App\Models\AssessmentQuestion;
 class AssessmentController extends Controller
 {
     /**
@@ -50,28 +53,66 @@ class AssessmentController extends Controller
     public function create()
     {
         $vendors = Vendor::all();
+        $categories = Category::all();
 
-    return view('assessments.create', compact('vendors'));
+return view(
+    'assessments.create',
+    compact('vendors','categories')
+);
+
     }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {  $request->validate([
-        'vendor_id' => 'required',
-        'assessment_name' => 'required',
-        'due_date' => 'required',
-        'status' => 'required',
+    { $request->validate([
+    'vendor_id' => 'required',
+    'assessment_name' => 'required',
+    'due_date' => 'required|date',
+
+    'questionnaire' => 'required',
+    'priority' => 'required',
+
+    'assigned_by' => 'required',
+    'reviewer' => 'required',
+
+    'status' => 'required',
+    'review_status' => 'required',
+],[
+    'vendor_id.required' => 'Please select a vendor.',
+    'assessment_name.required' => 'Assessment name is required.',
+    'due_date.required' => 'Due date is required.',
+]);
+
+ $assessment=   Assessment::create([
+    'vendor_id' => $request->vendor_id,
+    'assessment_name' => $request->assessment_name,
+    'due_date' => $request->due_date,
+
+    'questionnaire' => $request->questionnaire,
+    'priority' => $request->priority,
+
+    'assigned_by' => $request->assigned_by,
+    'reviewer' => $request->reviewer,
+
+    'status' => $request->status,
+    'review_status' => $request->review_status,
+]);
+  $questions = Question::where(
+    'category_id',
+    $request->questionnaire
+)->get();
+
+foreach ($questions as $question) {
+
+    AssessmentQuestion::create([
+        'assessment_id' => $assessment->id,
+        'question_id' => $question->id
     ]);
 
-    Assessment::create([
-        'vendor_id' => $request->vendor_id,
-        'assessment_name' => $request->assessment_name,
-        'due_date' => $request->due_date,
-        'status' => $request->status,
-    ]);
-   
+}
+
     return redirect('/assessments');
     }
 

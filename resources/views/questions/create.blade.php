@@ -79,7 +79,68 @@
 
                 </select>
             </div>
+<div class="mb-4">
+    <label>Control Code</label>
+    <input type="text"
+           name="control_code"
+           class="w-full border rounded p-2">
+</div>
 
+<div class="mb-4">
+    <label>Framework Reference</label>
+    <input type="text"
+           name="framework_reference"
+           class="w-full border rounded p-2">
+</div>
+<div class="mb-4">
+    <label>Response Type</label>
+
+    <select name="response_type"
+            class="w-full border rounded p-2">
+
+        <option value="Yes/No">Yes/No</option>
+        <option value="Radio">Radio</option>
+        <option value="Checkbox">Checkbox</option>
+        <option value="Text">Text</option>
+        <option value="Textarea">Textarea</option>
+        <option value="Dropdown">Dropdown</option>
+
+    </select>
+</div>
+<div class="mb-4">
+
+    <input type="checkbox"
+           name="evidence_mandatory"
+           value="1">
+
+    <label>Evidence Mandatory</label>
+
+</div>
+<div class="mb-4">
+
+    <label>Risk Level</label>
+
+    <select name="risk_level"
+            class="w-full border rounded p-2">
+
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+        <option value="Critical">Critical</option>
+
+    </select>
+
+</div>
+<div class="mb-4">
+
+    <label>Control Guidance</label>
+
+    <textarea
+        name="control_guidance"
+        class="w-full border rounded p-2">
+    </textarea>
+
+</div>
             <button type="submit"
                     class="bg-green-600 text-white px-5 py-2 rounded">
                 Save Question

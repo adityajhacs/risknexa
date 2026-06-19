@@ -40,12 +40,26 @@ class QuestionController extends Controller
     'status' => 'required'
 ]);
         Question::create([
-        'category_id' => $request->category_id,
-        'question' => $request->question,
-        'risk_weight' => $request->risk_weight,
-        'status' => $request->status,
-    ]);
+    'category_id' => $request->category_id,
+    'question' => $request->question,
+    'risk_weight' => $request->risk_weight,
+    'status' => $request->status,
 
+    'control_code' => $request->control_code,
+    'framework_reference' => $request->framework_reference,
+    'response_type' => $request->response_type,
+
+    'requires_explanation' =>
+        $request->has('requires_explanation'),
+
+    'evidence_mandatory' =>
+        $request->has('evidence_mandatory'),
+
+    'risk_level' => $request->risk_level,
+
+    'control_guidance' =>
+        $request->control_guidance,
+]);
     return redirect()->route('questions.index');
     }
 

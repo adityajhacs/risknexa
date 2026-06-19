@@ -12,7 +12,9 @@ class AssessmentQuestion extends Model
     'assessment_id',
     'question_id',
     'response',
-     'score'
+     'score',
+     'reviewer_comment',
+    'explanation'
 ];
 public function assessment()
 {

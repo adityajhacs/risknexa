@@ -1,74 +1,128 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html><html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <title>Assessments</title>
-</head>
+    <title>Vendor Assessments</title>
+</head><body class="bg-gray-100 min-h-screen"><div class="max-w-7xl mx-auto p-6"><!-- Header -->
+<div class="flex justify-between items-center mb-6">
 
-<body class="bg-gray-100">
+    <div>
+        <p class="text-sm text-gray-500">
+            Vendor Assessments / List
+        </p>
 
-<div class="max-w-7xl mx-auto p-6">
-
-    <div class="flex justify-between items-center mb-6">
-
-        <h1 class="text-3xl font-bold">
-            All Assessments
+        <h1 class="text-3xl font-bold text-gray-800">
+            Vendor Assessments
         </h1>
-
-        <a href="/assessments/create"
-           class="bg-green-600 text-white px-4 py-2 rounded-lg">
-            Create Assessment
-        </a>
-
     </div>
 
-    <div class="bg-white shadow rounded-lg overflow-hidden">
+    <a href="/assessments/create"
+       class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow">
+        New Assessment
+    </a>
 
-        <table class="w-full">
+</div>
 
-            <thead class="bg-gray-200">
-                <tr>
-                    <th class="p-3 text-left">Vendor</th>
-                    <th class="p-3 text-left">Assessment Name</th>
-                    <th class="p-3 text-left">Due Date</th>
-                    <th class="p-3 text-left">Status</th>
-                    <th class="p-3 text-left">Risk Score</th>
-                    <th class="p-3 text-left">Risk Level</th>
-                    <th class="p-3 text-left">Action</th>
-                </tr>
-            </thead>
+<!-- Search -->
+<div class="flex justify-end mb-4">
 
-            <tbody>
+    <input type="text"
+           placeholder="Search Assessment"
+           class="border border-gray-300 rounded-lg px-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-blue-500">
 
-            @foreach($assessments as $assessment)
+</div>
 
-            <tr class="border-t">
+<!-- Table Card -->
+<div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
 
-                <td class="p-3">{{ $assessment->vendor->vendor_name }}</td>
+    <table class="w-full">
 
-                <td class="p-3">{{ $assessment->assessment_name }}</td>
+        <thead class="bg-gray-50 text-gray-600 uppercase text-sm">
 
-                <td class="p-3">{{ $assessment->due_date }}</td>
+            <tr>
+                <th class="p-4 text-left">Vendor</th>
+                <th class="p-4 text-left">Assessment</th>
+                <th class="p-4 text-left">Due Date</th>
+                <th class="p-4 text-left">Status</th>
+                <th class="p-4 text-left">Risk Score</th>
+                <th class="p-4 text-left">Risk Level</th>
+                <th class="p-4 text-left">Action</th>
+            </tr>
 
-                <td class="p-3">{{ $assessment->status }}</td>
+        </thead>
 
-                <td class="p-3">{{ $assessment->risk_score ?? '-' }}</td>
+        <tbody>
 
-                <td class="p-3">{{ $assessment->risk_level ?? '-' }}</td>
+        @foreach($assessments as $assessment)
 
-                <td class="p-3">
+            <tr class="border-t hover:bg-gray-50 transition">
+
+                <td class="p-4">
+                    {{ $assessment->vendor->vendor_name }}
+                </td>
+
+                <td class="p-4 font-medium text-gray-700">
+                    {{ $assessment->assessment_name }}
+                </td>
+
+                <td class="p-4">
+                    {{ $assessment->due_date }}
+                </td>
+
+                <td class="p-4">
+
+                    <span class="px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">
+                        {{ $assessment->status }}
+                    </span>
+
+                </td>
+
+                <td class="p-4 font-semibold">
+                    {{ $assessment->risk_score ?? '-' }}
+                </td>
+
+                <td class="p-4">
+
+                    @if($assessment->risk_level == 'Low')
+
+                        <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">
+                            Low
+                        </span>
+
+                    @elseif($assessment->risk_level == 'Medium')
+
+                        <span class="px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs font-semibold">
+                            Medium
+                        </span>
+
+                    @elseif($assessment->risk_level == 'High')
+
+                        <span class="px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-semibold">
+                            High
+                        </span>
+
+                    @else
+
+                        <span class="text-gray-500">
+                            -
+                        </span>
+
+                    @endif
+
+                </td>
+
+                <td class="p-4">
 
                     <div class="flex gap-2 flex-wrap">
 
                         <a href="/assessments/{{ $assessment->id }}"
-                           class="bg-cyan-600 text-white px-3 py-1 rounded">
+                           class="bg-sky-500 hover:bg-sky-600 text-white px-3 py-1 rounded-lg">
                             View
                         </a>
 
                         <a href="/assessments/{{ $assessment->id }}/edit"
-                           class="bg-blue-600 text-white px-3 py-1 rounded">
+                           class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg">
                             Edit
                         </a>
 
@@ -79,7 +133,7 @@
                             @method('DELETE')
 
                             <button type="submit"
-                                    class="bg-red-600 text-white px-3 py-1 rounded">
+                                    class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg">
                                 Delete
                             </button>
 
@@ -91,15 +145,13 @@
 
             </tr>
 
-            @endforeach
+        @endforeach
 
-            </tbody>
+        </tbody>
 
-        </table>
-
-    </div>
+    </table>
 
 </div>
 
-</body>
+</div></body>
 </html>

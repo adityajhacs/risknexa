@@ -10,7 +10,14 @@ class Question extends Model
         'category_id',
         'question',
         'risk_weight',
-        'status'
+        'status',
+        'control_code',
+'framework_reference',
+'response_type',
+'requires_explanation',
+'evidence_mandatory',
+'risk_level',
+'control_guidance',
     ];
     public function category(){
     return $this->belongsTo(category::class);
