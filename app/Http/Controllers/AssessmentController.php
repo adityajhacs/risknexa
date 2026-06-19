@@ -59,20 +59,26 @@ class AssessmentController extends Controller
      */
     public function store(Request $request)
     {  $request->validate([
-        'vendor_id' => 'required',
-        'assessment_name' => 'required',
-        'due_date' => 'required',
-        'status' => 'required',
-    ]);
+    'vendor_id' => 'required',
+    'assessment_name' => 'required',
+    'due_date' => 'required',
+    'status' => 'required',
+]);
 
-    Assessment::create([
-        'vendor_id' => $request->vendor_id,
-        'assessment_name' => $request->assessment_name,
-        'due_date' => $request->due_date,
-        'status' => $request->status,
-    ]);
-   
-    return redirect('/assessments');
+Assessment::create([
+    'vendor_id' => $request->vendor_id,
+    'assessment_name' => $request->assessment_name,
+    'due_date' => $request->due_date,
+    'status' => $request->status,
+
+    'questionnaire' => $request->questionnaire,
+    'priority' => $request->priority,
+    'assigned_by' => $request->assigned_by,
+    'reviewer' => $request->reviewer,
+    'review_status' => $request->review_status,
+]);
+
+return redirect('/assessments');
     }
 
     /**
@@ -86,12 +92,27 @@ class AssessmentController extends Controller
 ]);
     $riskScore = $assessment->risk_score;
     $riskLevel = $assessment->risk_level;
+    $answeredQuestions = $assessment
+    ->assessmentQuestions
+    ->whereNotNull('response')
+    ->count();
+
+$totalQuestions = $assessment
+    ->assessmentQuestions
+    ->count();
+
+$evidenceCount = $assessment
+    ->evidenceUploads
+    ->count();
 
     return view(
         'assessments.show',
         compact(
             'assessment',
             'riskScore',
+            'answeredQuestions',
+'totalQuestions',
+'evidenceCount',
             'riskLevel'
         )
     );
@@ -139,4 +160,32 @@ class AssessmentController extends Controller
     return redirect('/assessments');
 
     }
+   public function review(
+    Request $request,
+    Assessment $assessment
+)
+{
+    $outcome = null;
+
+    if ($assessment->risk_level == 'Low') {
+
+        $outcome = 'Approved';
+
+    } elseif ($assessment->risk_level == 'Medium') {
+
+        $outcome = 'Conditionally Approved';
+
+    } else {
+
+        $outcome = 'Rejected';
+
+    }
+
+    $assessment->update([
+        'review_status' => $request->review_status,
+        'governance_outcome' => $outcome
+    ]);
+
+    return back();
+}
 }

@@ -214,7 +214,29 @@
             87%
         </h2>
     </div>
+<!-- Pending Reviews -->
+<div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300">
+    <p class="text-slate-500">Pending Reviews</p>
+    <h2 class="text-4xl font-bold text-yellow-600 mt-2">
+        {{ $pendingReviews }}
+    </h2>
+</div>
 
+<!-- Approved -->
+<div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300">
+    <p class="text-slate-500">Approved Assessments</p>
+    <h2 class="text-4xl font-bold text-green-600 mt-2">
+        {{ $approvedAssessments }}
+    </h2>
+</div>
+
+<!-- Rejected -->
+<div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300">
+    <p class="text-slate-500">Rejected Assessments</p>
+    <h2 class="text-4xl font-bold text-red-600 mt-2">
+        {{ $rejectedAssessments }}
+    </h2>
+</div>
 </div>
     <!-- Risk Analytics Cards -->
 
@@ -353,6 +375,9 @@
                     <th class="text-left px-4 py-3 font-semibold">
                         Due Date
                     </th>
+                    <th class="text-left px-4 py-3 font-semibold">
+    Review Status
+</th>
 
                 </tr>
 
@@ -399,6 +424,29 @@
                     <td class="px-4 py-4">
                         {{ \Carbon\Carbon::parse($assessment->due_date)->format('d M Y') }}
                     </td>
+                    <td class="px-4 py-4">
+
+    @if($assessment->review_status == 'Approved')
+
+        <span class="px-3 py-1 rounded-full text-xs bg-green-100 text-green-800">
+            Approved
+        </span>
+
+    @elseif($assessment->review_status == 'Rejected')
+
+        <span class="px-3 py-1 rounded-full text-xs bg-red-100 text-red-800">
+            Rejected
+        </span>
+
+    @else
+
+        <span class="px-3 py-1 rounded-full text-xs bg-yellow-100 text-yellow-800">
+            Pending Review
+        </span>
+
+    @endif
+
+</td>
 
                 </tr>
 

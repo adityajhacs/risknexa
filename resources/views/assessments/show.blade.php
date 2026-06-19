@@ -13,6 +13,36 @@
 
         <div class="card-header bg-dark text-white py-3">
             <h2 class="fw-bold">Assessment Details</h2>
+            <div class="row mb-4">
+
+    <div class="col-md-4">
+        <div class="card border-primary shadow-sm">
+            <div class="card-body text-center">
+                <h6>Total Questions</h6>
+                <h2>{{ $totalQuestions }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card border-success shadow-sm">
+            <div class="card-body text-center">
+                <h6>Answered Questions</h6>
+                <h2>{{ $answeredQuestions }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card border-info shadow-sm">
+            <div class="card-body text-center">
+                <h6>Evidence Files</h6>
+                <h2>{{ $evidenceCount }}</h2>
+            </div>
+        </div>
+    </div>
+
+</div>
         </div>
 
         <div class="card-body">
@@ -46,6 +76,79 @@
             </span>
         </td>
     </tr>
+    <tr>
+    <th>Framework</th>
+    <td>{{ $assessment->questionnaire ?? 'N/A' }}</td>
+</tr>
+
+<tr>
+    <th>Priority</th>
+    <td>{{ $assessment->priority ?? 'Low' }}</td>
+</tr>
+
+<tr>
+    <th>Reviewer</th>
+    <td>{{ $assessment->reviewer ?? 'Not Assigned' }}</td>
+</tr>
+
+<tr>
+    <th>Assigned By</th>
+    <td>{{ $assessment->assigned_by ?? 'Admin' }}</td>
+</tr>
+   <tr>
+    <th>Review Status</th>
+    <td>
+        {{ $assessment->review_status }}
+    </td>
+</tr>
+
+<tr>
+    <th>Governance Outcome</th>
+    <td>
+        {{ $assessment->governance_outcome ?? 'Not Decided' }}
+    </td>
+</tr>
+
+<tr>
+    <th>Review Actions</th>
+
+    <td>
+
+        <form action="{{ route('assessments.review', $assessment->id) }}"
+              method="POST"
+              class="d-inline">
+
+            @csrf
+
+            <input type="hidden"
+                   name="review_status"
+                   value="Approved">
+
+            <button class="btn btn-success btn-sm">
+                Approve
+            </button>
+
+        </form>
+
+        <form action="{{ route('assessments.review', $assessment->id) }}"
+              method="POST"
+              class="d-inline">
+
+            @csrf
+
+            <input type="hidden"
+                   name="review_status"
+                   value="Rejected">
+
+            <button class="btn btn-danger btn-sm">
+                Reject
+            </button>
+
+        </form>
+
+    </td>
+
+</tr>
 
 </table>
 

@@ -11,12 +11,19 @@ use App\Models\EvidenceUpload;
 class Assessment extends Model
 {
     protected $fillable = [
-        'vendor_id',
-        'assessment_name',
-        'due_date',
-        'status',
-        'risk_score',
-        'risk_level'
+       'vendor_id',
+    'assessment_name',
+    'due_date',
+    'status',
+    'risk_score',
+    'risk_level',
+    'governance_outcome',
+    'review_status',
+
+    'questionnaire',
+    'priority',
+    'assigned_by',
+    'reviewer'
     ];
 
     public function vendor()

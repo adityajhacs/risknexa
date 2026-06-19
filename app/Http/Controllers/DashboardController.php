@@ -8,73 +8,100 @@ use App\Models\Assessment;
 class DashboardController extends Controller
 {
     public function index()
-    {
-        $totalVendors = Vendor::count();
+{
+    $totalVendors = Vendor::count();
 
-        $activeVendors = Vendor::where(
-            'status',
-            'Active'
-        )->count();
+    $activeVendors = Vendor::where(
+        'status',
+        'Active'
+    )->count();
 
-        $inactiveVendors = Vendor::where(
-            'status',
-            'Inactive'
-        )->count();
+    $inactiveVendors = Vendor::where(
+        'status',
+        'Inactive'
+    )->count();
 
-        $highRiskVendors = Vendor::where(
-            'criticality',
-            'High'
-        )->count();
+    $highRiskVendors = Vendor::where(
+        'criticality',
+        'High'
+    )->count();
 
-        $totalAssessments = Assessment::count();
+    $totalAssessments = Assessment::count();
 
-        $pendingAssessments = Assessment::where(
-            'status',
-            'Pending'
-        )->count();
+    $pendingAssessments = Assessment::where(
+        'status',
+        'Pending'
+    )->count();
 
-        $completedAssessments = Assessment::where(
-            'status',
-            'Completed'
-        )->count();
-        $lowRiskAssessments = Assessment::where(
-    'risk_level',
-    'Low'
-)->count();
+    $completedAssessments = Assessment::where(
+        'status',
+        'Completed'
+    )->count();
 
-$mediumRiskAssessments = Assessment::where(
-    'risk_level',
-    'Medium'
-)->count();
+    // Review Status Counts
 
-$highRiskAssessments = Assessment::where(
-    'risk_level',
-    'High'
-)->count();
+    $pendingReviews = Assessment::where(
+        'review_status',
+        'Pending Review'
+    )->count();
 
-$criticalRiskAssessments = Assessment::where(
-    'risk_level',
-    'Critical'
-)->count();
-        $recentAssessments = Assessment::latest()
-    ->take(5)
-    ->get();
+    $approvedAssessments = Assessment::where(
+        'review_status',
+        'Approved'
+    )->count();
 
-        return view('dashboard.index', compact(
-            'totalVendors',
-            'activeVendors',
-            'inactiveVendors',
-            'highRiskVendors',
-            'totalAssessments',
-            'pendingAssessments',
-            'completedAssessments',
-            'recentAssessments',
-            'lowRiskAssessments',
-'mediumRiskAssessments',
-'highRiskAssessments',
-'criticalRiskAssessments'
-        ));
-    }
+    $rejectedAssessments = Assessment::where(
+        'review_status',
+        'Rejected'
+    )->count();
+
+    // Risk Counts
+
+    $lowRiskAssessments = Assessment::where(
+        'risk_level',
+        'Low'
+    )->count();
+
+    $mediumRiskAssessments = Assessment::where(
+        'risk_level',
+        'Medium'
+    )->count();
+
+    $highRiskAssessments = Assessment::where(
+        'risk_level',
+        'High'
+    )->count();
+
+    $criticalRiskAssessments = Assessment::where(
+        'risk_level',
+        'Critical'
+    )->count();
+
+    $recentAssessments = Assessment::latest()
+        ->take(5)
+        ->get();
+
+    return view('dashboard.index', compact(
+        'totalVendors',
+        'activeVendors',
+        'inactiveVendors',
+        'highRiskVendors',
+        'totalAssessments',
+        'pendingAssessments',
+        'completedAssessments',
+
+        'pendingReviews',
+        'approvedAssessments',
+        'rejectedAssessments',
+
+        'recentAssessments',
+
+        'lowRiskAssessments',
+        'mediumRiskAssessments',
+        'highRiskAssessments',
+        'criticalRiskAssessments'
+    ));
+}
 
     public function calculateRiskLevel($score)
     {

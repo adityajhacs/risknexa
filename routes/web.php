@@ -35,3 +35,7 @@ Route::delete(
     '/evidence/{evidence}',
     [EvidenceUploadController::class, 'destroy']
 )->name('evidence.destroy');
+Route::post(
+    '/assessments/{assessment}/review',
+    [AssessmentController::class, 'review']
+)->name('assessments.review');
