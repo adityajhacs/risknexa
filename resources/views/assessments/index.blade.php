@@ -4,163 +4,172 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <title>Assessments</title>
+    <title>Vendor Assessments</title>
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-gray-100 min-h-screen">
 
 <div class="max-w-7xl mx-auto p-6">
 
+    <!-- Header -->
     <div class="flex justify-between items-center mb-6">
 
-        <h1 class="text-3xl font-bold">
-            All Assessments
-        </h1>
+        <div>
+            <p class="text-sm text-gray-500">
+                Vendor Assessments / List
+            </p>
+
+            <h1 class="text-3xl font-bold text-gray-800">
+                Vendor Assessments
+            </h1>
+        </div>
 
         <a href="/assessments/create"
-           class="bg-green-600 text-white px-4 py-2 rounded-lg">
-            Create Assessment
+           class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow">
+            New Assessment
         </a>
 
     </div>
 
-    <div class="bg-white shadow rounded-lg overflow-hidden">
+    <!-- Search -->
+    <div class="flex justify-end mb-4">
+
+        <input type="text"
+               placeholder="Search Assessment"
+               class="border border-gray-300 rounded-lg px-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+    </div>
+
+    <!-- Table -->
+    <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
 
         <table class="w-full">
 
-            <thead class="bg-gray-200">
-<tr>
-    <th class="p-3 text-left">Assessment Name</th>
-    <th class="p-3 text-left">Vendor</th>
-    <th class="p-3 text-left">Framework</th>
-    <th class="p-3 text-left">Status</th>
-    <th class="p-3 text-left">Progress</th>
-    <th class="p-3 text-left">Risk Score</th>
-    <th class="p-3 text-left">Risk Level</th>
-    <th class="p-3 text-left">Priority</th>
-    <th class="p-3 text-left">Reviewer</th>
-    <th class="p-3 text-left">Action</th>
-</tr>
-</thead>
+            <thead class="bg-gray-50 text-gray-600 uppercase text-sm">
+
+                <tr>
+                    <th class="p-4 text-left">Vendor</th>
+                    <th class="p-4 text-left">Assessment</th>
+                    <th class="p-4 text-left">Due Date</th>
+                    <th class="p-4 text-left">Status</th>
+                    <th class="p-4 text-left">Risk Score</th>
+                    <th class="p-4 text-left">Risk Level</th>
+                    <th class="p-4 text-left">Action</th>
+                </tr>
+
+            </thead>
 
             <tbody>
 
             @foreach($assessments as $assessment)
 
-         <tr class="border-t">
+                <tr class="border-t hover:bg-gray-50 transition">
 
-    <td class="p-3">
-        {{ $assessment->assessment_name }}
-    </td>
+                    <td class="p-4">
+                        {{ $assessment->vendor->vendor_name }}
+                    </td>
 
-    <td class="p-3">
-        {{ $assessment->vendor->vendor_name }}
-    </td>
+                    <td class="p-4 font-medium text-gray-700">
+                        {{ $assessment->assessment_name }}
+                    </td>
 
-   <td class="p-3">
-    {{ $assessment->questionnaire }}
-</td>
-   <td class="p-3">
+                    <td class="p-4">
+                        {{ $assessment->due_date }}
+                    </td>
 
-    @if($assessment->status == 'Completed')
+                    <td class="p-4">
 
-        <span class="bg-green-100 text-green-700 px-2 py-1 rounded">
-            Completed
-        </span>
+                        @if($assessment->status == 'Completed')
 
-    @elseif($assessment->status == 'In Progress')
+                            <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">
+                                Completed
+                            </span>
 
-        <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded">
-            In Progress
-        </span>
+                        @elseif($assessment->status == 'In Progress')
 
-    @else
+                            <span class="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">
+                                In Progress
+                            </span>
 
-        <span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">
-            Draft
-        </span>
+                        @else
 
-    @endif
+                            <span class="px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs font-semibold">
+                                Pending
+                            </span>
 
-</td>
+                        @endif
 
-   <td class="p-3">
+                    </td>
 
-    @if($assessment->status == 'Completed')
-        100%
-    @elseif($assessment->status == 'In Progress')
-        60%
-    @else
-        0%
-    @endif
+                    <td class="p-4 font-semibold">
+                        {{ $assessment->risk_score ?? '-' }}
+                    </td>
 
-</td>
+                    <td class="p-4">
 
-    <td class="p-3">
-        {{ $assessment->risk_score ?? '-' }}
-    </td>
+                        @if($assessment->risk_level == 'Low')
 
-    <td class="p-3">
-        {{ $assessment->risk_level ?? '-' }}
-    </td>
-    <td class="p-3">
+                            <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">
+                                Low
+                            </span>
 
+                        @elseif($assessment->risk_level == 'Medium')
 
+                            <span class="px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs font-semibold">
+                                Medium
+                            </span>
 
-<td class="p-3">
+                        @elseif($assessment->risk_level == 'High')
 
-@if($assessment->priority == 'Critical')
+                            <span class="px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-semibold">
+                                High
+                            </span>
 
-<span class="bg-red-100 text-red-700 px-2 py-1 rounded">
-    Critical
-</span>
+                        @elseif($assessment->risk_level == 'Critical')
 
-@elseif($assessment->priority == 'High')
+                            <span class="px-3 py-1 rounded-full bg-red-600 text-white text-xs font-semibold">
+                                Critical
+                            </span>
 
-<span class="bg-orange-100 text-orange-700 px-2 py-1 rounded">
-    High
-</span>
+                        @else
 
-@elseif($assessment->priority == 'Medium')
+                            <span class="text-gray-500">
+                                -
+                            </span>
 
-<span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">
-    Medium
-</span>
+                        @endif
 
-@else
+                    </td>
 
-<span class="bg-green-100 text-green-700 px-2 py-1 rounded">
-    Low
-</span>
+                    <td class="p-4">
 
-@endif
+                        <a href="/assessments/{{ $assessment->id }}"
+                           class="bg-sky-500 hover:bg-sky-600 text-white px-3 py-1 rounded-lg">
+                            View
+                        </a>
 
-</td>
+                        <a href="/assessments/{{ $assessment->id }}/edit"
+                           class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg">
+                            Edit
+                        </a>
 
-<td class="p-3">
-    {{ $assessment->reviewer ?? '-' }}
-</td>
-    <td class="p-3">
+                        <form action="/assessments/{{ $assessment->id }}"
+                              method="POST"
+                              class="inline-block">
 
-        @if($assessment->status == 'Completed')
+                            @csrf
+                            @method('DELETE')
 
-            <a href="/assessments/{{ $assessment->id }}"
-               class="bg-green-600 text-white px-3 py-1 rounded">
-                View
-            </a>
+                            <button type="submit"
+                                    class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg">
+                                Delete
+                            </button>
 
-        @else
+                        </form>
 
-            <a href="/assessments/{{ $assessment->id }}"
-               class="bg-blue-600 text-white px-3 py-1 rounded">
-                Open
-            </a>
+                    </td>
 
-        @endif
-
-    </td>
-
-</tr>
+                </tr>
 
             @endforeach
 

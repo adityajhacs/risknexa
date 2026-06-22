@@ -11,19 +11,19 @@ use App\Models\EvidenceUpload;
 class Assessment extends Model
 {
     protected $fillable = [
-       'vendor_id',
-    'assessment_name',
-    'due_date',
-    'status',
-    'risk_score',
-    'risk_level',
-    'governance_outcome',
-    'review_status',
 
-    'questionnaire',
+        'vendor_id',
+        'assessment_name',
+        'due_date',
+        'status',
+        'risk_score',
+        'risk_level',
+          'questionnaire',
     'priority',
     'assigned_by',
-    'reviewer'
+    'reviewer',
+    'review_status'
+
     ];
 
     public function vendor()
@@ -41,9 +41,10 @@ class Assessment extends Model
 
     public function assessmentQuestions()
     {
-        return $this->hasMany(
-            AssessmentQuestion::class
-        );
+        return $this->belongsToMany(
+        Assessment::class,
+        'assessment_questions'
+    );
     }
     public function evidenceUploads()
 {

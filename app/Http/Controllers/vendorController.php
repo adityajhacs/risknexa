@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Vendor;
 use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class vendorController extends Controller
 {
@@ -14,7 +16,10 @@ class vendorController extends Controller
     {
         $vendors = Vendor::all();
 
-return view('vendors.index', compact('vendors'));
+    return view(
+        'vendors.index',
+        compact('vendors')
+    );
     }
 
     /**
@@ -46,7 +51,12 @@ return view('vendors.index', compact('vendors'));
     'criticality' => $request->criticality,
     'status' => $request->status,
 ]);
-
+User::create([
+    'name' => $request->vendor_name,
+    'email' => $request->email,
+    'password' => Hash::make('password123'),
+    'role' => 'vendor',
+]);
 
     return redirect('/vendors');
     }

@@ -243,31 +243,53 @@
 
             @csrf
             @method('PUT')
+@if($item->question->response_type == 'Yes / No')
 
-            <select name="response"
-                    class="form-select">
+    <select name="response" class="form-select">
+        <option value="">Select</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+    </select>
 
-                <option value="">Select</option>
+@elseif($item->question->response_type == 'Radio')
 
-                <option value="Yes"
-                    {{ $item->response == 'Yes' ? 'selected' : '' }}>
-                    Yes
-                </option>
+    <input type="radio" name="response" value="Yes"> Yes
+    <input type="radio" name="response" value="No"> No
 
-                <option value="Partially"
-                    {{ $item->response == 'Partially' ? 'selected' : '' }}>
-                    Partially
-                </option>
+@elseif($item->question->response_type == 'Checkbox')
 
-                <option value="No"
-                    {{ $item->response == 'No' ? 'selected' : '' }}>
-                    No
-                </option>
+    <input type="checkbox" name="response[]" value="Option 1"> Option 1
+    <input type="checkbox" name="response[]" value="Option 2"> Option 2
 
-            </select>
+@elseif($item->question->response_type == 'Text')
+
+    <input type="text"
+           name="response"
+           class="form-control">
+
+@elseif($item->question->response_type == 'Textarea')
+
+    <textarea
+        name="response"
+        class="form-control"></textarea>
+
+@endif
 
     </td>
+@if($item->question->requires_explanation)
 
+<div class="mt-2">
+    <label class="form-label">
+        Explanation
+    </label>
+
+    <textarea
+        name="explanation"
+        class="form-control"
+        rows="2">{{ $item->explanation }}</textarea>
+</div>
+
+@endif
     <td>
         {{ $item->score }}
     </td>
@@ -285,7 +307,14 @@
                 class="btn btn-primary btn-sm">
             Save
         </button>
+      @if($item->question->evidence_mandatory)
 
+    <a href="/assessments/{{ $assessment->id }}/evidence/create"
+       class="btn btn-success btn-sm mt-2">
+        Upload Evidence
+    </a>
+
+@endif
         </form>
 
     </td>
@@ -304,10 +333,6 @@
     </div>
 
 @endif
-<a href="/assessments/{{ $assessment->id }}/evidence/create"
-   class="btn btn-success btn-lg mb-3">
-    Upload Evidence
-</a>
 
 <br><br>
 <hr>
