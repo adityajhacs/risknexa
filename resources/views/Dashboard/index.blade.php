@@ -24,11 +24,22 @@
     </h2>
 
     <div class="flex items-center gap-4">
-        <span class="text-slate-500">Admin</span>
+        <span class="text-slate-500">
+    {{ auth()->user()->name }}
+</span>
         <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center">
-            A
+            {{ strtoupper(substr(auth()->user()->name,0,1)) }}
         </div>
     </div>
+    <form method="POST" action="{{ route('logout') }}">
+    @csrf
+
+    <button
+        type="submit"
+        class="bg-red-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-red-700">
+        Logout
+    </button>
+</form>
 </div>
 <div class="flex min-h-screen">
 
@@ -97,6 +108,20 @@
                 <span>Assessment Questions</span>
 
             </a>
+            <a href="/users"
+   class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition">
+
+    <span>👤</span>
+    <span>Users</span>
+    <a href="/reports"
+   class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition">
+
+    <span>📄</span>
+    <span>Reports</span>
+
+</a>
+
+</a>
 
         </nav>
 
@@ -345,6 +370,41 @@
         <h2 class="text-xl font-bold text-slate-800">
             Recent Assessments
         </h2>
+       
+
+</div>
+
+<!-- Recent Activities -->
+
+<div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8">
+
+    <h2 class="text-xl font-bold text-slate-800 mb-6">
+        Recent Activities
+    </h2>
+
+    @forelse($recentActivities as $activity)
+
+        <div class="border-b py-3">
+
+            <p class="font-medium text-slate-800">
+                {{ $activity->description }}
+            </p>
+
+            <p class="text-sm text-slate-500">
+                {{ $activity->created_at->diffForHumans() }}
+            </p>
+
+        </div>
+
+    @empty
+
+        <p class="text-slate-500">
+            No recent activities found.
+        </p>
+
+    @endforelse
+
+</div>
 
         <span class="text-sm text-slate-500">
             Latest Records
@@ -459,6 +519,7 @@
     </div>
 
 </div>
+
 
 <script>
 

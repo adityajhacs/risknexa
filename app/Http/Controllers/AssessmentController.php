@@ -8,6 +8,7 @@ use App\Models\Vendor;
 use App\Models\Category;
 use App\Models\Question;
 use App\Models\AssessmentQuestion;
+use App\Models\ActivityLog;
 class AssessmentController extends Controller
 {
     /**
@@ -148,7 +149,8 @@ $evidenceCount = $assessment
             'answeredQuestions',
 'totalQuestions',
 'evidenceCount',
-            'riskLevel'
+            'riskLevel',
+            'activities'
         )
     );
 }
@@ -195,6 +197,65 @@ $evidenceCount = $assessment
     return redirect('/assessments');
 
     }
+
+public function report(Assessment $assessment)
+{
+    $questionResponses = $assessment
+    ->assessmentQuestions()
+    ->with('question')
+    ->get();
+   $totalQuestions = $assessment
+        ->assessmentQuestions
+        ->count();
+
+    $answeredQuestions = $assessment
+        ->assessmentQuestions
+        ->whereNotNull('response')
+        ->count();
+
+    $evidenceCount = $assessment
+        ->evidenceUploads
+        ->count();
+    $recommendation = match($assessment->risk_level) {
+
+    'Low' => 'Approved',
+
+    'Medium' => 'Approved with Conditions',
+
+    'High' => 'Remediation Required',
+
+    'Critical' => 'Reject Vendor',
+
+    default => 'Pending'
+};
+
+    return view(
+        'assessments.report',
+        compact(
+            'assessment',
+            'totalQuestions',
+            'answeredQuestions',
+            'evidenceCount',
+            'questionResponses',
+            'recommendation'
+        
+        )
+    );
+}
+public function reports()
+{if(auth()->user()->role != 'company_admin')
+{
+    abort(403);
+}
+    $assessments = Assessment::with('vendor')
+        ->get();
+
+    return view(
+        'reports.index',
+        compact('assessments')
+    );
+}
+
    public function review(
     Request $request,
     Assessment $assessment

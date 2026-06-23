@@ -4,11 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Vendor;
 use App\Models\Assessment;
+use App\Models\ActivityLog;
 
 class DashboardController extends Controller
 {
     public function index()
+{if(auth()->user()->role == 'vendor')
 {
+    return redirect('/my-assessments');
+}
     $totalVendors = Vendor::count();
 
     $activeVendors = Vendor::where(
@@ -80,7 +84,9 @@ class DashboardController extends Controller
     $recentAssessments = Assessment::latest()
         ->take(5)
         ->get();
-
+$recentActivities = ActivityLog::latest()
+    ->take(10)
+    ->get();
     return view('dashboard.index', compact(
         'totalVendors',
         'activeVendors',
@@ -99,6 +105,7 @@ class DashboardController extends Controller
         'lowRiskAssessments',
         'mediumRiskAssessments',
         'highRiskAssessments',
+        'recentActivities',
         'criticalRiskAssessments'
     ));
 }

@@ -9,6 +9,9 @@ use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\AssessmentQuestionController;
 use App\Http\Controllers\EvidenceUploadController;
 use App\Http\Controllers\VendorPortalController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\UserController;
+
 
 Route::get(
     '/my-assessments',
@@ -24,15 +27,19 @@ Route::post(
     [VendorPortalController::class, 'submitAssessment']
 )->name('vendor.assessments.submit');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::resource('vendors', VendorController::class);
 Route::resource('categories', CategoryController::class);
 Route::resource('questions', QuestionController::class);
 Route::resource('assessments', AssessmentController::class);
+Route::get(
+    '/assessments/{assessment}/report',
+    [AssessmentController::class, 'report']
+)->name('assessments.report');
 
 Route::put(
     '/assessment-questions/{assessmentQuestion}',
@@ -66,6 +73,11 @@ Route::post(
     '/my-assessments/{assessment}/save',
     [VendorPortalController::class,'saveResponses']
 )->name('vendor.assessments.save');
+Route::resource('users', UserController::class);
+Route::get(
+    '/reports',
+    [AssessmentController::class, 'reports']
+)->name('reports.index');
 
 Route::delete(
     '/evidence/{evidenceUpload}',

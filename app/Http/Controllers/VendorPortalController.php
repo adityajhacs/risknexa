@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Assessment;
 use App\Models\AssessmentResponse;
+use App\Models\ActivityLog;
 
 class VendorPortalController extends Controller
 {
@@ -69,8 +70,19 @@ class VendorPortalController extends Controller
             ]
         );
     }
-
-    return back()->with(
+if ($assessment->status == 'Assigned')
+{
+    $assessment->update([
+        'status' => 'In Progress'
+    ]);
+}
+ActivityLog::create([
+    'user_id' => auth()->id(),
+    'action' => 'response_saved',
+    'description' => auth()->user()->name .
+        ' saved assessment responses'
+]);    
+return back()->with(
         'success',
         'Responses saved successfully.'
     );
@@ -84,6 +96,13 @@ class VendorPortalController extends Controller
         $assessment->update([
             'status' => 'Submitted'
         ]);
+        ActivityLog::create([
+    'user_id' => auth()->id(),
+    'action' => 'assessment_submitted',
+    'description' => auth()->user()->name .
+        ' submitted ' .
+        $assessment->assessment_name
+]);
 
         return redirect()
             ->route('my.assessments')

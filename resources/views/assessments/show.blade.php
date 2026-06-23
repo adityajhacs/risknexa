@@ -455,6 +455,47 @@
     </div>
 
 @endif
+<hr>
+
+<h4 class="fw-bold text-primary mb-3">
+    Assessment Timeline
+</h4>
+
+<div class="card border-0 shadow-sm mb-4">
+
+    <div class="card-body">
+
+        @forelse($activities as $activity)
+
+            <div class="border-bottom pb-2 mb-2">
+
+                <strong>
+                    {{ $activity->description }}
+                </strong>
+
+                <br>
+
+                <small class="text-muted">
+                    {{ $activity->created_at->diffForHumans() }}
+                </small>
+
+            </div>
+
+        @empty
+
+            <p class="text-muted">
+                No activity found.
+            </p>
+
+        @endforelse
+
+    </div>
+
+</div>
+<a href="{{ route('assessments.report', $assessment->id) }}"
+   class="btn btn-success">
+    Generate Report
+</a>
 <a href="/assessments" class="btn btn-dark">
     Back
 </a>
