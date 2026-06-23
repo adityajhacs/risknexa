@@ -122,7 +122,7 @@ foreach ($questions as $question) {
   public function show(Assessment $assessment)
 {$assessment->load([
     'vendor',
-    'assessmentQuestions.question',
+    'responses.question',
     'evidenceUploads'
 ]);
     $riskScore = $assessment->risk_score;

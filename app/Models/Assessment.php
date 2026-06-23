@@ -7,6 +7,7 @@ use App\Models\Vendor;
 use App\Models\Question;
 use App\Models\AssessmentQuestion;
 use App\Models\EvidenceUpload;
+use App\Models\AssessmentResponse;
 
 class Assessment extends Model
 {
@@ -41,15 +42,20 @@ class Assessment extends Model
 
     public function assessmentQuestions()
     {
-        return $this->belongsToMany(
-        Assessment::class,
-        'assessment_questions'
+       return $this->hasMany(
+        AssessmentQuestion::class
     );
     }
     public function evidenceUploads()
 {
     return $this->hasMany(
         EvidenceUpload::class
+    );
+}
+public function responses()
+{
+    return $this->hasMany(
+        AssessmentResponse::class
     );
 }
 }

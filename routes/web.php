@@ -19,6 +19,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::post(
+    '/my-assessments/{assessment}/submit',
+    [VendorPortalController::class, 'submitAssessment']
+)->name('vendor.assessments.submit');
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -56,6 +61,11 @@ Route::post(
     '/assessments/{assessment}/evidence',
     [EvidenceUploadController::class, 'store']
 );
+
+Route::post(
+    '/my-assessments/{assessment}/save',
+    [VendorPortalController::class,'saveResponses']
+)->name('vendor.assessments.save');
 
 Route::delete(
     '/evidence/{evidenceUpload}',

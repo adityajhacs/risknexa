@@ -6,17 +6,51 @@
         {{ $assessment->assessment_name }}
     </h1>
 
-    @foreach($questions as $question)
+    <form
+    method="POST"
+    action="{{ route('vendor.assessments.save', $assessment->id) }}"
+    enctype="multipart/form-data"
+>
+    @csrf
 
-        <div class="border rounded p-4 mb-4">
+        @foreach($questions as $question)
 
-            <h3 class="font-semibold">
-                {{ $question->question }}
-            </h3>
+            <div class="border rounded p-4 mb-4">
 
-        </div>
+                <h3 class="font-semibold mb-3">
+                    {{ $question->question }}
+                </h3>
 
-    @endforeach
+               <textarea
+    name="answers[{{ $question->id }}]"
+    class="w-full border rounded p-2"
+    rows="4"
+></textarea>
+<input
+    type="file"
+    name="evidence[{{ $question->id }}]"
+    class="mt-2 block w-full border rounded p-2"
+/>
+
+            </div>
+
+        @endforeach
+
+        <button
+            type="submit"
+            class="bg-blue-600 text-white px-4 py-2 rounded"
+        >
+            Save Answers
+        </button>
+        <button
+    type="submit"
+    formaction="{{ route('vendor.assessments.submit', $assessment->id) }}"
+    class="bg-green-600 text-white px-4 py-2 rounded ml-2"
+>
+    Submit Assessment
+</button>
+
+    </form>
 
 </div>
 
