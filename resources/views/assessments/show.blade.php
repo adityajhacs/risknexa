@@ -227,6 +227,61 @@
         </thead>
 
         <tbody>
+            <h4 class="fw-bold text-success mb-3">
+    Vendor Responses
+</h4>
+
+<table class="table table-bordered">
+
+    <thead>
+        <tr>
+            <th>Question</th>
+            <th>Answer</th>
+            <th>Evidence</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+    @foreach($assessment->responses as $response)
+
+        <tr>
+
+            <td>
+                {{ $response->question->question }}
+            </td>
+
+            <td>
+                {{ $response->answer }}
+            </td>
+
+            <td>
+
+                @if($response->evidence_file)
+
+                    <a href="{{ asset('storage/'.$response->evidence_file) }}"
+                       target="_blank"
+                       class="btn btn-primary btn-sm">
+
+                        View File
+
+                    </a>
+
+                @else
+
+                    No File
+
+                @endif
+
+            </td>
+
+        </tr>
+
+    @endforeach
+
+    </tbody>
+
+</table>
 
        @foreach($assessment->assessmentQuestions as $item)
 
