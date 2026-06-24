@@ -48,6 +48,7 @@ class DashboardController extends Controller
         'review_status',
         'Pending Review'
     )->count();
+    $reportsGenerated = Assessment::count();
 
     $approvedAssessments = Assessment::where(
         'review_status',
@@ -106,7 +107,8 @@ $recentActivities = ActivityLog::latest()
         'mediumRiskAssessments',
         'highRiskAssessments',
         'recentActivities',
-        'criticalRiskAssessments'
+        'criticalRiskAssessments',
+        'reportsGenerated'
     ));
 }
 

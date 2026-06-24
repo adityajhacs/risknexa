@@ -23,20 +23,31 @@
         RiskNexa Platform
     </h2>
 
-    <div class="flex items-center gap-4">
-        <span class="text-slate-500">
-    {{ auth()->user()->name }}
-</span>
-        <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center">
-            {{ strtoupper(substr(auth()->user()->name,0,1)) }}
-        </div>
+    <div class="flex items-center gap-3">
+
+    <div class="text-right">
+
+        <p class="font-semibold text-slate-800">
+            {{ auth()->user()->name }}
+        </p>
+
+        <p class="text-xs text-slate-500">
+            System Administrator
+        </p>
+
     </div>
+
+    <div class="w-11 h-11 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex items-center justify-center font-bold shadow-md">
+        {{ strtoupper(substr(auth()->user()->name,0,1)) }}
+    </div>
+
+</div>
     <form method="POST" action="{{ route('logout') }}">
     @csrf
 
     <button
         type="submit"
-        class="bg-red-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-red-700">
+        class="bg-red-500 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-red-600 transition">
         Logout
     </button>
 </form>
@@ -45,32 +56,37 @@
 
     <!-- Sidebar -->
 
-    <aside class="w-72 bg-slate-900 text-white shadow-2xl">
+<aside class="w-64 bg-slate-900 text-white shadow-2xl border-r border-slate-800">
+        <div class="p-6 border-b border-slate-800">
 
-        <div class="p-6 border-b border-slate-700">
+    <h1 class="text-3xl font-bold tracking-tight">
+        RiskNexa
+    </h1>
 
-            <h1 class="text-3xl font-bold">
-                RiskNexa
-            </h1>
+    <p class="text-slate-400 text-sm mt-2">
+        Vendor Risk Platform
+    </p>
 
-            <p class="text-slate-400 text-sm mt-2">
-                Vendor Risk Platform
-            </p>
+    <div class="mt-4 text-xs uppercase tracking-widest text-slate-500">
+        Governance & Compliance
+    </div>
 
-        </div>
+</div>
 
         <nav class="p-4 space-y-2">
+            <p class="text-xs uppercase tracking-widest text-slate-500 px-4 mb-3">
+    Main Menu
+</p>
 
             <a href="/dashboard"
-               class="flex items-center gap-3 px-4 py-3 rounded-xl bg-blue-600 text-white">
-
+class="flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg"
                 <span>📊</span>
                 <span>Dashboard</span>
 
             </a>
 
             <a href="/vendors"
-               class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition">
+               class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 hover:translate-x-1 transition-all duration-200">
 
                 <span>👥</span>
                 <span>Vendors</span>
@@ -78,7 +94,7 @@
             </a>
 
             <a href="/assessments"
-               class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition">
+               class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 hover:translate-x-1 transition-all duration-200">
 
                 <span>📋</span>
                 <span>Assessments</span>
@@ -86,7 +102,7 @@
             </a>
 
             <a href="/categories"
-               class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition">
+               class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 hover:translate-x-1 transition-all duration-200">
 
                 <span>📂</span>
                 <span>Categories</span>
@@ -94,7 +110,7 @@
             </a>
 
             <a href="/questions"
-               class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition">
+               class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 hover:translate-x-1 transition-all duration-200">
 
                 <span>❓</span>
                 <span>Questions</span>
@@ -102,24 +118,25 @@
             </a>
 
             <a href="/assessment-questions"
-               class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition">
+               class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 hover:translate-x-1 transition-all duration-200">
 
                 <span>✅</span>
                 <span>Assessment Questions</span>
 
             </a>
-            <a href="/users"
-   class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition">
+           <a href="/users"
+   class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 hover:translate-x-1 transition-all duration-200">
 
     <span>👤</span>
     <span>Users</span>
-    <a href="/reports"
-   class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition">
+
+</a>
+
+<a href="/reports"
+   class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 hover:translate-x-1 transition-all duration-200">
 
     <span>📄</span>
     <span>Reports</span>
-
-</a>
 
 </a>
 
@@ -133,135 +150,139 @@
 
         <!-- Header -->
 
+        
+
+<div class="bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 rounded-3xl p-8 text-white mb-8 shadow-2xl">
+
+    <div class="flex justify-between items-center">
+
+        <div>
+
+            <p class="text-blue-200 text-sm uppercase tracking-widest">
+                Enterprise Vendor Risk Management
+            </p>
+
+            <h1 class="text-5xl font-bold mt-3">
+                Welcome Back,
+                {{ auth()->user()->name }}
+            </h1>
+
+            <p class="mt-4 text-slate-300 text-lg">
+                Manage vendors, assessments, governance and compliance
+                from one centralized platform.
+            </p>
+
+        </div>
+
+        <div class="hidden lg:block">
+
+            <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6">
+
+              
+<p class="text-slate-300 text-sm">
+    Pending Reviews
+</p>
+
+<h2 class="text-4xl font-bold mt-2">
+    {{ $pendingReviews }}
+</h2>
+<p class="text-yellow-300 mt-2">
+    Requires Attention
+</p>
+
+                
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+      <!-- Dashboard Overview -->
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+
+    <!-- Main Overview -->
+
+    <div class="lg:col-span-2 bg-white rounded-3xl border border-slate-200 shadow-sm p-8">
+
         <div class="flex justify-between items-center mb-8">
 
             <div>
 
-                <h1 class="text-4xl font-bold text-slate-800">
-                    Dashboard
-                </h1>
+                <h2 class="text-2xl font-bold text-slate-900">
+                    Dashboard Overview
+                </h2>
 
-                <p class="text-slate-500 mt-2">
-                    Monitor vendors, assessments and compliance posture
+                <p class="text-slate-500 mt-1">
+                    Vendor risk and compliance summary
                 </p>
 
             </div>
 
-            <button
-                class="bg-blue-600 text-white px-6 py-3 rounded-xl shadow hover:bg-blue-700 transition">
+        </div>
 
-                + New Assessment
+        <div class="grid grid-cols-2 gap-6">
 
-            </button>
+            <div class="border border-slate-200 rounded-2xl p-5">
+                <p class="text-slate-500 text-sm">Total Vendors</p>
+                <h3 class="text-3xl font-bold mt-2">{{ $totalVendors }}</h3>
+            </div>
+
+            <div class="border border-slate-200 rounded-2xl p-5">
+                <p class="text-slate-500 text-sm">Assessments</p>
+                <h3 class="text-3xl font-bold mt-2">{{ $totalAssessments }}</h3>
+            </div>
+
+            <div class="border border-slate-200 rounded-2xl p-5">
+                <p class="text-slate-500 text-sm">Reports</p>
+                <h3 class="text-3xl font-bold mt-2">{{ $reportsGenerated }}</h3>
+            </div>
+
+            <div class="border border-slate-200 rounded-2xl p-5">
+                <p class="text-slate-500 text-sm">Pending Reviews</p>
+                <h3 class="text-3xl font-bold mt-2 text-red-600">
+                    {{ $pendingReviews }}
+                </h3>
+            </div>
 
         </div>
 
-        <!-- Compliance Score -->
-
-        <div class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-3xl p-8 text-white mb-8 shadow-lg">
-
-            <p class="text-blue-100 text-lg">
-                Compliance Score
-            </p>
-
-            <h1 class="text-6xl font-bold mt-2">
-                87%
-            </h1>
-
-            <p class="mt-3 text-blue-100">
-                Strong compliance posture across vendors and assessments.
-            </p>
-
-        </div>
-
-        <!-- KPI Cards -->
-
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
-
-    <!-- Total Vendors -->
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300">
-        <p class="text-slate-500">Total Vendors</p>
-        <h2 class="text-4xl font-bold mt-2">{{ $totalVendors }}</h2>
     </div>
 
-    <!-- Active Vendors -->
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300">
-        <p class="text-slate-500">Active Vendors</p>
-        <h2 class="text-4xl font-bold text-green-600 mt-2">
-            {{ $activeVendors }}
-        </h2>
-    </div>
+    <!-- Compliance Card -->
 
-    <!-- Inactive Vendors -->
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300">
-        <p class="text-slate-500">Inactive Vendors</p>
-        <h2 class="text-4xl font-bold text-slate-600 mt-2">
-            {{ $inactiveVendors }}
-        </h2>
-    </div>
+    <div class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-8 text-white">
 
-    <!-- High Risk Vendors -->
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300">
-        <p class="text-slate-500">High Risk Vendors</p>
-        <h2 class="text-4xl font-bold text-red-600 mt-2">
-            {{ $highRiskVendors }}
-        </h2>
-    </div>
+        <p class="text-blue-100">
+            Compliance Score
+        </p>
 
-    <!-- Total Assessments -->
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300">
-        <p class="text-slate-500">Total Assessments</p>
-        <h2 class="text-4xl font-bold text-blue-600 mt-2">
-            {{ $totalAssessments }}
-        </h2>
-    </div>
-
-    <!-- Pending -->
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300">
-        <p class="text-slate-500">Pending Assessments</p>
-        <h2 class="text-4xl font-bold text-yellow-500 mt-2">
-            {{ $pendingAssessments }}
-        </h2>
-    </div>
-
-    <!-- Completed -->
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300">
-        <p class="text-slate-500">Completed Assessments</p>
-        <h2 class="text-4xl font-bold text-green-600 mt-2">
-            {{ $completedAssessments }}
-        </h2>
-    </div>
-
-    <!-- Compliance -->
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300">
-        <p class="text-slate-500">Compliance Score</p>
-        <h2 class="text-4xl font-bold text-indigo-600 mt-2">
+        <h1 class="text-6xl font-bold mt-4">
             87%
-        </h2>
+        </h1>
+
+        <p class="mt-4 text-blue-100">
+            Strong compliance posture across vendors and assessments.
+        </p>
+
+        <div class="mt-8 border-t border-white/20 pt-4">
+
+            <p class="text-sm">
+                Approved Assessments
+            </p>
+
+            <h3 class="text-2xl font-bold">
+                {{ $approvedAssessments }}
+            </h3>
+
+        </div>
+
     </div>
-<!-- Pending Reviews -->
-<div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300">
-    <p class="text-slate-500">Pending Reviews</p>
-    <h2 class="text-4xl font-bold text-yellow-600 mt-2">
-        {{ $pendingReviews }}
-    </h2>
-</div>
 
-<!-- Approved -->
-<div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300">
-    <p class="text-slate-500">Approved Assessments</p>
-    <h2 class="text-4xl font-bold text-green-600 mt-2">
-        {{ $approvedAssessments }}
-    </h2>
-</div>
-
-<!-- Rejected -->
-<div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300">
-    <p class="text-slate-500">Rejected Assessments</p>
-    <h2 class="text-4xl font-bold text-red-600 mt-2">
-        {{ $rejectedAssessments }}
-    </h2>
-</div>
 </div>
     <!-- Risk Analytics Cards -->
 
@@ -360,7 +381,81 @@
     </div>
 
 </div>
+<div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8">
 
+    <h2 class="text-xl font-bold text-slate-800 mb-6">
+        Quick Actions
+    </h2>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+        <a href="/vendors/create"
+           class="bg-blue-600 text-white p-4 rounded-xl text-center hover:bg-blue-700">
+            + Vendor
+        </a>
+
+        <a href="/assessments/create"
+           class="bg-green-600 text-white p-4 rounded-xl text-center hover:bg-green-700">
+            + Assessment
+        </a>
+
+        <a href="/users/create"
+           class="bg-purple-600 text-white p-4 rounded-xl text-center hover:bg-purple-700">
+            + User
+        </a>
+
+        <a href="/reports"
+           class="bg-slate-800 text-white p-4 rounded-xl text-center hover:bg-slate-900">
+            View Reports
+        </a>
+
+    </div>
+
+</div>
+
+
+
+<!-- Recent Activities -->
+
+<div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8">
+
+    <h2 class="text-xl font-bold text-slate-800 mb-6">
+        Recent Activities
+    </h2>
+<p class="text-slate-500 text-sm mb-6">
+    Latest platform activities and vendor events
+</p>
+    @forelse($recentActivities as $activity)
+
+    <div class="flex items-start gap-4 py-4 border-b border-slate-100">
+
+        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+            🔔
+        </div>
+
+        <div class="flex-1">
+
+            <p class="font-semibold text-slate-800">
+                {{ $activity->description }}
+            </p>
+
+            <p class="text-sm text-slate-500 mt-1">
+                {{ $activity->created_at->diffForHumans() }}
+            </p>
+
+        </div>
+
+    </div>
+
+    @empty
+
+    <p class="text-slate-500">
+        No recent activities found.
+    </p>
+
+    @endforelse
+
+</div>
 <!-- Recent Assessments -->
 
 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8">
@@ -370,41 +465,8 @@
         <h2 class="text-xl font-bold text-slate-800">
             Recent Assessments
         </h2>
+
        
-
-</div>
-
-<!-- Recent Activities -->
-
-<div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8">
-
-    <h2 class="text-xl font-bold text-slate-800 mb-6">
-        Recent Activities
-    </h2>
-
-    @forelse($recentActivities as $activity)
-
-        <div class="border-b py-3">
-
-            <p class="font-medium text-slate-800">
-                {{ $activity->description }}
-            </p>
-
-            <p class="text-sm text-slate-500">
-                {{ $activity->created_at->diffForHumans() }}
-            </p>
-
-        </div>
-
-    @empty
-
-        <p class="text-slate-500">
-            No recent activities found.
-        </p>
-
-    @endforelse
-
-</div>
 
         <span class="text-sm text-slate-500">
             Latest Records
@@ -437,6 +499,12 @@
                     </th>
                     <th class="text-left px-4 py-3 font-semibold">
     Review Status
+</th>
+<th class="text-left px-4 py-3 font-semibold">
+    Risk Level
+</th>
+<th class="text-left px-4 py-3 font-semibold">
+    Action
 </th>
 
                 </tr>
@@ -480,6 +548,17 @@
                         @endif
 
                     </td>
+             <td class="px-4 py-4">
+
+    <a href="/assessments/{{ $assessment->id }}"
+       class="px-3 py-2 rounded-lg bg-slate-900 text-white text-sm hover:bg-slate-700">
+
+        View
+
+    </a>
+
+</td>
+
 
                     <td class="px-4 py-4">
                         {{ \Carbon\Carbon::parse($assessment->due_date)->format('d M Y') }}
@@ -505,6 +584,35 @@
         </span>
 
     @endif
+
+</td>
+<td class="px-4 py-4">
+
+@if($assessment->risk_level == 'Low')
+
+<span class="px-3 py-1 rounded-full text-xs bg-green-100 text-green-800">
+    Low
+</span>
+
+@elseif($assessment->risk_level == 'Medium')
+
+<span class="px-3 py-1 rounded-full text-xs bg-yellow-100 text-yellow-800">
+    Medium
+</span>
+
+@elseif($assessment->risk_level == 'High')
+
+<span class="px-3 py-1 rounded-full text-xs bg-red-100 text-red-800">
+    High
+</span>
+
+@else
+
+<span class="px-3 py-1 rounded-full text-xs bg-slate-900 text-white">
+    Critical
+</span>
+
+@endif
 
 </td>
 

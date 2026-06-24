@@ -243,17 +243,41 @@ public function report(Assessment $assessment)
     );
 }
 public function reports()
-{if(auth()->user()->role != 'company_admin')
+{
+if(auth()->user()->role != 'company_admin')
 {
     abort(403);
 }
-    $assessments = Assessment::with('vendor')
-        ->get();
 
-    return view(
-        'reports.index',
-        compact('assessments')
-    );
+$assessments = Assessment::with('vendor')->get();
+
+$totalReports = $assessments->count();
+
+$approvedReports = Assessment::where(
+    'review_status',
+    'Approved'
+)->count();
+
+$pendingReports = Assessment::where(
+    'review_status',
+    'Pending Review'
+)->count();
+
+$highRiskReports = Assessment::where(
+    'risk_level',
+    'High'
+)->count();
+
+return view(
+    'reports.index',
+    compact(
+        'assessments',
+        'totalReports',
+        'approvedReports',
+        'pendingReports',
+        'highRiskReports'
+    )
+);
 }
 
    public function review(

@@ -3,56 +3,147 @@
 <head>
     <title>Reports</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+   @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
+
 <body>
+    <body class="bg-slate-50">
 
-<div class="container mt-5">
+<div class="bg-white h-16 rounded-2xl shadow-sm border border-slate-200 mb-6 flex items-center justify-between px-6">
+    ...
+</div>
 
-    <h2 class="mb-4">
-        Reports Module
-    </h2>
+<div class="flex min-h-screen">
 
-    <table class="table table-bordered">
+<aside class="w-64 bg-slate-900 text-white shadow-2xl border-r border-slate-800">
+    ...
+</aside>
 
-        <thead>
+<main class="flex-1 p-8">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
 
-            <tr>
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+        <p class="text-slate-500">Total Reports</p>
+        <h2 class="text-4xl font-bold mt-2">
+            {{ $totalReports }}
+        </h2>
+    </div>
 
-                <th>ID</th>
-                <th>Vendor</th>
-                <th>Assessment</th>
-                <th>Risk Score</th>
-                <th>Risk Level</th>
-                <th>Review Status</th>
-                <th>Action</th>
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+        <p class="text-slate-500">Approved Reports</p>
+        <h2 class="text-4xl font-bold text-green-600 mt-2">
+            {{ $approvedReports }}
+        </h2>
+    </div>
 
-            </tr>
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+        <p class="text-slate-500">Pending Reviews</p>
+        <h2 class="text-4xl font-bold text-yellow-500 mt-2">
+            {{ $pendingReports }}
+        </h2>
+    </div>
 
-        </thead>
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+        <p class="text-slate-500">High Risk Reports</p>
+        <h2 class="text-4xl font-bold text-red-600 mt-2">
+            {{ $highRiskReports }}
+        </h2>
+    </div>
+
+</div>
+
+<div class="max-w-7xl mx-auto p-8">
+  <div class="mb-8">
+
+    <h1 class="text-3xl font-bold text-slate-900">
+        Reports Center
+    </h1>
+
+    <p class="text-slate-500 mt-2">
+        Governance and assessment reporting dashboard
+    </p>
+
+</div>
+<div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+    <table class="min-w-full">
+
+       <thead class="bg-slate-50">
+
+    <tr class="border-b hover:bg-slate-50 transition">
+
+        <th class="text-left px-4 py-3 font-semibold">ID</th>
+        <th class="text-left px-4 py-3 font-semibold">Vendor</th>
+        <th class="text-left px-4 py-3 font-semibold">Assessment</th>
+        <th class="text-left px-4 py-3 font-semibold">Risk Score</th>
+        <th class="text-left px-4 py-3 font-semibold">Risk Level</th>
+        <th class="text-left px-4 py-3 font-semibold">Review Status</th>
+        <th class="text-left px-4 py-3 font-semibold">Action</th>
+
+    </tr>
+
+</thead>
 
         <tbody>
 
             @foreach($assessments as $assessment)
 
-            <tr>
+            <tr class="border-b hover:bg-slate-50 transition">
 
-                <td>{{ $assessment->id }}</td>
+                <td class="px-4 py-4">{{ $assessment->id }}</td>    
+               <td class="px-4 py-4">{{ $assessment->vendor->vendor_name }}</td>
+                <td class="px-4 py-4">{{ $assessment->assessment_name }}</td>
+                <td class="px-4 py-4">{{ $assessment->risk_score }}</td>
+<td class="px-4 py-4">
 
-                <td>{{ $assessment->vendor->vendor_name }}</td>
+    @if($assessment->risk_level == 'Low')
 
-                <td>{{ $assessment->assessment_name }}</td>
+        <span class="px-3 py-1 rounded-full text-xs bg-green-100 text-green-800">
+            Low
+        </span>
 
-                <td>{{ $assessment->risk_score }}</td>
+    @elseif($assessment->risk_level == 'High')
 
-                <td>{{ $assessment->risk_level }}</td>
+        <span class="px-3 py-1 rounded-full text-xs bg-red-100 text-red-800">
+            High
+        </span>
 
-                <td>{{ $assessment->review_status }}</td>
+    @elseif($assessment->risk_level == 'Critical')
+
+        <span class="px-3 py-1 rounded-full text-xs bg-slate-900 text-white">
+            Critical
+        </span>
+
+    @else
+
+        <span class="px-3 py-1 rounded-full text-xs bg-yellow-100 text-yellow-800">
+            Medium
+        </span>
+
+    @endif
+
+</td>
+               <td class="px-4 py-4">
+
+@if($assessment->review_status == 'Approved')
+
+    <span class="px-3 py-1 rounded-full text-xs bg-green-100 text-green-800">
+        Approved
+    </span>
+
+@else
+
+    <span class="px-3 py-1 rounded-full text-xs bg-yellow-100 text-yellow-800">
+        Pending Review
+    </span>
+
+@endif
+
+</td>
 
                 <td>
 
                     <a href="{{ route('assessments.report', $assessment->id) }}"
-                       class="btn btn-primary btn-sm">
+                     class="inline-block px-3 py-2 rounded-lg bg-slate-900 text-white text-sm hover:bg-slate-700">
 
                         View Report
 
@@ -67,6 +158,7 @@
         </tbody>
 
     </table>
+    </div>
 
 </div>
 
