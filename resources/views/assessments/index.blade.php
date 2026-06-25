@@ -66,7 +66,7 @@
                 <tr class="border-t hover:bg-gray-50 transition">
 
                     <td class="p-4">
-                        {{ $assessment->vendor->vendor_name }}
+                        {{ $assessment->vendor->vendor_name ?? 'Vendor Not Found' }}
                     </td>
 
                     <td class="p-4 font-medium text-gray-700">

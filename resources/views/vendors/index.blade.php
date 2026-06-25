@@ -12,7 +12,17 @@
 <div class="max-w-7xl mx-auto p-6">
 
     <div class="flex justify-between items-center mb-6">
+@if(session('success'))
 
+<div class="bg-green-100 border border-green-300 text-green-700 px-6 py-4 rounded-xl mb-6">
+
+    <strong>Success!</strong><br>
+
+    {{ session('success') }}
+
+</div>
+
+@endif
         <h1 class="text-3xl font-bold">
             All Vendors
         </h1>

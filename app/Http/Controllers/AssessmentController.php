@@ -78,7 +78,7 @@ return view(
     'assigned_by' => 'required',
     'reviewer' => 'required',
 
-    'status' => 'required',
+    
     'review_status' => 'required',
 ],[
     'vendor_id.required' => 'Please select a vendor.',
@@ -140,7 +140,9 @@ $totalQuestions = $assessment
 $evidenceCount = $assessment
     ->evidenceUploads
     ->count();
-
+$activities = ActivityLog::latest()
+    ->take(10)
+    ->get();
     return view(
         'assessments.show',
         compact(
@@ -180,7 +182,7 @@ $evidenceCount = $assessment
         'vendor_id' => $request->vendor_id,
         'assessment_name' => $request->assessment_name,
         'due_date' => $request->due_date,
-        'status' => $request->status,
+        'status' => 'Assigned',
     ]);
 
     return redirect('/assessments');
