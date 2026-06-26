@@ -10,13 +10,18 @@ use App\Models\ActivityLog;
 class VendorPortalController extends Controller
 {
     public function index()
-    {
-        $vendor = auth()->user()->vendor;
+    { 
+       $vendor = auth()->user()->vendor;
 
-        $assessments = Assessment::where(
-            'vendor_id',
-            $vendor->id
-        )->get();
+if (!$vendor)
+{
+    abort(403, 'Vendor profile not found.');
+}
+
+$assessments = Assessment::where(
+    'vendor_id',
+    $vendor->id
+)->get();
 
         return view(
             'vendor.assessments',
@@ -49,7 +54,7 @@ class VendorPortalController extends Controller
     Assessment $assessment
 )
 {
-    foreach ($request->answers as $questionId => $answer)
+    foreach ($request->input('answers', []) as $questionId => $answer)
     {
         $response = AssessmentResponse::where(
             'assessment_id',

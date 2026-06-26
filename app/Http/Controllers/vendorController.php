@@ -33,34 +33,45 @@ class vendorController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        $request->validate([
-    'vendor_name' => 'required',
-    'email' => 'required|email',
-    'contact_person' => 'required',
-    'phone' => 'required',
-'country' => 'required'
-]);
-     Vendor::create([
-    'vendor_name' => $request->vendor_name,
-    'contact_person' => $request->contact_person,
-    'email' => $request->email,
-    'phone' => $request->phone,
-    'country' => $request->country,
-    'criticality' => $request->criticality,
-    'status' => $request->status,
-]);
-User::create([
-    'name' => $request->vendor_name,
-    'email' => $request->email,
-    'password' => Hash::make('password123'),
-    'role' => 'vendor',
-]);
+   public function store(Request $request)
+{    
+    $request->validate([
+        'vendor_name' => 'required',
+        'contact_person' => 'required',
+        'email' => 'required|email|unique:vendors,email|unique:users,email',
+        'phone' => 'required',
+        'country' => 'required',
+        'password' => 'required|min:8'
+    ]);
+    
 
-    return redirect('/vendors');
-    }
+    Vendor::create([
+        'vendor_name' => $request->vendor_name,
+        'contact_person' => $request->contact_person,
+        'email' => $request->email,
+        'phone' => $request->phone,
+        'country' => $request->country,
+        'criticality' => $request->criticality,
+        'status' => $request->status,
+    ]);
+    
 
+    User::create([
+        'name' => $request->contact_person,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+        'role' => 'vendor',
+    ]);
+   
+ return redirect('/vendors')
+    ->with(
+        'success',
+        'Vendor created successfully. Email: ' .
+        $request->email .
+        ' | Password: ' .
+        $request->password
+    );
+}
     /**
      * Display the specified resource.
      */
