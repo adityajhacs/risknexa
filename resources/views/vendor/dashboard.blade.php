@@ -1,35 +1,32 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Vendor Dashboard</title>
-</head>
-<body>
+@extends('layouts.vendor')
 
-<h2>My Assessments</h2>
+@section('content')
 
-<table border="1" cellpadding="10">
-    <tr>
-        <th>ID</th>
-        <th>Assessment</th>
-        <th>Status</th>
-        <th>Due Date</th>
-    </tr>
+<div class="p-8 space-y-8">
 
-    @foreach($assessments as $assessment)
-        <tr>
-            <td>{{ $assessment->id }}</td>
-            <td>{{ $assessment->assessment_name }}</td>
-            <td>{{ $assessment->status }}</td>
-            <td>{{ $assessment->due_date }}</td>
-            <td>
-    <a href="{{ route('vendor.assessment.show', $assessment->id) }}">
-        Open
-    </a>
-</td>
-        </tr>
-    @endforeach
+    @include('vendor.partials.hero')
 
-</table>
+    @include('vendor.partials.stats')
 
-</body>
-</html>
+    
+
+    <div class="lg:col-span-2 space-y-6">
+
+        @include('vendor.partials.recent-assessments')
+
+        @include('vendor.partials.compliance')
+
+        @include('vendor.partials.quick-actions')
+
+    </div>
+
+    <div>
+
+        @include('vendor.partials.team-members')
+
+    </div>
+
+</div>
+</div>
+
+@endsection

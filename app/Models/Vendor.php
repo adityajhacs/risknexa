@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Assessment;
+use App\Models\User;
 
 class Vendor extends Model
 {
@@ -20,5 +21,9 @@ class Vendor extends Model
 public function assessments()
 {
     return $this->hasMany(Assessment::class);
+}
+public function users()
+{
+    return $this->hasMany(User::class);
 }
 }

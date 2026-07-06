@@ -45,23 +45,23 @@ class vendorController extends Controller
     ]);
     
 
-    Vendor::create([
-        'vendor_name' => $request->vendor_name,
-        'contact_person' => $request->contact_person,
-        'email' => $request->email,
-        'phone' => $request->phone,
-        'country' => $request->country,
-        'criticality' => $request->criticality,
-        'status' => $request->status,
-    ]);
-    
+   $vendor = Vendor::create([
+    'vendor_name' => $request->vendor_name,
+    'contact_person' => $request->contact_person,
+    'email' => $request->email,
+    'phone' => $request->phone,
+    'country' => $request->country,
+    'criticality' => $request->criticality,
+    'status' => $request->status,
+]);
 
-    User::create([
-        'name' => $request->contact_person,
-        'email' => $request->email,
-        'password' => Hash::make($request->password),
-        'role' => 'vendor',
-    ]);
+User::create([
+    'name' => $request->contact_person,
+    'email' => $request->email,
+    'password' => Hash::make($request->password),
+    'role' => 'vendor_admin',
+    'vendor_id' => $vendor->id,
+]);
    
  return redirect('/vendors')
     ->with(

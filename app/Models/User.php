@@ -19,12 +19,14 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-    'name',
+       'name',
     'email',
     'password',
     'role',
     'vendor_id',
-];
+   
+    
+    ];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -48,7 +50,7 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    public function vendor()
+   public function vendor()
 {
     return $this->belongsTo(Vendor::class);
 }
