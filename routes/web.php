@@ -13,7 +13,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VendorUserController;
 use App\Http\Controllers\VendorDashboardController;
-
+use App\Http\Controllers\FrameworkController;
 Route::get('/', function () {
     return view('welcome');
 });
@@ -34,6 +34,7 @@ Route::middleware(['auth', 'vendor.admin'])->group(function () {
 });
 Route::middleware('auth')->group(function () {
     Route::resource('vendors', VendorController::class);
+    Route::resource('frameworks', FrameworkController::class);
 Route::resource('categories', CategoryController::class);
 Route::resource('questions', QuestionController::class);
 Route::resource('assessments', AssessmentController::class);

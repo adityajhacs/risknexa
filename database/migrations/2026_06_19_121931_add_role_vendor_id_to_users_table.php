@@ -7,21 +7,24 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     public function up(): void
-    {
-        Schema::table('users', function (Blueprint $table) {
+{
+    Schema::table('users', function (Blueprint $table) {
 
+        if (!Schema::hasColumn('users', 'role')) {
             $table->string('role')
-                ->default('admin')
+                ->default('company_admin')
                 ->after('password');
+        }
 
+        if (!Schema::hasColumn('users', 'vendor_id')) {
             $table->foreignId('vendor_id')
                 ->nullable()
                 ->after('role')
                 ->constrained('vendors')
                 ->nullOnDelete();
-
-        });
-    }
+        }
+    });
+}
 
     public function down(): void
     {

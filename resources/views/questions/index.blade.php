@@ -1,13 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <title>Questions</title>
-</head>
+@extends('layouts.app')
 
-<body class="bg-gray-100">
+@section('content')
 
 <div class="max-w-7xl mx-auto p-6">
 
@@ -89,5 +82,4 @@
 
 </div>
 
-</body>
-</html>
+@endsection

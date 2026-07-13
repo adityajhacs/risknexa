@@ -9,7 +9,9 @@ use App\Models\ActivityLog;
 class DashboardController extends Controller
 {
     public function index()
-{if(auth()->user()->role == 'vendor')
+{   
+
+    if(auth()->user()->role == 'vendor')
 {
     return redirect('/my-assessments');
 }

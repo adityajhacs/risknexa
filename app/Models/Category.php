@@ -7,10 +7,27 @@ use Illuminate\Database\Eloquent\Model;
 class Category extends Model
 {
     protected $fillable = [
+        'framework_id',
+        'code',
         'name',
-        'description'
+        'description',
+        'display_order',
+        'status',
     ];
-    public function questions(){
-    return $this->hasMany(Question::class);
-}
+
+    /**
+     * Framework Relationship
+     */
+    public function framework()
+    {
+        return $this->belongsTo(Framework::class);
+    }
+
+    /**
+     * Questions Relationship
+     */
+    public function questions()
+    {
+        return $this->hasMany(Question::class);
+    }
 }

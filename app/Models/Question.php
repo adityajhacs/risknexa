@@ -29,4 +29,8 @@ public function assessments()
         'assessment_questions'
     );
 }
+public function domain()
+{
+    return $this->belongsTo(Domain::class);
+}
 }
