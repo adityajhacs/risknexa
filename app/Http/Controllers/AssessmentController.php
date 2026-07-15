@@ -10,17 +10,17 @@ use App\Models\Question;
 use App\Models\AssessmentQuestion;
 use App\Models\ActivityLog;
 class AssessmentController extends Controller
-{
+{    
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        
-    $assessments = Assessment::with(
-        'questions',
-        'vendor'
-    )->get();
+      $assessments = Assessment::with(
+    'vendor',
+    'framework'
+)->get();  
+   
 
     foreach ($assessments as $assessment) {
 
@@ -52,70 +52,81 @@ class AssessmentController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-    {
-        $vendors = Vendor::all();
-        $categories = Category::all();
+{
+    $vendors = Vendor::where('status', 'Active')->get();
 
-return view(
-    'assessments.create',
-    compact('vendors','categories')
-);
+    $frameworks = \App\Models\Framework::where('status', 'Active')
+                    ->orderBy('name')
+                    ->get();
+   
 
-    }
+    return view(
+        'assessments.create',
+        compact(
+            'vendors',
+            'frameworks'
+        )
+    );
+}
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    { $request->validate([
-    'vendor_id' => 'required',
-    'assessment_name' => 'required',
-    'due_date' => 'required|date',
+   public function store(Request $request)
+{
+    $request->validate([
 
-    'questionnaire' => 'required',
-    'priority' => 'required',
+        'assessment_name' => 'required|max:255',
+        'framework_id' => 'required|exists:frameworks,id',
+        'vendor_id' => 'required|exists:vendors,id',
+        'priority' => 'required',
+        'due_date' => 'required|date',
+        'description' => 'nullable',
 
-    'assigned_by' => 'required',
-    'reviewer' => 'required',
-
-    
-    'review_status' => 'required',
-],[
-    'vendor_id.required' => 'Please select a vendor.',
-    'assessment_name.required' => 'Assessment name is required.',
-    'due_date.required' => 'Due date is required.',
-]);
-
- $assessment=   Assessment::create([
-    'vendor_id' => $request->vendor_id,
-    'assessment_name' => $request->assessment_name,
-    'due_date' => $request->due_date,
-
-    'questionnaire' => $request->questionnaire,
-    'priority' => $request->priority,
-
-    'assigned_by' => $request->assigned_by,
-    'reviewer' => $request->reviewer,
-
-    'status' => $request->status,
-    'review_status' => $request->review_status,
-]);
-  $questions = Question::where(
-    'category_id',
-    $request->questionnaire
-)->get();
-
-foreach ($questions as $question) {
-
-    AssessmentQuestion::create([
-        'assessment_id' => $assessment->id,
-        'question_id' => $question->id
     ]);
 
-}
+    // Create Assessment
+    $assessment = Assessment::create([
 
-    return redirect('/assessments');
+        'assessment_name' => $request->assessment_name,
+        'framework_id' => $request->framework_id,
+        'vendor_id' => $request->vendor_id,
+        'description' => $request->description,
+        'priority' => $request->priority,
+        'due_date' => $request->due_date,
+        'status' => 'Pending',
+        'review_status' => 'Pending Review',
+        'assigned_by' => auth()->user()->name,
+        'created_by' => auth()->id(),
+
+    ]);
+
+    // Get Questions of Selected Framework
+    $questions = Question::whereHas('domain', function ($domain) use ($request) {
+
+        $domain->whereHas('category', function ($category) use ($request) {
+
+            $category->where('framework_id', $request->framework_id);
+
+        });
+
+    })->get();
+
+   
+    // Create Assessment Questions
+    foreach ($questions as $question) {
+
+        AssessmentQuestion::create([
+            'assessment_id' => $assessment->id,
+            'question_id' => $question->id,
+        ]);
+
     }
+
+    return redirect()
+    ->route('assessments.index')
+    ->with('success', 'Assessment Created Successfully');
+}
 
     /**
      * Display the specified resource.
@@ -123,6 +134,7 @@ foreach ($questions as $question) {
   public function show(Assessment $assessment)
 {$assessment->load([
     'vendor',
+    'framework.categories.domains.questions',
     'responses.question',
     'evidenceUploads'
 ]);
@@ -164,29 +176,91 @@ $activities = ActivityLog::latest()
     {
      $vendors = Vendor::all();
 
-    return view('assessments.edit', compact('assessment', 'vendors'));
+$frameworks = \App\Models\Framework::all();
+
+return view(
+    'assessments.edit',
+    compact(
+        'assessment',
+        'vendors',
+        'frameworks'
+    )
+);
     }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Assessment $assessment)
-    {  
-         $request->validate([
-     'vendor_id' => 'required',
-    'assessment_name' => 'required',
-    'due_date' => 'required',
-    'status' => 'required'
-]);
-        $assessment->update([
-        'vendor_id' => $request->vendor_id,
-        'assessment_name' => $request->assessment_name,
-        'due_date' => $request->due_date,
-        'status' => 'Assigned',
+{
+    $request->validate([
+
+        'assessment_name' => 'required|max:255',
+        'framework_id' => 'required|exists:frameworks,id',
+        'vendor_id' => 'required|exists:vendors,id',
+        'priority' => 'required',
+        'due_date' => 'required|date',
+        'description' => 'nullable',
+
     ]);
 
-    return redirect('/assessments');
+    // Check whether framework changed
+    $frameworkChanged = $assessment->framework_id != $request->framework_id;
+
+    // Update Assessment
+    $assessment->update([
+
+        'assessment_name' => $request->assessment_name,
+        'framework_id'    => $request->framework_id,
+        'vendor_id'       => $request->vendor_id,
+        'description'     => $request->description,
+        'priority'        => $request->priority,
+        'due_date'        => $request->due_date,
+        'status'          => $request->status,
+
+    ]);
+
+    // If framework changed then regenerate questions
+    if ($frameworkChanged) {
+
+        // Delete old assigned questions
+        AssessmentQuestion::where(
+            'assessment_id',
+            $assessment->id
+        )->delete();
+
+        // Get new framework questions
+        $questions = Question::whereHas('domain', function ($domain) use ($request) {
+
+            $domain->whereHas('category', function ($category) use ($request) {
+
+                $category->where(
+                    'framework_id',
+                    $request->framework_id
+                );
+
+            });
+
+        })->get();
+
+        // Assign new questions
+        foreach ($questions as $question) {
+
+            AssessmentQuestion::create([
+
+                'assessment_id' => $assessment->id,
+                'question_id'   => $question->id,
+
+            ]);
+
+        }
+
     }
+
+    return redirect()
+        ->route('assessments.index')
+        ->with('success', 'Assessment Updated Successfully');
+}
 
     /**
      * Remove the specified resource from storage.
@@ -307,7 +381,11 @@ return view(
         'review_status' => $request->review_status,
         'governance_outcome' => $outcome
     ]);
+return back();
+}
 
-    return back();
+public function test()
+{
+    dd('Assessment Controller Working');
 }
 }

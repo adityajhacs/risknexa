@@ -78,7 +78,7 @@
     </tr>
     <tr>
     <th>Framework</th>
-    <td>{{ $assessment->questionnaire ?? 'N/A' }}</td>
+    <td>{{ $assessment->framework->name ?? 'N/A' }}</td>
 </tr>
 
 <tr>
@@ -205,7 +205,47 @@
 </div>
 
             <hr>
+<hr>
 
+<h4 class="fw-bold text-dark mb-3">
+    Framework Structure
+</h4>
+
+@foreach($assessment->framework->categories as $category)
+
+<div class="card mb-3">
+
+    <div class="card-header bg-primary text-white">
+        <strong>{{ $category->name }}</strong>
+    </div>
+
+    <div class="card-body">
+
+        @foreach($category->domains as $domain)
+
+            <h6 class="fw-bold text-success">
+                {{ $domain->name }}
+            </h6>
+
+            <ul>
+
+                @foreach($domain->questions as $question)
+
+                    <li>
+                        {{ $question->question }}
+                    </li>
+
+                @endforeach
+
+            </ul>
+
+        @endforeach
+
+    </div>
+
+</div>
+
+@endforeach
             <h4 class="fw-bold text-primary mb-3">
     Assigned Questions
 </h4>
@@ -298,7 +338,7 @@
 
             @csrf
             @method('PUT')
-@if($item->question->response_type == 'Yes / No')
+@if($item->question->response_type == 'Yes/No')
 
     <select name="response" class="form-select">
         <option value="">Select</option>

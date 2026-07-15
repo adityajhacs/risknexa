@@ -23,6 +23,11 @@ class Category extends Model
         return $this->belongsTo(Framework::class);
     }
 
+    public function domains()
+{
+    return $this->hasMany(Domain::class);
+}
+
     /**
      * Questions Relationship
      */

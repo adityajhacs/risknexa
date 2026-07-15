@@ -22,6 +22,10 @@ class Framework extends Model
     {
         return $this->hasMany(Category::class);
     }
+    public function assessments()
+{
+    return $this->hasMany(Assessment::class);
+}
 
     public function creator()
     {

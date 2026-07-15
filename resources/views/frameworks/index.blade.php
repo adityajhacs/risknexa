@@ -7,16 +7,16 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
 
         <div>
-            <h2>Framework Management</h2>
+            <h2>Domain Management</h2>
             <p class="text-muted">
-                Manage compliance frameworks for vendor assessments.
+                Manage framework domains for vendor assessments.
             </p>
         </div>
 
-        <a href="{{ route('frameworks.create') }}"
+        <a href="{{ route('domains.create') }}"
            class="btn btn-primary">
 
-            + Create Framework
+            + Create Domain
 
         </a>
 
@@ -38,11 +38,15 @@
 
             <tr>
 
+                <th>#</th>
+
+                <th>Section</th>
+
                 <th>Code</th>
 
-                <th>Name</th>
+                <th>Domain Name</th>
 
-                <th>Version</th>
+                <th>Display Order</th>
 
                 <th>Status</th>
 
@@ -54,41 +58,79 @@
 
         <tbody>
 
-        @forelse($frameworks as $framework)
+        @forelse($domains as $domain)
 
             <tr>
 
-                <td>{{ $framework->code }}</td>
+                <td>
+                    {{ $loop->iteration }}
+                </td>
 
-                <td>{{ $framework->name }}</td>
+                <td>
+                    {{ $domain->category->name }}
+                </td>
 
-                <td>{{ $framework->version }}</td>
+                <td>
+                    {{ $domain->code }}
+                </td>
 
-                <td>{{ $framework->status }}</td>
+                <td>
+                    {{ $domain->name }}
+                </td>
 
-               <td>
+                <td>
+                    {{ $domain->display_order }}
+                </td>
 
-    <a href="{{ route('frameworks.edit', $framework) }}"
-       class="btn btn-warning btn-sm">
-        Edit
-    </a>
+                <td>
 
-    <form action="{{ route('frameworks.destroy', $framework) }}"
-          method="POST"
-          class="d-inline">
+                    @if($domain->status == 'Active')
 
-        @csrf
-        @method('DELETE')
+                        <span class="badge bg-success">
 
-        <button type="submit"
-                class="btn btn-danger btn-sm"
-                onclick="return confirm('Are you sure you want to delete this framework?')">
-            Delete
-        </button>
+                            Active
 
-    </form>
+                        </span>
 
-</td>
+                    @else
+
+                        <span class="badge bg-danger">
+
+                            Inactive
+
+                        </span>
+
+                    @endif
+
+                </td>
+
+                <td>
+
+                    <a href="{{ route('domains.edit', $domain) }}"
+                       class="btn btn-warning btn-sm">
+
+                        Edit
+
+                    </a>
+
+                    <form action="{{ route('domains.destroy', $domain) }}"
+                          method="POST"
+                          class="d-inline">
+
+                        @csrf
+                        @method('DELETE')
+
+                        <button type="submit"
+                                class="btn btn-danger btn-sm"
+                                onclick="return confirm('Are you sure you want to delete this domain?')">
+
+                            Delete
+
+                        </button>
+
+                    </form>
+
+                </td>
 
             </tr>
 
@@ -96,9 +138,9 @@
 
             <tr>
 
-                <td colspan="5" class="text-center">
+                <td colspan="7" class="text-center">
 
-                    No Framework Found
+                    No Domain Found
 
                 </td>
 
@@ -110,7 +152,7 @@
 
     </table>
 
-    {{ $frameworks->links() }}
+    {{ $domains->links() }}
 
 </div>
 

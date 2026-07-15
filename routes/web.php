@@ -14,11 +14,12 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\VendorUserController;
 use App\Http\Controllers\VendorDashboardController;
 use App\Http\Controllers\FrameworkController;
+use App\Http\Controllers\DomainController;
 Route::get('/', function () {
     return view('welcome');
 });
 
-
+Route::get('/assessment-test', [AssessmentController::class, 'test']);
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
@@ -38,6 +39,7 @@ Route::middleware('auth')->group(function () {
 Route::resource('categories', CategoryController::class);
 Route::resource('questions', QuestionController::class);
 Route::resource('assessments', AssessmentController::class);
+Route::resource('domains', DomainController::class);
 Route::post(
     '/my-assessments/{assessment}/submit',
     [VendorPortalController::class, 'submitAssessment']

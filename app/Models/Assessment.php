@@ -8,6 +8,7 @@ use App\Models\Question;
 use App\Models\AssessmentQuestion;
 use App\Models\EvidenceUpload;
 use App\Models\AssessmentResponse;
+use App\Models\Framework;
 
 class Assessment extends Model
 {
@@ -23,7 +24,10 @@ class Assessment extends Model
     'priority',
     'assigned_by',
     'reviewer',
-    'review_status'
+    'review_status',
+    'framework_id',
+'description',
+'created_by'
 
     ];
 
@@ -31,6 +35,10 @@ class Assessment extends Model
     {
         return $this->belongsTo(Vendor::class);
     }
+    public function framework()
+{
+    return $this->belongsTo(Framework::class);
+}
 
     public function questions()
     {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Models\Framework;
 class CategoryController extends Controller
 {
     /**
@@ -18,27 +19,35 @@ class CategoryController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        return view('categories.create');
-    }
+   public function create()
+{
+    $frameworks = Framework::where('status', 'Active')
+                    ->orderBy('name')
+                    ->get();
+
+    return view('categories.create', compact('frameworks'));
+}
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-         $request->validate([
-    'name' => 'required'
-]);
-        Category::create([
-        'name' => $request->name,
-        'description' => $request->description,
+{
+    $validated = $request->validate([
+        'framework_id'  => 'required|exists:frameworks,id',
+        'code'          => 'required|max:50',
+        'name'          => 'required|max:255',
+        'description'   => 'nullable',
+        'display_order' => 'nullable|integer',
+        'status'        => 'required|in:Active,Inactive',
     ]);
-   
 
-    return redirect()->route('categories.index');
-    }
+    Category::create($validated);
+
+    return redirect()
+            ->route('categories.index')
+            ->with('success', 'Section created successfully.');
+}
 
     /**
      * Display the specified resource.

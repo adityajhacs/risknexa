@@ -49,18 +49,31 @@
                     </select>
                 </div>
 
-                <div class="mb-4">
-                    <label class="block mb-2 font-medium">Questionnaire</label>
+               <div class="mb-4">
+    <label class="block mb-2 font-medium">
+        Framework
+    </label>
 
-                    <select name="questionnaire" class="w-full border rounded p-2">
-                        @foreach($categories as $category)
-                            <option value="{{ $category->id }}"
-                                {{ old('questionnaire') == $category->id ? 'selected' : '' }}>
-                                {{ $category->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
+    <select name="framework_id"
+            class="w-full border rounded-lg p-2">
+
+        <option value="">
+            Select Framework
+        </option>
+
+        @foreach($frameworks as $framework)
+
+            <option value="{{ $framework->id }}"
+                {{ old('framework_id') == $framework->id ? 'selected' : '' }}>
+
+                {{ $framework->name }}
+
+            </option>
+
+        @endforeach
+
+    </select>
+</div>
 
                 <div class="mb-4">
                     <label class="block mb-2 font-medium">Assessment Name</label>
@@ -91,6 +104,18 @@
                            value="{{ old('due_date') }}"
                            class="w-full border rounded-lg p-2">
                 </div>
+                <div class="mt-4">
+
+    <label class="block mb-2 font-medium">
+        Description
+    </label>
+
+    <textarea
+        name="description"
+        rows="4"
+        class="w-full border rounded-lg p-2">{{ old('description') }}</textarea>
+
+</div>
 
             </div>
 
@@ -101,14 +126,7 @@
                     Workflow Governance
                 </h2>
 
-                <div class="mb-4">
-                    <label class="block mb-2 font-medium">Assigned By</label>
-
-                    <input type="text"
-                           name="assigned_by"
-                           value="{{ old('assigned_by') }}"
-                           class="w-full border rounded-lg p-2">
-                </div>
+              
 
                 <div class="mb-4">
                     <label class="block mb-2 font-medium">Reviewer</label>
@@ -130,17 +148,7 @@
                     </select>
                 </div>
 
-                <div>
-                    <label class="block mb-2 font-medium">Review Status</label>
-
-                    <select name="review_status"
-                            class="w-full border rounded-lg p-2">
-                        <option value="Pending Review" {{ old('review_status') == 'Pending Review' ? 'selected' : '' }}>Pending Review</option>
-                        <option value="Under Review" {{ old('review_status') == 'Under Review' ? 'selected' : '' }}>Under Review</option>
-                        <option value="Approved" {{ old('review_status') == 'Approved' ? 'selected' : '' }}>Approved</option>
-                        <option value="Rejected" {{ old('review_status') == 'Rejected' ? 'selected' : '' }}>Rejected</option>
-                    </select>
-                </div>
+                
 
             </div>
 

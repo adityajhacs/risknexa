@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.app')
+
+@section('content')
     <div class="max-w-7xl mx-auto p-6">
         <div class="bg-gradient-to-r from-slate-900 to-blue-700 text-white rounded-3xl p-8 mb-8">
     <h1 class="text-5xl font-bold">
@@ -121,4 +123,4 @@
 </form>
 </div>
 </div>
-</x-app-layout>
+@endsection
