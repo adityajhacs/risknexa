@@ -2,29 +2,63 @@
 
 @section('content')
 
-<div class="container-fluid">
+<div class="max-w-4xl mx-auto p-6">
 
-    <div class="card shadow-sm">
+    <!-- Header -->
 
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h4>Create Framework</h4>
+    <div class="flex justify-between items-center mb-8">
 
-            <a href="{{ route('frameworks.index') }}" class="btn btn-secondary">
-                Back
-            </a>
-        </div>
+        <div>
 
-        <div class="card-body">
+            <h1 class="text-3xl font-bold text-slate-800">
+                Create Framework
+            </h1>
 
-            <form action="{{ route('frameworks.store') }}" method="POST">
-
-                @csrf
-
-                @include('frameworks._form')
-
-            </form>
+            <p class="text-slate-500 mt-2">
+                Create a new security framework for vendor assessments.
+            </p>
 
         </div>
+
+        <a href="{{ route('frameworks.index') }}"
+           class="bg-gray-600 hover:bg-gray-700 text-white px-5 py-3 rounded-xl shadow">
+
+            ← Back
+
+        </a>
+
+    </div>
+
+    <!-- Card -->
+
+    <div class="bg-white rounded-2xl shadow-lg p-8">
+
+        @if ($errors->any())
+
+            <div class="mb-6 rounded-xl bg-red-100 border border-red-300 text-red-700 p-4">
+
+                <ul class="list-disc ml-5">
+
+                    @foreach($errors->all() as $error)
+
+                        <li>{{ $error }}</li>
+
+                    @endforeach
+
+                </ul>
+
+            </div>
+
+        @endif
+
+        <form action="{{ route('frameworks.store') }}"
+              method="POST">
+
+            @csrf
+
+            @include('frameworks._form')
+
+        </form>
 
     </div>
 

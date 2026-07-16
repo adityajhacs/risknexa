@@ -2,21 +2,28 @@
 
 @section('content')
 
-<div class="container-fluid">
+<div class="max-w-7xl mx-auto p-6">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <!-- Header -->
+
+    <div class="flex items-center justify-between mb-8">
 
         <div>
-            <h2>Domain Management</h2>
-            <p class="text-muted">
-                Manage framework domains for vendor assessments.
+
+            <h1 class="text-3xl font-bold text-slate-800">
+                Framework Management
+            </h1>
+
+            <p class="text-slate-500 mt-2">
+                Manage security frameworks used for vendor assessments.
             </p>
+
         </div>
 
-        <a href="{{ route('domains.create') }}"
-           class="btn btn-primary">
+        <a href="{{ route('frameworks.create') }}"
+           class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl shadow">
 
-            + Create Domain
+            + Create Framework
 
         </a>
 
@@ -24,7 +31,7 @@
 
     @if(session('success'))
 
-        <div class="alert alert-success">
+        <div class="mb-6 rounded-xl bg-green-100 border border-green-300 text-green-700 px-5 py-4">
 
             {{ session('success') }}
 
@@ -32,127 +39,155 @@
 
     @endif
 
-    <table class="table table-bordered table-hover">
 
-        <thead>
+    <!-- Table -->
 
-            <tr>
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
 
-                <th>#</th>
+        <table class="min-w-full">
 
-                <th>Section</th>
+            <thead class="bg-slate-100">
 
-                <th>Code</th>
+                <tr>
 
-                <th>Domain Name</th>
+                    <th class="px-6 py-4 text-left">#</th>
 
-                <th>Display Order</th>
+                    <th class="px-6 py-4 text-left">
+                        Framework Code
+                    </th>
 
-                <th>Status</th>
+                    <th class="px-6 py-4 text-left">
+                        Framework Name
+                    </th>
 
-                <th>Action</th>
+                    <th class="px-6 py-4 text-left">
+                        Version
+                    </th>
 
-            </tr>
+                    <th class="px-6 py-4 text-center">
+                        Status
+                    </th>
 
-        </thead>
+                    <th class="px-6 py-4 text-center">
+                        Actions
+                    </th>
 
-        <tbody>
+                </tr>
 
-        @forelse($domains as $domain)
+            </thead>
 
-            <tr>
+            <tbody>
 
-                <td>
-                    {{ $loop->iteration }}
-                </td>
+            @forelse($frameworks as $framework)
 
-                <td>
-                    {{ $domain->category->name }}
-                </td>
+                <tr class="border-t hover:bg-slate-50 transition">
 
-                <td>
-                    {{ $domain->code }}
-                </td>
+                    <td class="px-6 py-4">
 
-                <td>
-                    {{ $domain->name }}
-                </td>
+                        {{ $loop->iteration }}
 
-                <td>
-                    {{ $domain->display_order }}
-                </td>
+                    </td>
 
-                <td>
+                    <td class="px-6 py-4 font-semibold text-blue-700">
 
-                    @if($domain->status == 'Active')
+                        {{ $framework->code }}
 
-                        <span class="badge bg-success">
+                    </td>
 
-                            Active
+                    <td class="px-6 py-4">
 
-                        </span>
+                        {{ $framework->name }}
 
-                    @else
+                    </td>
 
-                        <span class="badge bg-danger">
+                    <td class="px-6 py-4">
 
-                            Inactive
+                        {{ $framework->version ?? '-' }}
 
-                        </span>
+                    </td>
 
-                    @endif
+                    <td class="px-6 py-4 text-center">
 
-                </td>
+                        @if($framework->status == 'Active')
 
-                <td>
+                            <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-sm font-semibold">
 
-                    <a href="{{ route('domains.edit', $domain) }}"
-                       class="btn btn-warning btn-sm">
+                                Active
 
-                        Edit
+                            </span>
 
-                    </a>
+                        @else
 
-                    <form action="{{ route('domains.destroy', $domain) }}"
-                          method="POST"
-                          class="d-inline">
+                            <span class="px-3 py-1 rounded-full bg-red-100 text-red-700 text-sm font-semibold">
 
-                        @csrf
-                        @method('DELETE')
+                                Inactive
 
-                        <button type="submit"
-                                class="btn btn-danger btn-sm"
-                                onclick="return confirm('Are you sure you want to delete this domain?')">
+                            </span>
 
-                            Delete
+                        @endif
 
-                        </button>
+                    </td>
 
-                    </form>
+                    <td class="px-6 py-4">
 
-                </td>
+                        <div class="flex justify-center gap-3">
 
-            </tr>
+                            <a href="{{ route('frameworks.edit',$framework) }}"
+                               class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">
 
-        @empty
+                                Edit
 
-            <tr>
+                            </a>
 
-                <td colspan="7" class="text-center">
+                            <form action="{{ route('frameworks.destroy',$framework) }}"
+                                  method="POST">
 
-                    No Domain Found
+                                @csrf
+                                @method('DELETE')
 
-                </td>
+                                <button
+                                    type="submit"
+                                    onclick="return confirm('Delete this Framework?')"
+                                    class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg">
 
-            </tr>
+                                    Delete
 
-        @endforelse
+                                </button>
 
-        </tbody>
+                            </form>
 
-    </table>
+                        </div>
 
-    {{ $domains->links() }}
+                    </td>
+
+                </tr>
+
+            @empty
+
+                <tr>
+
+                    <td colspan="6"
+                        class="text-center py-10 text-slate-500">
+
+                        No Frameworks Available
+
+                    </td>
+
+                </tr>
+
+            @endforelse
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <div class="mt-6">
+
+        {{ $frameworks->links() }}
+
+    </div>
 
 </div>
 

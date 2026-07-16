@@ -1,68 +1,157 @@
-<div class="mb-3">
-    <label class="form-label">Framework Code</label>
+<div class="grid md:grid-cols-2 gap-6">
 
-    <input
-        type="text"
-        name="code"
-        class="form-control"
-        value="{{ old('code', $framework->code ?? '') }}">
+    <!-- Framework Code -->
 
-    @error('code')
-        <small class="text-danger">{{ $message }}</small>
-    @enderror
+    <div>
+
+        <label class="block text-sm font-semibold text-slate-700 mb-2">
+            Framework Code
+        </label>
+
+        <input
+            type="text"
+            name="code"
+            value="{{ old('code', $framework->code ?? '') }}"
+            placeholder="ISO27001"
+            class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3
+                   focus:outline-none focus:ring-2 focus:ring-blue-500
+                   focus:border-blue-500 transition">
+
+        @error('code')
+
+            <p class="text-red-500 text-sm mt-2">
+                {{ $message }}
+            </p>
+
+        @enderror
+
+    </div>
+
+
+    <!-- Version -->
+
+    <div>
+
+        <label class="block text-sm font-semibold text-slate-700 mb-2">
+            Version
+        </label>
+
+        <input
+            type="text"
+            name="version"
+            value="{{ old('version', $framework->version ?? '') }}"
+            placeholder="2022"
+            class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3
+                   focus:outline-none focus:ring-2 focus:ring-blue-500
+                   focus:border-blue-500 transition">
+
+    </div>
+
 </div>
 
-<div class="mb-3">
-    <label class="form-label">Framework Name</label>
+
+<!-- Framework Name -->
+
+<div class="mt-6">
+
+    <label class="block text-sm font-semibold text-slate-700 mb-2">
+        Framework Name
+    </label>
 
     <input
         type="text"
         name="name"
-        class="form-control"
-        value="{{ old('name', $framework->name ?? '') }}">
+        value="{{ old('name', $framework->name ?? '') }}"
+        placeholder="ISO 27001 Information Security Management"
+        class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3
+               focus:outline-none focus:ring-2 focus:ring-blue-500
+               focus:border-blue-500 transition">
 
     @error('name')
-        <small class="text-danger">{{ $message }}</small>
+
+        <p class="text-red-500 text-sm mt-2">
+
+            {{ $message }}
+
+        </p>
+
     @enderror
+
 </div>
 
-<div class="mb-3">
-    <label class="form-label">Version</label>
 
-    <input
-        type="text"
-        name="version"
-        class="form-control"
-        value="{{ old('version', $framework->version ?? '') }}">
-</div>
+<!-- Status -->
 
-<div class="mb-3">
-    <label class="form-label">Description</label>
+<div class="mt-6">
 
-    <textarea
-        name="description"
-        class="form-control"
-        rows="4">{{ old('description', $framework->description ?? '') }}</textarea>
-</div>
+    <label class="block text-sm font-semibold text-slate-700 mb-2">
 
-<div class="mb-3">
-    <label class="form-label">Status</label>
+        Status
 
-    <select name="status" class="form-select">
+    </label>
+
+    <select
+        name="status"
+        class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3
+               focus:outline-none focus:ring-2 focus:ring-blue-500">
 
         <option value="Active"
-            {{ old('status', $framework->status ?? 'Active') == 'Active' ? 'selected' : '' }}>
-            Active
+            {{ old('status', $framework->status ?? 'Active')=='Active' ? 'selected' : '' }}>
+
+            🟢 Active
+
         </option>
 
         <option value="Inactive"
-            {{ old('status', $framework->status ?? '') == 'Inactive' ? 'selected' : '' }}>
-            Inactive
+            {{ old('status', $framework->status ?? '')=='Inactive' ? 'selected' : '' }}>
+
+            🔴 Inactive
+
         </option>
 
     </select>
+
 </div>
 
-<button class="btn btn-primary">
-    {{ isset($framework) ? 'Update Framework' : 'Save Framework' }}
-</button>
+
+<!-- Description -->
+
+<div class="mt-6">
+
+    <label class="block text-sm font-semibold text-slate-700 mb-2">
+
+        Description
+
+    </label>
+
+    <textarea
+        name="description"
+        rows="5"
+        placeholder="Enter framework description..."
+        class="w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3
+               focus:outline-none focus:ring-2 focus:ring-blue-500">{{ old('description', $framework->description ?? '') }}</textarea>
+
+</div>
+
+
+<!-- Buttons -->
+
+<div class="mt-8 flex justify-end gap-4">
+
+    <a href="{{ route('frameworks.index') }}"
+       class="px-6 py-3 rounded-xl bg-slate-200 hover:bg-slate-300 font-semibold">
+
+        Cancel
+
+    </a>
+
+    <button
+        class="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600
+               hover:from-blue-700 hover:to-indigo-700
+               text-white font-semibold shadow-lg">
+
+        💾 {{ isset($framework) ? 'Update Framework' : 'Save Framework' }}
+
+    </button>
+
+</div>

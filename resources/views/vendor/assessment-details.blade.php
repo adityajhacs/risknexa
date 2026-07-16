@@ -101,35 +101,105 @@
     
         @foreach($questions as $index => $question)
         <form
+    id="questionForm{{ $index }}"
     method="POST"
     action="{{ route('vendor.assessments.saveQuestion', [$assessment->id, $question->id]) }}"
     enctype="multipart/form-data"
 >
     @csrf
+    <input
+    type="hidden"
+    name="next_question"
+    id="nextQuestion{{ $index }}"
+    value="{{ $index }}">
+     <div
+    class="bg-white rounded-2xl shadow-sm border border-slate-200 mb-4 overflow-hidden">
 
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-6">
+    <!-- Header -->
 
-            <h3 class="font-semibold text-lg text-slate-800 mb-4">
-    Question {{ $index + 1 }}
-</h3>
+    <button
+        type="button"
+        onclick="toggleQuestion({{ $index }})"
+        class="w-full flex justify-between items-center p-6 bg-gradient-to-r from-slate-50 to-slate-100 hover:from-blue-50 hover:to-indigo-50 transition">
 
-<p class="text-slate-700 mb-4">
-    {{ $question->question }}
+        <div class="text-left">
+
+           
+            <div>
+
+   <div class="flex items-center justify-between">
+
+    <h3 class="font-semibold text-slate-800">
+
+        Q{{ $index + 1 }}
+
+    </h3>
+
+    @php
+        $response = $responses[$question->id] ?? null;
+    @endphp
+
+    @if($response && $response->answer)
+
+        <span class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">
+            ✅ Saved
+        </span>
+
+    @else
+
+        <span class="px-3 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-700">
+            Pending
+        </span>
+
+    @endif
+
+</div>
+
+<p class="text-sm text-slate-500 mt-2">
+
+    {{ Str::limit($question->question,70) }}
+
 </p>
+
+</div>
+
+        </div>
+
+        <span id="icon{{ $index }}"
+              class="text-2xl">
+
+            {{ $currentQuestion == $index ? '-' : '+' }}
+
+        </span>
+
+    </button>
+
+    <!-- Body -->
+
+    <div
+        id="body{{ $index }}"
+        class="{{ $currentQuestion == $index ? '' : 'hidden' }} p-6 border-t">
+
+           <label class="block text-sm font-semibold text-slate-700 mb-2">
+    Implementation Narrative
+</label>
+
                <textarea
-    name="answers[{{ $question->id }}]"
+               @if($assessment->status=='Submitted') readonly @endif
+    name="answer"
     rows="4"
-    class="w-full border border-slate-300 rounded-xl p-4 focus:ring-2 focus:ring-blue-500"
+    class="w-full rounded-2xl border border-slate-300 bg-slate-50 p-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-300"
     placeholder="Enter your response..."
 >{{ $responses[$question->id]->answer ?? '' }}</textarea>
            
            <p class="text-sm font-medium text-slate-600 mb-2">
     Upload Evidence
 </p>
-            <input
-                type="file"
-                name="evidence[{{ $question->id }}]"
-                class="mt-4 block w-full border border-slate-300 rounded-xl p-3"
+           <input
+type="file"
+@if($assessment->status=='Submitted') disabled @endif 
+                name="evidence"
+                class="mt-4 block w-full rounded-xl border border-dashed border-blue-300 bg-blue-50 p-4"
             >
             
             <p class="text-xs text-red-500">
@@ -142,26 +212,117 @@
 </p>
 
 @endif
-        </div>
-         </form>
+<div class="flex justify-between mt-6">
+
+    @if($index > 0)
+        <button
+            type="button"
+            onclick="toggleQuestion({{ $index-1 }})"
+            class="px-5 py-2 rounded-lg bg-gray-200 hover:bg-gray-300">
+            Previous
+        </button>
+    @else
+        <div></div>
+    @endif
+
+    <div class="flex gap-3">
+
+        <button
+        @if($assessment->status=='Submitted') disabled @endif
+            type="submit"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg">
+            Save
+        </button>
+
+        @if($index < $questions->count()-1)
+
+           <button
+    type="button"
+    @if($assessment->status=='Submitted') disabled @endif
+    onclick="saveAndNext({{ $index }})"
+    class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg">
+    Save & Next
+</button>
+
+        @else
+
+        @if($assessment->status != 'Submitted')
+
+<form method="POST"
+      action="{{ route('vendor.assessments.submit',$assessment->id) }}">
+
+    @csrf
+
+    <button
+        type="submit"
+        class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg">
+
+        Submit Assessment
+
+    </button>
+
+</form>
+
+@else
+
+<span class="px-4 py-2 rounded-lg bg-green-100 text-green-700 font-semibold">
+
+    Assessment Submitted ✅
+
+</span>
+
+@endif
+        @endif
+
+    </div>
+
+</div>
+            </div>   {{-- body close --}}
+
+</div>       {{-- accordion card close --}}
+
+</form>
         @endforeach
 
       
            
        
 
-</div>
-<div class="flex justify-end mt-4">
 
-    <button
-        type="submit"
-        class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg"
-    >
-        Save Question
-    </button>
+<script>
 
-</div>
+function toggleQuestion(index){
 
-</form>
+    let total = {{ $questions->count() }};
+
+    for(let i = 0; i < total; i++){
+
+        document.getElementById('body'+i).classList.add('hidden');
+        document.getElementById('icon'+i).innerHTML = '+';
+
+    }
+
+    document.getElementById('body'+index).classList.remove('hidden');
+    document.getElementById('icon'+index).innerHTML = '-';
+
+    window.scrollTo({
+        top: document.getElementById('body'+index).offsetTop-120,
+        behavior:'smooth'
+    });
+
+}
+
+// 👇 YE NAYA FUNCTION ADD KARNA HAI
+function saveAndNext(index){
+
+    // Agla question number set karo
+    document.getElementById('nextQuestion'+index).value = index + 1;
+
+    // Form submit karo
+    document.getElementById('questionForm'+index).submit();
+
+}
+
+</script>
 
 @endsection

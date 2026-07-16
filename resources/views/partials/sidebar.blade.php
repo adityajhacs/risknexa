@@ -23,13 +23,19 @@
         </p>
 
         <a href="/dashboard"
-           class="flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg">
+class="flex items-center gap-3 px-4 py-3 rounded-xl transition
+{{ request()->is('dashboard')
+? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg'
+: 'hover:bg-slate-800 text-white' }}">
             <span>📊</span>
             <span>Dashboard</span>
         </a>
 
-        <a href="/vendors"
-           class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition">
+         <a href="/vendors"
+class="flex items-center gap-3 px-4 py-3 rounded-xl transition
+{{ request()->is('vendors*')
+? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg'
+: 'hover:bg-slate-800 text-white' }}">
             <span>👥</span>
             <span>Vendors</span>
         </a>
@@ -39,6 +45,17 @@
             <span>📋</span>
             <span>Assessments</span>
         </a>
+        <a href="/frameworks"
+   class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition">
+    <span>🛡️</span>
+    <span>Frameworks</span>
+</a>
+
+<a href="/domains"
+   class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition">
+    <span>🌐</span>
+    <span>Domains</span>
+</a>
 
         <a href="/categories"
            class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition">

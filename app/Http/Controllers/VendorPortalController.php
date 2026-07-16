@@ -32,7 +32,8 @@ $assessments = Assessment::where(
     }
 
     public function show(Assessment $assessment)
-{  $responses = AssessmentResponse::where(
+{  $currentQuestion = request()->get('question',0);
+    $responses = AssessmentResponse::where(
     'assessment_id',
     $assessment->id
 )->get()->keyBy('question_id');
@@ -62,6 +63,8 @@ $domains = $questions
         return $question->domain->name;
     });
 
+$currentQuestion = request()->get('question', 0);
+
 return view(
     'vendor.assessment-details',
     compact(
@@ -71,7 +74,8 @@ return view(
         'totalQuestions',
         'answeredQuestions',
         'progress',
-        'domains'
+        'domains',
+        'currentQuestion'
     )
 );
     
@@ -112,8 +116,9 @@ return view(
     }
 
     $assessment->update([
-        'status' => 'Submitted'
-    ]);
+    'status' => 'Submitted',
+    'submitted_at' => now(),
+]);
 
     ActivityLog::create([
         'user_id' => auth()->id(),
@@ -247,10 +252,14 @@ public function saveQuestion(
         ]);
     }
 
-    return back()->with(
-        'success',
-        'Question saved successfully.'
-    );
+   $nextQuestion = $request->next_question ?? 0;
+
+return redirect()
+    ->route('vendor.assessments.show', [
+        $assessment->id,
+        'question' => $nextQuestion
+    ])
+    ->with('success', 'Question saved successfully.');
 }
 public function deleteEvidence(
     Assessment $assessment,
