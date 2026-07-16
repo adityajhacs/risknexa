@@ -1,4 +1,4 @@
-<div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-8">
+<div class="bg-white rounded-3xl shadow-sm border border-slate-200">
 
     <div class="mb-8">
 
@@ -14,6 +14,7 @@
 
     <div class="grid md:grid-cols-2 gap-6">
 
+        {{-- My Assessments (Everyone) --}}
         <a href="{{ route('my.assessments') }}"
            class="group border rounded-2xl p-6 hover:border-blue-500 hover:shadow-lg transition">
 
@@ -27,6 +28,9 @@
 
         </a>
 
+        @if(auth()->user()->role == 'vendor_admin')
+
+        {{-- Team Members --}}
         <a href="{{ route('vendor-users.index') }}"
            class="group border rounded-2xl p-6 hover:border-blue-500 hover:shadow-lg transition">
 
@@ -40,6 +44,7 @@
 
         </a>
 
+        {{-- Create User --}}
         <a href="{{ route('vendor-users.create') }}"
            class="group border rounded-2xl p-6 hover:border-blue-500 hover:shadow-lg transition">
 
@@ -53,6 +58,7 @@
 
         </a>
 
+        {{-- Reports --}}
         <a href="{{ route('reports.index') }}"
            class="group border rounded-2xl p-6 hover:border-blue-500 hover:shadow-lg transition">
 
@@ -65,6 +71,8 @@
             </p>
 
         </a>
+
+        @endif
 
     </div>
 

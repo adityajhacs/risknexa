@@ -24,4 +24,8 @@ class Domain extends Model
     {
         return $this->hasMany(Question::class);
     }
+    public function framework()
+{
+    return $this->belongsTo(Framework::class);
+}
 }

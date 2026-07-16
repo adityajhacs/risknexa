@@ -23,13 +23,17 @@ Route::get('/assessment-test', [AssessmentController::class, 'test']);
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
-Route::middleware(['auth', 'vendor.admin'])->group(function () {
+// Vendor Dashboard (Vendor Admin + Vendor User)
+Route::middleware(['auth'])->group(function () {
 
-    // Vendor Dashboard
     Route::get('/vendor-dashboard', [VendorDashboardController::class,'index'])
         ->name('vendor.dashboard');
 
-    // Vendor Users CRUD
+});
+
+// Vendor User Management (Only Vendor Admin)
+Route::middleware(['auth', 'vendor.admin'])->group(function () {
+
     Route::resource('vendor-users', VendorUserController::class);
 
 });
@@ -89,7 +93,7 @@ Route::post(
 )->name('vendor.assessments.saveQuestion');
 
 Route::resource('users', UserController::class);
-Route::resource('vendor-users', VendorUserController::class);
+
 Route::get(
     '/reports',
     [AssessmentController::class, 'reports']

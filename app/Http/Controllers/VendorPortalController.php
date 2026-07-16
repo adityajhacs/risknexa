@@ -24,6 +24,7 @@ $assessments = Assessment::where(
     $vendor->id
 )->get();
 
+
         return view(
             'vendor.assessments',
             compact('assessments')
@@ -40,14 +41,40 @@ $assessments = Assessment::where(
     if ($assessment->vendor_id != $vendor->id) {
         abort(403);
     }
+  $questions = $assessment->questions()
+    ->with('domain.category')
+    ->orderBy('display_order')
+    ->get();
 
-    $questions = $assessment->questions()->distinct()->get();
+$totalQuestions = $questions->count();
 
+$answeredQuestions = $responses
+    ->whereNotNull('answer')
+    ->where('answer', '!=', '')
+    ->count();
 
-   return view(
+$progress = $totalQuestions > 0
+    ? round(($answeredQuestions / $totalQuestions) * 100)
+    : 0;
+
+$domains = $questions
+    ->groupBy(function ($question) {
+        return $question->domain->name;
+    });
+
+return view(
     'vendor.assessment-details',
-    compact('assessment', 'questions', 'responses')
+    compact(
+        'assessment',
+        'questions',
+        'responses',
+        'totalQuestions',
+        'answeredQuestions',
+        'progress',
+        'domains'
+    )
 );
+    
 }
 
    

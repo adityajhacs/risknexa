@@ -1,3 +1,6 @@
+@if(auth()->user()->role != 'vendor_admin')
+    @php return; @endphp
+@endif
 <div class="bg-white rounded-3xl shadow-sm border border-slate-200">
 
     <div class="px-6 py-5 border-b">

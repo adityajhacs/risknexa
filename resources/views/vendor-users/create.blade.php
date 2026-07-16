@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.vendor')
+
+@section('content')
 
 <div class="max-w-5xl mx-auto py-10 px-6">
 
@@ -175,4 +177,4 @@
 
 </div>
 
-</x-app-layout>
+@endsection

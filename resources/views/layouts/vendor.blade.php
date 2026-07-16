@@ -99,7 +99,7 @@
 
         My Assessments
     </a>
-
+       @if(auth()->user()->role == 'vendor_admin')
 
     <a href="{{ route('vendor-users.index') }}"
        class="flex items-center gap-3 px-5 py-3 rounded-xl transition
@@ -150,6 +150,7 @@
 
         Reports
     </a>
+    @endif
 
 </nav>
 

@@ -9,10 +9,22 @@ use Illuminate\Support\Facades\Hash;
 class VendorUserController extends Controller
 {
     /**
+     * Allow only Vendor Admin
+     */
+    private function authorizeVendorAdmin()
+    {
+        if (auth()->user()->role !== 'vendor_admin') {
+            abort(403, 'Unauthorized Access');
+        }
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        $this->authorizeVendorAdmin();
+
         $users = User::where('vendor_id', auth()->user()->vendor_id)
             ->whereIn('role', ['vendor_admin', 'vendor'])
             ->get();
@@ -25,6 +37,8 @@ class VendorUserController extends Controller
      */
     public function create()
     {
+        $this->authorizeVendorAdmin();
+
         return view('vendor-users.create');
     }
 
@@ -33,6 +47,8 @@ class VendorUserController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorizeVendorAdmin();
+
         $request->validate([
             'name' => 'required|max:255',
             'email' => 'required|email|unique:users,email',
@@ -58,6 +74,8 @@ class VendorUserController extends Controller
      */
     public function show($id)
     {
+        $this->authorizeVendorAdmin();
+
         $user = User::where('vendor_id', auth()->user()->vendor_id)
             ->findOrFail($id);
 
@@ -69,6 +87,8 @@ class VendorUserController extends Controller
      */
     public function edit($id)
     {
+        $this->authorizeVendorAdmin();
+
         $user = User::where('vendor_id', auth()->user()->vendor_id)
             ->findOrFail($id);
 
@@ -80,6 +100,8 @@ class VendorUserController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->authorizeVendorAdmin();
+
         $user = User::where('vendor_id', auth()->user()->vendor_id)
             ->findOrFail($id);
 
@@ -110,10 +132,11 @@ class VendorUserController extends Controller
      */
     public function destroy($id)
     {
+        $this->authorizeVendorAdmin();
+
         $user = User::where('vendor_id', auth()->user()->vendor_id)
             ->findOrFail($id);
 
-        // Khud ko delete na kar sake
         if ($user->id == auth()->id()) {
             return redirect()
                 ->route('vendor-users.index')

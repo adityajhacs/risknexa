@@ -8,8 +8,6 @@
 
     @include('vendor.partials.stats')
 
-    
-
     <div class="lg:col-span-2 space-y-6">
 
         @include('vendor.partials.recent-assessments')
@@ -20,13 +18,16 @@
 
     </div>
 
+    @if(auth()->user()->role == 'vendor_admin')
+
     <div>
 
         @include('vendor.partials.team-members')
 
     </div>
 
-</div>
+    @endif
+
 </div>
 
 @endsection
