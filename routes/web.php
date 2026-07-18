@@ -49,7 +49,7 @@ Route::post(
     [VendorPortalController::class, 'submitAssessment']
 )->name('vendor.assessments.submit');
 Route::get(
-    '/my-assessments/{assessment}/question/{question}/history',
+    '/my-assessments/{assessment}/history/{question}',
     [VendorPortalController::class,'history']
 )->name('vendor.assessments.history');
 Route::get(

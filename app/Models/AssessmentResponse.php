@@ -16,7 +16,8 @@ class AssessmentResponse extends Model
     'evidence_file',
     'updated_by',
     'review_comment',
-    'review_status'
+    'review_status',
+    'implementation_status',
 ];
 
     public function question()

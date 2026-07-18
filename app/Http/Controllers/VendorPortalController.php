@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 use App\Models\AssessmentResponseHistory;
-
+use App\Models\AssessmentQuestion;
 use Illuminate\Http\Request;
 use App\Models\Assessment;
 use App\Models\AssessmentResponse;
 use App\Models\ActivityLog;
+use App\Models\Question;
 use Illuminate\Support\Facades\Storage;
 class VendorPortalController extends Controller
 {
@@ -32,105 +33,260 @@ $assessments = Assessment::where(
     }
 
     public function show(Assessment $assessment)
-{  $currentQuestion = request()->get('question',0);
-    $responses = AssessmentResponse::where(
-    'assessment_id',
-    $assessment->id
-)->get()->keyBy('question_id');
+{
     $vendor = auth()->user()->vendor;
 
-    if ($assessment->vendor_id != $vendor->id) {
+    if (!$vendor || $assessment->vendor_id != $vendor->id) {
         abort(403);
     }
-  $questions = $assessment->questions()
-    ->with('domain.category')
-    ->orderBy('display_order')
-    ->get();
 
-$totalQuestions = $questions->count();
+    /*
+    |--------------------------------------------------------------------------
+    | Responses
+    |--------------------------------------------------------------------------
+    */
 
-$answeredQuestions = $responses
-    ->whereNotNull('answer')
-    ->where('answer', '!=', '')
-    ->count();
+    $responses = AssessmentResponse::where(
+        'assessment_id',
+        $assessment->id
+    )->get()->keyBy('question_id');
 
-$progress = $totalQuestions > 0
-    ? round(($answeredQuestions / $totalQuestions) * 100)
-    : 0;
+    /*
+    |--------------------------------------------------------------------------
+    | Questions
+    |--------------------------------------------------------------------------
+    */
 
-$domains = $questions
-    ->groupBy(function ($question) {
-        return $question->domain->name;
+    $questions = $assessment->questions()
+        ->with([
+            'domain',
+            'category'
+        ])
+        ->orderBy('display_order')
+        ->get();
+
+    $questionIds = $questions
+        ->pluck('id')
+        ->values()
+        ->toArray();
+
+    /*
+    |--------------------------------------------------------------------------
+    | Progress
+    |--------------------------------------------------------------------------
+    */
+
+    $totalQuestions = $questions->count();
+
+    $answeredQuestions = 0;
+
+    foreach ($questions as $question) {
+
+        $response = $responses[$question->id] ?? null;
+
+        if (
+            $response &&
+            !empty(trim($response->answer ?? '')) &&
+            !empty($response->implementation_status)
+        ) {
+
+            $answeredQuestions++;
+
+        }
+    }
+
+    $progress = $totalQuestions > 0
+        ? round(($answeredQuestions / $totalQuestions) * 100)
+        : 0;
+
+    /*
+    |--------------------------------------------------------------------------
+    | Domains
+    |--------------------------------------------------------------------------
+    */
+
+    $domains = $questions->groupBy(function ($question) {
+
+        return optional($question->domain)->name ?? 'General';
+
     });
 
-$currentQuestion = request()->get('question', 0);
+    $domainKeys = $domains
+        ->keys()
+        ->values();
 
-return view(
-    'vendor.assessment-details',
-    compact(
-        'assessment',
-        'questions',
-        'responses',
-        'totalQuestions',
-        'answeredQuestions',
-        'progress',
-        'domains',
-        'currentQuestion'
-    )
-);
-    
+    /*
+    |--------------------------------------------------------------------------
+    | First Unanswered Question
+    |--------------------------------------------------------------------------
+    */
+
+    $firstUnansweredQuestion = null;
+
+    foreach ($questions as $question) {
+
+        $response = $responses[$question->id] ?? null;
+
+        if (
+            !$response ||
+            empty(trim($response->answer ?? '')) ||
+            empty($response->implementation_status)
+        ) {
+
+            $firstUnansweredQuestion = $question->id;
+
+            break;
+
+        }
+
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Current Question
+    |--------------------------------------------------------------------------
+    */
+
+    $currentQuestionId = request()->get('question');
+
+    if ($currentQuestionId) {
+
+        $currentQuestion = $questions->search(function ($question) use ($currentQuestionId) {
+
+            return $question->id == $currentQuestionId;
+
+        });
+
+        if ($currentQuestion === false) {
+
+            $currentQuestion = 0;
+
+        }
+
+    } else {
+
+        if ($firstUnansweredQuestion) {
+
+            $currentQuestion = $questions->search(function ($question) use ($firstUnansweredQuestion) {
+
+                return $question->id == $firstUnansweredQuestion;
+
+            });
+
+            if ($currentQuestion === false) {
+
+                $currentQuestion = 0;
+
+            }
+
+        } else {
+
+            $currentQuestion = 0;
+
+        }
+
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | View
+    |--------------------------------------------------------------------------
+    */
+
+    return view(
+        'vendor.assessment-details',
+        compact(
+            'assessment',
+            'questions',
+            'responses',
+            'domains',
+            'domainKeys',
+            'questionIds',
+            'totalQuestions',
+            'answeredQuestions',
+            'progress',
+            'currentQuestion',
+            'firstUnansweredQuestion'
+        )
+    );
 }
 
    
-  public function submitAssessment(
-    Request $request,
-    Assessment $assessment
-)
+ public function submitAssessment(Assessment $assessment)
 {
-    if ($assessment->status == 'Submitted') {
+    $vendor = auth()->user()->vendor;
 
-        return back()->with(
-            'error',
-            'Assessment already submitted.'
-        );
+    if (!$vendor || $assessment->vendor_id != $vendor->id) {
+        abort(403);
     }
 
-    $totalQuestions = $assessment
-        ->questions()
-        ->count();
+    $questions = $assessment->questions()->get();
 
-    $answered = AssessmentResponse::where(
+    $responses = AssessmentResponse::where(
         'assessment_id',
         $assessment->id
-    )
-    ->whereNotNull('answer')
-    ->where('answer', '!=', '')
-    ->count();
+    )->get()->keyBy('question_id');
 
-    if ($answered != $totalQuestions) {
+    $missingQuestions = [];
 
-        return back()->with(
-            'error',
-            'Please answer all questions before submitting.'
-        );
+    foreach ($questions as $question) {
+
+        $response = $responses[$question->id] ?? null;
+
+        if (
+            !$response ||
+            empty(trim($response->answer ?? '')) ||
+            empty($response->implementation_status)
+        ) {
+
+            $missingQuestions[] = $question->id;
+
+        }
+    }
+
+    if (count($missingQuestions) > 0) {
+
+        return redirect()
+            ->route(
+                'vendor.assessments.show',
+                [
+                    $assessment->id,
+                    'question' => $missingQuestions[0]
+                ]
+            )
+            ->with(
+                'error',
+                'Please complete all questions before submitting the assessment.'
+            );
     }
 
     $assessment->update([
-    'status' => 'Submitted',
-    'submitted_at' => now(),
-]);
+
+        'status' => 'Submitted',
+
+        'submitted_at' => now()
+
+    ]);
 
     ActivityLog::create([
+
         'user_id' => auth()->id(),
+
         'action' => 'assessment_submitted',
+
         'description' =>
             auth()->user()->name .
-            ' submitted ' .
-            $assessment->assessment_name
+            ' submitted assessment "' .
+            $assessment->assessment_name .
+            '"'
+
     ]);
 
     return redirect()
-        ->route('my.assessments')
+        ->route(
+            'vendor.assessments.show',
+            $assessment->id
+        )
         ->with(
             'success',
             'Assessment submitted successfully.'
@@ -139,32 +295,93 @@ return view(
 public function saveQuestion(
     Request $request,
     Assessment $assessment,
-    $question
+    Question $question
 )
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Authorization
+    |--------------------------------------------------------------------------
+    */
+
+    $vendor = auth()->user()->vendor;
+
+    if (!$vendor || $assessment->vendor_id != $vendor->id) {
+        abort(403);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Validation
+    |--------------------------------------------------------------------------
+    */
+
     $request->validate([
+
+        'implementation_status' => 'nullable|in:Implemented,Partially Implemented,Planned,Not Implemented,Not Applicable',
+
         'answer' => 'nullable|string',
+
         'evidence' => 'nullable|file|max:10240'
+
     ]);
+    
+
+    /*
+    |--------------------------------------------------------------------------
+    | Response
+    |--------------------------------------------------------------------------
+    */
 
     $response = AssessmentResponse::firstOrNew([
+
         'assessment_id' => $assessment->id,
-        'question_id'   => $question,
+
+        'question_id' => $question->id
+
     ]);
 
     /*
     |--------------------------------------------------------------------------
-    | Answer Updated
+    | Implementation Status
     |--------------------------------------------------------------------------
     */
 
+    
+
+    /*
+    |--------------------------------------------------------------------------
+    | Narrative
+    |--------------------------------------------------------------------------
+    */
+    if ($response->implementation_status != $request->implementation_status)
+{
+    AssessmentResponseHistory::create([
+
+        'assessment_id' => $assessment->id,
+
+        'question_id' => $question->id,
+
+        'user_id' => auth()->id(),
+
+        'type' => 'implementation_status_updated',
+
+        'old_answer' => $response->implementation_status,
+
+        'new_answer' => $request->implementation_status,
+
+    ]);
+    $response->implementation_status =
+        $request->implementation_status;
+}
     if ($response->answer != $request->answer)
     {
+
         AssessmentResponseHistory::create([
 
             'assessment_id' => $assessment->id,
 
-            'question_id' => $question,
+            'question_id' => $question->id,
 
             'user_id' => auth()->id(),
 
@@ -172,7 +389,7 @@ public function saveQuestion(
 
             'old_answer' => $response->answer,
 
-            'new_answer' => $request->answer,
+            'new_answer' => $request->answer
 
         ]);
 
@@ -181,11 +398,12 @@ public function saveQuestion(
         $response->answer_updated_by = auth()->id();
 
         $response->answer_updated_at = now();
+
     }
 
     /*
     |--------------------------------------------------------------------------
-    | Evidence Upload / Replace
+    | Evidence Upload
     |--------------------------------------------------------------------------
     */
 
@@ -194,26 +412,41 @@ public function saveQuestion(
         $oldFile = $response->evidence_file;
 
         if (
+
             $response->exists &&
+
             $response->evidence_file &&
-            Storage::disk('public')->exists($response->evidence_file)
-        ) {
-            Storage::disk('public')->delete($response->evidence_file);
+
+            Storage::disk('public')->exists(
+                $response->evidence_file
+            )
+
+        )
+        {
+            Storage::disk('public')->delete(
+                $response->evidence_file
+            );
         }
 
-        $response->evidence_file = $request
-            ->file('evidence')
-            ->store('evidence', 'public');
+        $response->evidence_file =
+            $request
+                ->file('evidence')
+                ->store(
+                    'assessment-evidence',
+                    'public'
+                );
 
-        $response->evidence_uploaded_by = auth()->id();
+        $response->evidence_uploaded_by =
+            auth()->id();
 
-        $response->evidence_uploaded_at = now();
+        $response->evidence_uploaded_at =
+            now();
 
         AssessmentResponseHistory::create([
 
             'assessment_id' => $assessment->id,
 
-            'question_id' => $question,
+            'question_id' => $question->id,
 
             'user_id' => auth()->id(),
 
@@ -221,13 +454,19 @@ public function saveQuestion(
 
             'old_file' => $oldFile,
 
-            'new_file' => $response->evidence_file,
+            'new_file' => $response->evidence_file
 
         ]);
     }
 
-    $response->save();
+    /*
+    |--------------------------------------------------------------------------
+    | Save
+    |--------------------------------------------------------------------------
+    */
 
+    $response->save();
+    
     /*
     |--------------------------------------------------------------------------
     | Activity Log
@@ -235,31 +474,96 @@ public function saveQuestion(
     */
 
     ActivityLog::create([
+
         'user_id' => auth()->id(),
-        'action' => 'question_saved',
+
+        'action' => 'assessment_question_saved',
+
         'description' =>
             auth()->user()->name .
-            ' saved Question #' .
-            $question .
-            ' in ' .
-            $assessment->assessment_name
+            ' updated Question #' .
+            $question->id .
+            ' of "' .
+            $assessment->assessment_name .
+            '"'
+
     ]);
+
+    /*
+    |--------------------------------------------------------------------------
+    | Assessment Status
+    |--------------------------------------------------------------------------
+    */
 
     if ($assessment->status == 'Assigned')
     {
         $assessment->update([
+
             'status' => 'In Progress'
+
         ]);
     }
 
-   $nextQuestion = $request->next_question ?? 0;
+    /*
+    |--------------------------------------------------------------------------
+    | Save & Next
+    |--------------------------------------------------------------------------
+    */
 
-return redirect()
-    ->route('vendor.assessments.show', [
-        $assessment->id,
-        'question' => $nextQuestion
-    ])
-    ->with('success', 'Question saved successfully.');
+   $nextQuestion = $request->next_question;
+
+
+/*
+|--------------------------------------------------------------------------
+| Save Response
+|--------------------------------------------------------------------------
+*/
+
+$response->save();
+
+
+
+/*
+|--------------------------------------------------------------------------
+| AJAX Save & Next
+|--------------------------------------------------------------------------
+*/
+
+if($request->ajax())
+{
+    return response()->json([
+        'success'=>true
+    ]);
+}
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Normal Save
+|--------------------------------------------------------------------------
+*/
+
+if ($nextQuestion) {
+
+    return redirect()->route(
+        'vendor.assessments.show',
+        [
+            $assessment->id,
+            'question'=>$nextQuestion
+        ]
+    )->with(
+        'success',
+        'Question saved successfully.'
+    );
+
+}
+
+
+return back()->with(
+    'success',
+    'Question saved successfully.'
+);
 }
 public function deleteEvidence(
     Assessment $assessment,
@@ -350,24 +654,20 @@ public function history(
     $question
 )
 {
-    $history = AssessmentResponseHistory::where(
-        'assessment_id',
-        $assessment->id
-    )
-    ->where(
-        'question_id',
-        $question
-    )
-    ->latest()
-    ->get();
+    $history = AssessmentResponseHistory::where('assessment_id',$assessment->id)
+        ->where('question_id',$question)
+        ->with('user')
+        ->latest()
+        ->get();
 
-    return view(
-        'vendor.history',
-        compact(
-            'assessment',
-            'history',
-            'question'
-        )
-    );
+
+    $questionData = Question::findOrFail($question);
+
+
+    return view('vendor.history',[
+        'assessment'=>$assessment,
+        'history'=>$history,
+        'question'=>$questionData
+    ]);
 }
 }

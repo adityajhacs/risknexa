@@ -4,323 +4,724 @@
 
 <div class="max-w-7xl mx-auto p-6">
 
-    <!-- Hero Section -->
+    {{-- Hero Section --}}
 
-    <div class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-3xl p-8 mb-8">
+    <div class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 rounded-3xl p-8 text-white shadow-lg mb-8">
 
-        <p class="uppercase tracking-wider text-sm opacity-80">
-            Vendor Assessment
+        <p class="uppercase tracking-widest text-xs opacity-80">
+
+            Vendor Assessment Portal
+
         </p>
 
         <h1 class="text-4xl font-bold mt-2">
+
             {{ $assessment->assessment_name }}
+
         </h1>
 
         <p class="mt-3 text-blue-100">
-            Complete all controls and upload supporting evidence.
+
+            Complete all assigned controls and upload supporting compliance evidence.
+
         </p>
 
     </div>
-   
-
-    <div class="bg-white rounded-2xl shadow-sm p-6 mb-8">
-
-   <div class="flex justify-between items-center mb-3">
-
-    <span class="font-medium text-slate-700">
-        Assessment Progress
-    </span>
-
-    <span class="font-bold text-blue-600">
-        {{ $progress }}%
-    </span>
-
-</div>
-
-<div class="w-full bg-slate-200 rounded-full h-5 overflow-hidden">
-
-    <div
-        class="bg-gradient-to-r from-blue-500 to-indigo-600 h-5 rounded-full transition-all duration-500"
-        style="width: {{ $progress }}%;">
-    </div>
-
-</div>
-
-<div class="flex justify-between mt-3 text-sm text-slate-500">
-
-    <span>
-        {{ $answeredQuestions }} of {{ $totalQuestions }} Questions Answered
-    </span>
-
-    <span>
-        {{ $totalQuestions - $answeredQuestions }} Remaining
-    </span>
-
-</div>
-
-</div>
 
 
 
-    <!-- Assessment Info -->
+    {{-- Progress Card --}}
 
-<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white rounded-2xl shadow-sm border p-6 mb-8">
 
-    <div class="bg-white rounded-2xl shadow-sm p-6">
-        <p class="text-slate-500">Status</p>
-        <h2 class="text-2xl font-bold text-green-600">
-            {{ $assessment->status }}
-        </h2>
-    </div>
+        <div class="flex justify-between items-center">
 
-    <div class="bg-white rounded-2xl shadow-sm p-6">
-        <p class="text-slate-500">Questions</p>
-        <h2 class="text-2xl font-bold text-blue-600">
-            {{ $questions->count() }}
-        </h2>
-    </div>
+            <h2 class="font-bold text-lg">
 
-    <div class="bg-white rounded-2xl shadow-sm p-6">
-        <p class="text-slate-500">Risk Level</p>
-        <h2 class="text-2xl font-bold text-red-600">
-            {{ $assessment->risk_level ?? 'Pending' }}
-        </h2>
-    </div>
+                Assessment Progress
 
-    <div class="bg-white rounded-2xl shadow-sm p-6">
-        <p class="text-slate-500">Due Date</p>
-        <h2 class="text-2xl font-bold">
-            {{ \Carbon\Carbon::parse($assessment->due_date)->format('d M Y') }}
-        </h2>
-    </div>
+            </h2>
 
-</div>
-    
+            <span class="font-bold text-blue-600 text-lg">
 
-    <!-- Form -->
-    
-        @foreach($questions as $index => $question)
-        <form
-    id="questionForm{{ $index }}"
-    method="POST"
-    action="{{ route('vendor.assessments.saveQuestion', [$assessment->id, $question->id]) }}"
-    enctype="multipart/form-data"
->
-    @csrf
-    <input
-    type="hidden"
-    name="next_question"
-    id="nextQuestion{{ $index }}"
-    value="{{ $index }}">
-     <div
-    class="bg-white rounded-2xl shadow-sm border border-slate-200 mb-4 overflow-hidden">
+                {{ $progress }}%
 
-    <!-- Header -->
-
-    <button
-        type="button"
-        onclick="toggleQuestion({{ $index }})"
-        class="w-full flex justify-between items-center p-6 bg-gradient-to-r from-slate-50 to-slate-100 hover:from-blue-50 hover:to-indigo-50 transition">
-
-        <div class="text-left">
-
-           
-            <div>
-
-   <div class="flex items-center justify-between">
-
-    <h3 class="font-semibold text-slate-800">
-
-        Q{{ $index + 1 }}
-
-    </h3>
-
-    @php
-        $response = $responses[$question->id] ?? null;
-    @endphp
-
-    @if($response && $response->answer)
-
-        <span class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">
-            ✅ Saved
-        </span>
-
-    @else
-
-        <span class="px-3 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-700">
-            Pending
-        </span>
-
-    @endif
-
-</div>
-
-<p class="text-sm text-slate-500 mt-2">
-
-    {{ Str::limit($question->question,70) }}
-
-</p>
-
-</div>
+            </span>
 
         </div>
 
-        <span id="icon{{ $index }}"
-              class="text-2xl">
+        <div class="mt-5 h-5 bg-slate-200 rounded-full overflow-hidden">
 
-            {{ $currentQuestion == $index ? '-' : '+' }}
+            <div
+                class="h-5 bg-gradient-to-r from-blue-500 to-indigo-600"
+                style="width:{{ $progress }}%">
+            </div>
 
-        </span>
+        </div>
 
-    </button>
+        <div class="flex justify-between mt-4 text-sm text-slate-500">
 
-    <!-- Body -->
+            <span>
 
-    <div
-        id="body{{ $index }}"
-        class="{{ $currentQuestion == $index ? '' : 'hidden' }} p-6 border-t">
+                {{ $answeredQuestions }}
+                /
+                {{ $totalQuestions }}
+                Questions Completed
 
-           <label class="block text-sm font-semibold text-slate-700 mb-2">
-    Implementation Narrative
-</label>
+            </span>
 
-               <textarea
-               @if($assessment->status=='Submitted') readonly @endif
-    name="answer"
-    rows="4"
-    class="w-full rounded-2xl border border-slate-300 bg-slate-50 p-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-300"
-    placeholder="Enter your response..."
->{{ $responses[$question->id]->answer ?? '' }}</textarea>
-           
-           <p class="text-sm font-medium text-slate-600 mb-2">
-    Upload Evidence
-</p>
-           <input
-type="file"
-@if($assessment->status=='Submitted') disabled @endif 
-                name="evidence"
-                class="mt-4 block w-full rounded-xl border border-dashed border-blue-300 bg-blue-50 p-4"
-            >
-            
-            <p class="text-xs text-red-500">
-    {{ $responses[$question->id]->evidence_file ?? 'NO FILE' }}
-</p>
-         @if(isset($responses[$question->id]) && $responses[$question->id]->evidence_file)
+            <span>
 
-<p class="mt-2 text-sm font-medium text-green-600">
-    Evidence Uploaded ✅
-</p>
+                {{ $totalQuestions-$answeredQuestions }}
+                Remaining
 
-@endif
-<div class="flex justify-between mt-6">
+            </span>
 
-    @if($index > 0)
-        <button
-            type="button"
-            onclick="toggleQuestion({{ $index-1 }})"
-            class="px-5 py-2 rounded-lg bg-gray-200 hover:bg-gray-300">
-            Previous
-        </button>
-    @else
-        <div></div>
-    @endif
+        </div>
 
-    <div class="flex gap-3">
+    </div>
 
-        <button
-        @if($assessment->status=='Submitted') disabled @endif
-            type="submit"
-            class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg">
-            Save
-        </button>
 
-        @if($index < $questions->count()-1)
+
+    {{-- Summary Cards --}}
+
+    <div class="grid md:grid-cols-4 gap-6 mb-8">
+
+        <div class="bg-white rounded-2xl shadow-sm border p-6">
+
+            <p class="text-slate-500">
+
+                Status
+
+            </p>
+
+            <h2 class="text-2xl font-bold text-green-600 mt-2">
+
+                {{ $assessment->status }}
+
+            </h2>
+
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border p-6">
+
+            <p class="text-slate-500">
+
+                Questions
+
+            </p>
+
+            <h2 class="text-2xl font-bold text-blue-600 mt-2">
+
+                {{ $questions->count() }}
+
+            </h2>
+
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border p-6">
+
+            <p class="text-slate-500">
+
+                Risk Level
+
+            </p>
+
+            <h2 class="text-2xl font-bold text-red-600 mt-2">
+
+                {{ $assessment->risk_level ?? 'Pending' }}
+
+            </h2>
+
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border p-6">
+
+            <p class="text-slate-500">
+
+                Due Date
+
+            </p>
+
+            <h2 class="text-2xl font-bold mt-2">
+
+                {{ \Carbon\Carbon::parse($assessment->due_date)->format('d M Y') }}
+
+            </h2>
+
+        </div>
+
+    </div>
+
+
+
+    {{-- Main Layout --}}
+
+    <div class="grid grid-cols-12 gap-6">
+
+
+
+        {{-- ===========================
+             LEFT SIDEBAR
+        ============================ --}}
+
+        <div class="col-span-3">
+
+            <div class="bg-white rounded-2xl shadow-sm border overflow-hidden sticky top-5">
+
+                <div class="p-5 border-b">
+
+                    <h2 class="font-bold text-lg">
+
+                        Assessment Domains
+
+                    </h2>
+
+                </div>
+
+                @foreach($domains as $domainName => $domainQuestions)
+
+                    <button
+
+                        id="tab{{ $loop->index }}"
+
+                        onclick="showDomain({{ $loop->index }})"
+
+                        type="button"
+
+                        class="w-full text-left px-5 py-4 border-b hover:bg-slate-50 transition
+
+                        {{ $loop->first ? 'bg-blue-50 text-blue-700 font-semibold' : '' }}">
+
+                        <div class="flex justify-between items-center">
+
+                            <span>
+
+                                {{ $domainName }}
+
+                            </span>
+
+                            <span class="bg-slate-100 rounded-full px-3 py-1 text-xs">
+
+                                {{ $domainQuestions->count() }}
+
+                            </span>
+
+                        </div>
+
+                    </button>
+
+                @endforeach
+
+            </div>
+
+        </div>
+
+
+
+        {{-- ===========================
+             RIGHT CONTENT START
+        ============================ --}}
+
+        <div class="col-span-9">
+
+@php
+
+$flatQuestions = $questions->values();
+
+@endphp
+{{-- ===========================
+     RIGHT CONTENT
+=========================== --}}
+
+@foreach($domains as $domainName => $domainQuestions)
+
+<div
+    id="domain{{ $loop->index }}"
+    class="{{ $loop->first ? '' : 'hidden' }}">
+
+    {{-- Domain Header --}}
+
+    <div class="bg-white rounded-2xl shadow-sm border p-6 mb-6">
+
+        <div class="flex justify-between items-center">
+
+            <div>
+
+                <h2 class="text-2xl font-bold">
+
+                    {{ $domainName }}
+
+                </h2>
+
+                <p class="text-slate-500 mt-1">
+
+                    {{ $domainQuestions->count() }}
+                    Controls
+
+                </p>
+
+            </div>
+
+            <div>
+
+                <span class="px-4 py-2 rounded-full bg-blue-100 text-blue-700 font-semibold">
+
+                    Domain
+
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {{-- Questions --}}
+
+    @foreach($domainQuestions as $question)
+
+       @php
+
+$response = $responses[$question->id] ?? null;
+
+
+// current domain ke andar question ka index
+
+$currentIndex = $domainQuestions->search(function($q) use ($question){
+
+    return $q->id == $question->id;
+
+});
+
+
+// previous question same domain me
+
+$previousQuestion = $currentIndex > 0
+    ? $domainQuestions[$currentIndex - 1]
+    : null;
+
+
+// next question same domain me
+
+$nextQuestion = $currentIndex < ($domainQuestions->count() - 1)
+    ? $domainQuestions[$currentIndex + 1]
+    : null;
+
+
+@endphp
+
+
+        <form
+
+            id="questionForm{{ $question->id }}"
+
+            method="POST"
+
+            action="{{ route('vendor.assessments.saveQuestion',[$assessment->id,$question->id]) }}"
+
+            enctype="multipart/form-data">
+
+            @csrf
+              
+        <input
+type="hidden"
+name="next_question"
+id="nextQuestion{{ $question->id }}"
+value="">
+
+
+           @php
+    $isLastDomain = $loop->parent->last;
+    $isLastQuestion = $loop->last;
+@endphp
+
+@include('vendor.partials.question-card')
+        </form>
+
+    @endforeach
+
+</div>
+
+@endforeach
+<div class="mt-8 bg-white rounded-2xl shadow-sm border p-6">
+
+    <div class="flex items-center justify-between">
+
+        <div>
+
+            <h2 class="text-xl font-bold">
+
+                Assessment Completion
+
+            </h2>
+
+            <p class="text-slate-500 mt-1">
+
+                Complete all questions before submitting the assessment.
+
+            </p>
+
+        </div>
+
+        <form
+            method="POST"
+            action="{{ route('vendor.assessments.submit',$assessment->id) }}">
+
+            @csrf
 
            <button
     type="button"
-    @if($assessment->status=='Submitted') disabled @endif
-    onclick="saveAndNext({{ $index }})"
-    class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg">
-    Save & Next
+    onclick="openSubmitModal()"
+    class="px-8 py-3 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700"
+    @if($assessment->status=='Submitted') disabled @endif>
+
+    🚀 Submit Assessment
+
 </button>
 
-        @else
-
-        @if($assessment->status != 'Submitted')
-
-<form method="POST"
-      action="{{ route('vendor.assessments.submit',$assessment->id) }}">
-
-    @csrf
-
-    <button
-        type="submit"
-        class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg">
-
-        Submit Assessment
-
-    </button>
-
-</form>
-
-@else
-
-<span class="px-4 py-2 rounded-lg bg-green-100 text-green-700 font-semibold">
-
-    Assessment Submitted ✅
-
-</span>
-
-@endif
-        @endif
+        </form>
 
     </div>
 
 </div>
-            </div>   {{-- body close --}}
 
-</div>       {{-- accordion card close --}}
+</div> {{-- right content --}}
+
+</div> {{-- grid --}}
+<form
+    id="submitAssessmentForm"
+    method="POST"
+    action="{{ route('vendor.assessments.submit',$assessment->id) }}">
+
+    @csrf
 
 </form>
-        @endforeach
+<div
+    id="submitModal"
+    class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
 
-      
-           
-       
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
 
+        <div class="text-center">
 
+            <div class="text-5xl mb-4">
+                ⚠️
+            </div>
+
+            <h2 class="text-2xl font-bold text-slate-800">
+
+                Submit Assessment?
+
+            </h2>
+
+            <p class="mt-4 text-slate-600">
+
+                Once submitted, this assessment will become
+                <strong>read only</strong>.
+
+                You won't be able to edit answers or upload evidence.
+
+            </p>
+
+        </div>
+
+        <div class="flex justify-end gap-3 mt-8">
+
+            <button
+                type="button"
+                onclick="closeSubmitModal()"
+                class="px-5 py-2 rounded-xl border">
+
+                Cancel
+
+            </button>
+
+            <button
+                type="button"
+                onclick="submitAssessment()"
+                class="px-5 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700">
+
+                Yes, Submit
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
 <script>
 
-function toggleQuestion(index){
+let currentDomain = 0;
 
-    let total = {{ $questions->count() }};
+window.onload = function(){
 
-    for(let i = 0; i < total; i++){
+    showDomain(0);
 
-        document.getElementById('body'+i).classList.add('hidden');
-        document.getElementById('icon'+i).innerHTML = '+';
+};
+
+
+
+/* ==========================
+   DOMAIN SWITCH
+========================== */
+
+function showDomain(index)
+{
+    currentDomain = index;
+
+    document.querySelectorAll("[id^='domain']").forEach(function(el){
+
+        el.classList.add("hidden");
+
+    });
+
+    document.querySelectorAll("[id^='tab']").forEach(function(el){
+
+        el.classList.remove(
+            "bg-blue-50",
+            "text-blue-700",
+            "font-semibold"
+        );
+
+    });
+
+    document
+        .getElementById("domain"+index)
+        .classList.remove("hidden");
+
+    document
+        .getElementById("tab"+index)
+        .classList.add(
+            "bg-blue-50",
+            "text-blue-700",
+            "font-semibold"
+        );
+
+
+
+    /* First Question Automatically Open */
+
+    let firstBody =
+        document
+            .getElementById("domain"+index)
+            .querySelector("[id^='body']");
+
+    if(firstBody)
+    {
+
+        document.querySelectorAll("[id^='body']").forEach(function(el){
+
+            el.classList.add("hidden");
+
+        });
+
+        document.querySelectorAll("[id^='icon']").forEach(function(el){
+
+            el.innerHTML='+';
+
+        });
+
+        firstBody.classList.remove("hidden");
+
+        let id = firstBody.id.replace("body","");
+
+        document
+            .getElementById("icon"+id)
+            .innerHTML='−';
 
     }
 
-    document.getElementById('body'+index).classList.remove('hidden');
-    document.getElementById('icon'+index).innerHTML = '-';
+}
 
-    window.scrollTo({
-        top: document.getElementById('body'+index).offsetTop-120,
-        behavior:'smooth'
+
+
+/* ==========================
+   ACCORDION
+========================== */
+
+function toggleQuestion(id)
+{
+
+    let body =
+        document.getElementById("body"+id);
+
+    let icon =
+        document.getElementById("icon"+id);
+
+
+
+    if(body.classList.contains("hidden"))
+    {
+
+        body.classList.remove("hidden");
+
+        icon.innerHTML="−";
+
+    }
+    else
+    {
+
+        body.classList.add("hidden");
+
+        icon.innerHTML="+";
+
+    }
+
+}
+
+
+
+/* ==========================
+   SAVE & NEXT
+========================== */
+
+function saveAndNext(currentId,nextId)
+{
+
+    let form = document.getElementById(
+        "questionForm"+currentId
+    );
+
+
+    let formData = new FormData(form);
+
+
+    fetch(form.action, {
+
+        method: "POST",
+
+        body: formData,
+
+        headers: {
+
+            "X-CSRF-TOKEN":
+            document.querySelector('input[name="_token"]').value
+
+        }
+
+    })
+    .then(response => {
+
+        if(response.ok)
+        {
+
+            openQuestion(nextId);
+
+        }
+
+    })
+    .catch(error => {
+
+        console.log(error);
+
     });
 
 }
 
-// 👇 YE NAYA FUNCTION ADD KARNA HAI
-function saveAndNext(index){
 
-    // Agla question number set karo
-    document.getElementById('nextQuestion'+index).value = index + 1;
 
-    // Form submit karo
-    document.getElementById('questionForm'+index).submit();
+/* ==========================
+   OPEN QUESTION
+========================== */
 
+function openQuestion(id)
+{
+
+    document.querySelectorAll("[id^='body']").forEach(function(el){
+
+        el.classList.add("hidden");
+
+    });
+
+    document.querySelectorAll("[id^='icon']").forEach(function(el){
+
+        el.innerHTML='+';
+
+    });
+
+
+
+    let body =
+        document.getElementById("body"+id);
+
+    if(body)
+    {
+
+        body.classList.remove("hidden");
+
+        document
+            .getElementById("icon"+id)
+            .innerHTML='−';
+
+        body.scrollIntoView({
+
+            behavior:'smooth',
+
+            block:'start'
+
+        });
+
+    }
+
+}
+
+
+
+/* ==========================
+   INTELLIGENCE BOX
+========================== */
+
+function toggleIntelligence(id)
+{
+
+    let body =
+        document.getElementById("intelBody"+id);
+
+    let icon =
+        document.getElementById("intelIcon"+id);
+
+    if(body.classList.contains("hidden"))
+    {
+
+        body.classList.remove("hidden");
+
+        icon.innerHTML="−";
+
+    }
+    else
+    {
+
+        body.classList.add("hidden");
+
+        icon.innerHTML="+";
+
+    }
+
+}
+function openSubmitModal()
+{
+    let modal = document.getElementById("submitModal");
+
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+}
+
+function closeSubmitModal()
+{
+    let modal = document.getElementById("submitModal");
+
+    modal.classList.remove("flex");
+    modal.classList.add("hidden");
+}
+
+function submitAssessment()
+{
+    document
+        .getElementById("submitAssessmentForm")
+        .submit();
 }
 
 </script>

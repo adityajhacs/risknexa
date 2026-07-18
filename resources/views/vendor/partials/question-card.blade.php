@@ -1,293 +1,846 @@
 @php
 
+$isSubmitted = $assessment->status == 'Submitted';
+
 $response = $responses[$question->id] ?? null;
 
-$isAnswered = $response && trim($response->answer ?? '') != '';
+$isAnswered = !empty($response?->answer);
 
 @endphp
 
-<form
-    method="POST"
-    action="{{ route('vendor.assessments.saveQuestion', [$assessment->id,$question->id]) }}"
-    enctype="multipart/form-data"
-    class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mt-10 mb-8"
+
+<div class="bg-white rounded-2xl shadow-sm border border-slate-200 mb-6 overflow-hidden">
+
+    {{-- =========================
+        Question Header
+    ========================== --}}
+
+    <button
+        type="button"
+        onclick="toggleQuestion({{ $question->id }})"
+        class="w-full flex justify-between items-start p-6 bg-gradient-to-r from-slate-50 to-slate-100 hover:from-blue-50 hover:to-indigo-50 transition">
+
+        <div class="flex-1 text-left">
+
+            <div class="flex items-center gap-3 flex-wrap">
+
+                <h2 class="text-xl font-bold text-slate-800">
+
+                    Question {{ $currentIndex + 1 }}
+
+                </h2>
+
+                @if($isAnswered)
+
+                    <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">
+
+                        Answered
+
+                    </span>
+
+                @else
+
+                    <span class="px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs font-semibold">
+
+                        Pending
+
+                    </span>
+
+                @endif
+
+                @if($question->risk_level)
+
+                    <span class="px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-semibold">
+
+                        {{ $question->risk_level }}
+
+                    </span>
+
+                @endif
+
+            </div>
+
+
+            <p class="mt-5 text-slate-800 text-lg leading-7">
+
+                {{ $question->question }}
+
+            </p>
+
+
+            {{-- Control Information --}}
+
+            <div class="grid md:grid-cols-4 gap-5 mt-6">
+
+                <div>
+
+                    <p class="text-xs uppercase text-slate-400">
+
+                        Control Code
+
+                    </p>
+
+                    <p class="font-semibold mt-1">
+
+                        {{ $question->control_code ?? '-' }}
+
+                    </p>
+
+                </div>
+
+                <div>
+
+                    <p class="text-xs uppercase text-slate-400">
+
+                        Category
+
+                    </p>
+
+                    <p class="font-semibold mt-1">
+
+                        {{ optional($question->category)->name ?? '-' }}
+
+                    </p>
+
+                </div>
+
+                <div>
+
+                    <p class="text-xs uppercase text-slate-400">
+
+                        Domain
+
+                    </p>
+
+                    <p class="font-semibold mt-1">
+
+                        {{ optional($question->domain)->name ?? '-' }}
+
+                    </p>
+
+                </div>
+
+                <div>
+
+                    <p class="text-xs uppercase text-slate-400">
+
+                        Weight
+
+                    </p>
+
+                    <p class="font-semibold mt-1">
+
+                        {{ $question->risk_weight ?? '-' }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="ml-6">
+
+            <span
+                id="icon{{ $question->id }}"
+                class="text-3xl font-bold">
+
+                +
+
+            </span>
+
+        </div>
+
+    </button>
+
+
+
+    {{-- =========================
+        BODY
+    ========================== --}}
+
+   <div
+    id="body{{ $question->id }}"
+    data-question="{{ $question->id }}"
+    class="{{ $currentQuestion == $question->id ? '' : 'hidden' }}"
 >
+        {{-- =====================================================
+    Assessment Intelligence
+===================================================== --}}
 
-@csrf
+<div class="rounded-2xl border border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50 p-6 mb-8">
 
-<div class="flex justify-between items-center mb-5">
-
-    <div>
+    <div class="flex justify-between items-center mb-6">
 
         <h2 class="text-xl font-bold text-slate-800">
 
-            Question {{ $index+1 }}
+            Assessment Intelligence
 
         </h2>
 
-        <p class="text-slate-600 mt-2">
+        <button
+            type="button"
+            onclick="toggleIntelligence({{ $question->id }})"
+            class="text-blue-600 font-semibold">
 
-            {{ $question->question }}
+            <span id="intelIcon{{ $question->id }}">−</span>
 
-        </p>
+        </button>
 
     </div>
 
-    @if($isAnswered)
+    <div id="intelBody{{ $question->id }}">
 
-        <span
-            class="px-4 py-1 rounded-full bg-green-100 text-green-700 text-sm font-semibold">
+        <div class="grid md:grid-cols-2 gap-6">
 
-            Answered
+            {{-- Description --}}
 
-        </span>
+            <div class="bg-white rounded-xl border p-5">
+
+                <p class="text-xs uppercase tracking-wide text-slate-500">
+
+                    Description
+
+                </p>
+
+                <p class="mt-3 text-slate-700 leading-7">
+
+                    {{ $question->description ?: 'No description available.' }}
+
+                </p>
+
+            </div>
+
+            {{-- Control Guidance --}}
+
+            <div class="bg-white rounded-xl border p-5">
+
+                <p class="text-xs uppercase tracking-wide text-slate-500">
+
+                    Control Guidance
+
+                </p>
+
+                <p class="mt-3 text-slate-700 leading-7">
+
+                    {{ $question->control_guidance ?: 'No guidance available.' }}
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="grid md:grid-cols-3 gap-6 mt-6">
+
+            {{-- Expected Evidence --}}
+
+            <div class="bg-white rounded-xl border p-5">
+
+                <p class="text-xs uppercase text-slate-500">
+
+                    Expected Evidence
+
+                </p>
+
+                <div class="mt-3 text-slate-700 leading-7">
+
+                    @if($question->expected_evidence)
+
+                        {!! nl2br(e($question->expected_evidence)) !!}
+
+                    @else
+
+                        Policy Document<br>
+                        Screenshot<br>
+                        Configuration Export
+
+                    @endif
+
+                </div>
+
+            </div>
+
+            {{-- Review Status --}}
+
+            <div class="bg-white rounded-xl border p-5">
+
+                <p class="text-xs uppercase text-slate-500">
+
+                    Review Status
+
+                </p>
+
+                <div class="mt-3">
+
+                    @if(!empty($response->review_status))
+
+                        <span class="px-3 py-1 rounded-full bg-green-100 text-green-700">
+
+                            {{ $response->review_status }}
+
+                        </span>
+
+                    @else
+
+                        <span class="px-3 py-1 rounded-full bg-yellow-100 text-yellow-700">
+
+                            Pending Review
+
+                        </span>
+
+                    @endif
+
+                </div>
+
+            </div>
+
+            {{-- Reviewer Comment --}}
+
+            <div class="bg-white rounded-xl border p-5">
+
+                <p class="text-xs uppercase text-slate-500">
+
+                    Reviewer Comment
+
+                </p>
+
+                <p class="mt-3 text-slate-700 leading-7">
+
+                    {{ $response->review_comment ?? 'No comments available.' }}
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+{{-- =====================================================
+    Implementation Details
+===================================================== --}}
+
+<div class="bg-white rounded-2xl border border-slate-200 p-6 mb-8">
+
+    <h2 class="text-xl font-bold text-slate-800 mb-6">
+
+        Implementation Details
+
+    </h2>
+    {{-- ==========================================
+    Implementation Status
+========================================== --}}
+
+<div class="mb-6">
+
+    <label class="block text-sm font-semibold text-slate-700 mb-2">
+
+        Implementation Status
+
+    </label>
+
+    <select
+        name="implementation_status"
+        class="w-full rounded-xl border border-slate-300 p-3 focus:ring-2 focus:ring-blue-500"
+        @if($isSubmitted) disabled @endif>
+
+        <option value="">Select Status</option>
+
+        <option value="Implemented"
+            {{ ($response->implementation_status ?? '')=='Implemented' ? 'selected':'' }}>
+            ✅ Implemented
+        </option>
+
+        <option value="Partially Implemented"
+            {{ ($response->implementation_status ?? '')=='Partially Implemented' ? 'selected':'' }}>
+            🟡 Partially Implemented
+        </option>
+
+        <option value="Planned"
+            {{ ($response->implementation_status ?? '')=='Planned' ? 'selected':'' }}>
+            🔵 Planned
+        </option>
+
+        <option value="Not Implemented"
+            {{ ($response->implementation_status ?? '')=='Not Implemented' ? 'selected':'' }}>
+            🔴 Not Implemented
+        </option>
+
+        <option value="Not Applicable"
+            {{ ($response->implementation_status ?? '')=='Not Applicable' ? 'selected':'' }}>
+            ⚪ Not Applicable
+        </option>
+
+    </select>
+
+</div>
+
+
+
+{{-- ==========================================
+    Implementation Narrative
+========================================== --}}
+
+<div class="mb-8">
+
+    <label class="block text-sm font-semibold text-slate-700 mb-2">
+
+        Implementation Narrative
+
+    </label>
+
+    <textarea
+        name="answer"
+        rows="7"
+        class="w-full rounded-2xl border border-slate-300 bg-slate-50 p-4 focus:ring-2 focus:ring-blue-500"
+        placeholder="Describe how your organization has implemented this control..."
+        @if($isSubmitted) readonly @endif>{{ old('answer',$response->answer ?? '') }}</textarea>
+
+    <p class="text-xs text-slate-500 mt-2">
+
+        Explain implementation process, technologies used, policies followed and operational procedures.
+
+    </p>
+
+</div>
+
+
+
+{{-- ==========================================
+    Upload Evidence
+========================================== --}}
+
+<div class="mb-8">
+
+    <label class="block text-sm font-semibold text-slate-700 mb-3">
+
+        Upload Evidence
+
+    </label>
+
+    @if(!$isSubmitted)
+
+        <input
+            type="file"
+            name="evidence"
+            @if($isSubmitted)
+
+disabled
+
+@endif
+            class="block w-full rounded-xl border-2 border-dashed border-blue-300 bg-blue-50 p-5">
+
+    @endif
+
+
+    @if(!empty($response->evidence_file))
+
+        <div class="mt-5 flex flex-wrap gap-3">
+
+            <span
+                class="px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-semibold">
+
+                ✅ Evidence Uploaded
+
+            </span>
+
+            <a
+                href="{{ asset('storage/'.$response->evidence_file) }}"
+                target="_blank"
+                class="px-5 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700">
+
+                View Evidence
+
+            </a>
+
+            <a
+                href="{{ asset('storage/'.$response->evidence_file) }}"
+                download
+                class="px-5 py-2 rounded-xl border hover:bg-slate-100">
+
+                Download
+
+            </a>
+
+        </div>
 
     @else
 
-        <span
-            class="px-4 py-1 rounded-full bg-orange-100 text-orange-700 text-sm font-semibold">
+        <div class="mt-4">
 
-            Pending
+            <span class="text-red-500 text-sm">
 
-        </span>
+                No evidence uploaded.
+
+            </span>
+
+        </div>
 
     @endif
 
 </div>
 
-<textarea
-    name="answer"
-    rows="5"
-    class="w-full rounded-xl border border-slate-300 p-4 focus:ring-2 focus:ring-blue-500"
-    placeholder="Write your answer here..."
-    @if($isSubmitted) readonly @endif
->{{ old('answer',$response->answer ?? '') }}</textarea>
-
-@if($response)
-
-<div class="grid md:grid-cols-2 gap-6 mt-5">
-
-<div>
-
-<p class="text-xs uppercase text-slate-500">
-
-Answer Updated By
-
-</p>
-
-<p class="font-semibold">
-
-{{ optional($response->answerUpdatedBy)->name }}
-
-</p>
-
 </div>
+{{-- =====================================================
+    Assessment Intelligence Summary
+===================================================== --}}
 
-<div>
+<div class="rounded-2xl border border-slate-200 bg-slate-50 p-6 mb-8">
 
-<p class="text-xs uppercase text-slate-500">
+    <div class="flex items-center justify-between mb-5">
 
-Answer Updated On
+        <h2 class="text-xl font-bold text-slate-800">
 
-</p>
+            Assessment Intelligence Summary
 
-<p class="font-semibold">
+        </h2>
 
-{{ $response->answer_updated_at
-    ? \Carbon\Carbon::parse($response->answer_updated_at)->format('d M Y h:i A')
-    : $response->updated_at->format('d M Y h:i A') }}
-</p>
+        @php
 
-</div>
+            $completed = 0;
 
-</div>
+            if(!empty($response?->implementation_status)) $completed++;
+            if(!empty($response?->answer)) $completed++;
+            if(!empty($response?->evidence_file)) $completed++;
+            if(!empty($response?->explanation)) $completed++;
 
-@endif
+        @endphp
 
-<div class="mt-6">
+        <span class="px-4 py-2 rounded-full bg-blue-600 text-white text-sm">
 
-<label class="block text-sm font-semibold text-slate-700 mb-2">
+            {{ $completed }}/4 Completed
 
-Upload Evidence
+        </span>
 
-</label>
+    </div>
 
-@if(!$isSubmitted)
 
-<input
-type="file"
-name="evidence"
-class="block w-full border border-slate-300 rounded-xl p-3">
+    <div class="space-y-4">
 
-@endif
+        {{-- Implementation Status --}}
 
-</div>
+        <div class="flex justify-between items-center">
 
-<div class="flex justify-end mt-8">
+            <span>
 
-@unless($isSubmitted)
+                Implementation Status
 
-<button
-type="submit"
-class="px-8 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition">
+            </span>
 
-Save Question
+            @if(!empty($response?->implementation_status))
 
-</button>
+                <span class="text-green-600 font-semibold">
 
-@endunless
+                    ✔ Completed
 
-</div>
+                </span>
 
-</form>
-@if($response && $response->evidence_file)
+            @else
 
-@php
+                <span class="text-red-600 font-semibold">
 
-$file = $response->evidence_file;
+                    ✖ Missing
 
-$extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                </span>
 
-@endphp
-
-<div class="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5">
-
-    <h3 class="font-semibold text-slate-800 mb-4">
-
-        Uploaded Evidence
-
-    </h3>
-
-    @if(in_array($extension,['jpg','jpeg','png','gif','webp']))
-
-        <img
-            src="{{ asset('storage/'.$file) }}"
-            class="w-56 rounded-xl border shadow">
-
-    @else
-
-        <div class="rounded-xl bg-white border p-4">
-
-            <p class="font-medium">
-
-                {{ basename($file) }}
-
-            </p>
-
-            <p class="text-sm text-slate-500 mt-1">
-
-                {{ strtoupper($extension) }} File
-
-            </p>
+            @endif
 
         </div>
 
-    @endif
 
-    <div class="grid md:grid-cols-2 gap-6 mt-5">
+        {{-- Narrative --}}
 
-        <div>
+        <div class="flex justify-between items-center">
 
-            <p class="text-xs uppercase text-slate-500">
+            <span>
 
-                Evidence Uploaded By
+                Implementation Narrative
 
-            </p>
+            </span>
 
-            <p class="font-semibold">
+            @if(!empty($response?->answer))
 
-                {{ optional($response->evidenceUploadedBy)->name }}
-            </p>
+                <span class="text-green-600 font-semibold">
+
+                    ✔ Completed
+
+                </span>
+
+            @else
+
+                <span class="text-red-600 font-semibold">
+
+                    ✖ Missing
+
+                </span>
+
+            @endif
 
         </div>
 
-        <div>
 
-            <p class="text-xs uppercase text-slate-500">
+        {{-- Evidence --}}
 
-                Evidence Uploaded On
+        <div class="flex justify-between items-center">
 
-            </p>
+            <span>
 
-            <p class="font-semibold">
+                Evidence Upload
 
-               {{ $response->evidence_uploaded_at
-    ? \Carbon\Carbon::parse($response->evidence_uploaded_at)->format('d M Y h:i A')
-    : $response->updated_at->format('d M Y h:i A') }}
+            </span>
 
-            </p>
+            @if(!empty($response?->evidence_file))
+
+                <span class="text-green-600 font-semibold">
+
+                    ✔ Completed
+
+                </span>
+
+            @else
+
+                <span class="text-red-600 font-semibold">
+
+                    ✖ Missing
+
+                </span>
+
+            @endif
+
+        </div>
+
+
+        {{-- Explanation --}}
+
+        <div class="flex justify-between items-center">
+
+            <span>
+
+                Explanation
+
+            </span>
+
+            @if(!empty($response?->explanation))
+
+                <span class="text-green-600 font-semibold">
+
+                    ✔ Completed
+
+                </span>
+
+            @else
+
+                <span class="text-red-600 font-semibold">
+
+                    ✖ Missing
+
+                </span>
+
+            @endif
 
         </div>
 
     </div>
 
-    <div class="flex flex-wrap gap-3 mt-6">
+</div>
 
-        <a
-            href="{{ asset('storage/'.$file) }}"
-            target="_blank"
-            class="px-5 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700">
 
-            View
 
-        </a>
+{{-- =====================================================
+    Review Status
+===================================================== --}}
 
-        <a
-            href="{{ asset('storage/'.$file) }}"
-            download
-            class="px-5 py-2 border rounded-xl hover:bg-slate-100">
+<div class="rounded-2xl border bg-white p-6 mb-8">
 
-            Download
+    <div class="flex justify-between items-center">
 
-        </a>
+        <div>
+
+            <h3 class="font-bold text-lg">
+
+                Review Status
+
+            </h3>
+
+            <p class="text-slate-500 mt-1">
+
+                Reviewer will verify your submitted response.
+
+            </p>
+
+        </div>
+
+        <span class="px-4 py-2 rounded-full bg-yellow-100 text-yellow-700 font-semibold">
+
+            {{ $response->review_status ?? 'Pending Review' }}
+
+        </span>
 
     </div>
-<div class="flex flex-wrap justify-between items-center mt-8 border-t pt-6">
 
-    <div class="flex gap-3 flex-wrap">
+</div>
 
-      
-        {{-- Delete Evidence --}}
-        @if($response && $response->evidence_file && !$isSubmitted)
 
-        <form
-            method="POST"
-            action="{{ route('vendor.assessments.deleteEvidence', [$assessment->id,$question->id]) }}"
-            onsubmit="return confirm('Are you sure you want to delete this evidence?')">
 
-            @csrf
-            @method('DELETE')
+{{-- =====================================================
+    Navigation Buttons
+===================================================== --}}
+
+<div class="flex flex-wrap justify-between items-center border-t pt-6">
+
+    {{-- Previous --}}
+
+    <div>
+
+        @if($previousQuestion)
 
             <button
-                type="submit"
-                class="px-5 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700">
+                type="button"
+                onclick="openQuestion({{ $previousQuestion->id }})"
+                class="px-5 py-2 rounded-xl border hover:bg-slate-100">
 
-                Delete Evidence
+                ← Previous
 
             </button>
 
-        </form>
+        @endif
+
+    </div>
+
+
+
+    <div class="flex flex-wrap gap-3">
+
+        {{-- Save --}}
+
+        <button
+            type="submit"
+            class="px-6 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700"
+            @if($isSubmitted) disabled @endif>
+
+            Save
+
+        </button>
+
+
+
+        {{-- Save & Next --}}
+
+        @if($nextQuestion)
+           
+            <button
+                type="button"
+                onclick="saveAndNext({{ $question->id }},{{ $nextQuestion->id }})"
+                class="px-6 py-2 rounded-xl bg-green-600 text-white hover:bg-green-700"
+                @if($isSubmitted) disabled @endif>
+
+                Save & Next →
+
+            </button>
 
         @endif
 
 
-        {{-- View History --}}
+       
+
+    </div>
+
+</div>
+{{-- =====================================================
+    Footer Actions
+===================================================== --}}
+
+<div class="mt-8 flex flex-wrap justify-between items-center border-t pt-6">
+
+    {{-- Left Side --}}
+
+    <div class="flex flex-wrap gap-3">
+
         @if($response)
 
-        <a
-            href="{{ route('vendor.assessments.history',[$assessment->id,$question->id]) }}"
-            class="px-5 py-2 border rounded-xl hover:bg-slate-100">
+            <a
+                href="{{ route('vendor.assessments.history',[$assessment->id,$question->id]) }}"
+                class="px-5 py-2 rounded-xl border border-slate-300 hover:bg-slate-100 transition">
 
-            View History
+                📜 View History
 
-        </a>
+            </a>
+
+        @endif
+
+    </div>
+
+
+
+    {{-- Right Side --}}
+
+    <div class="text-sm text-slate-500">
+
+        Last Updated :
+
+        @if($response)
+
+            {{ $response->updated_at->format('d M Y h:i A') }}
+
+        @else
+
+            Not Saved Yet
 
         @endif
 
     </div>
 
 </div>
+
+
+
+{{-- =====================================================
+    Compliance Tips
+===================================================== --}}
+
+<div class="mt-8 rounded-2xl bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 p-6">
+
+    <div class="flex items-start gap-4">
+
+        <div class="text-3xl">
+
+            💡
+
+        </div>
+
+        <div>
+
+            <h3 class="font-bold text-green-700 text-lg">
+
+                Compliance Tip
+
+            </h3>
+
+            <p class="mt-2 text-slate-700 leading-7">
+
+                Ensure that your implementation narrative clearly explains how the
+                control is implemented within your organization. Upload valid
+                evidence such as policy documents, screenshots, reports or
+                configuration exports to support your response.
+
+            </p>
+
+        </div>
+
+    </div>
+
 </div>
-@endif
 
 
+
+</div> {{-- Body End --}}
+
+</div> {{-- Question Card End --}}

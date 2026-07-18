@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
+use App\Models\AssessmentQuestion;
 class AssessmentResponseHistory extends Model
 {
     protected $fillable = [
@@ -33,5 +34,12 @@ class AssessmentResponseHistory extends Model
         User::class,
         'user_id'
     );
+}
+public function question()
+{
+   return $this->belongsTo(
+    AssessmentQuestion::class,
+    'question_id'
+);
 }
 }
