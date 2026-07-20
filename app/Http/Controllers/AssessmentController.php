@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Question;
 use App\Models\AssessmentQuestion;
 use App\Models\ActivityLog;
+use App\Models\User;
 class AssessmentController extends Controller
 {    
     /**
@@ -58,13 +59,17 @@ class AssessmentController extends Controller
     $frameworks = \App\Models\Framework::where('status', 'Active')
                     ->orderBy('name')
                     ->get();
+    $reviewers = User::where('role', 'reviewer')
+                ->orderBy('name')
+                ->get();
    
 
     return view(
         'assessments.create',
         compact(
             'vendors',
-            'frameworks'
+            'frameworks',
+            'reviewers'
         )
     );
 }
@@ -75,7 +80,7 @@ class AssessmentController extends Controller
    public function store(Request $request)
 {
     $request->validate([
-
+         'reviewer' => 'required',
         'assessment_name' => 'required|max:255',
         'framework_id' => 'required|exists:frameworks,id',
         'vendor_id' => 'required|exists:vendors,id',
@@ -87,7 +92,7 @@ class AssessmentController extends Controller
 
     // Create Assessment
     $assessment = Assessment::create([
-
+         'reviewer' => $request->reviewer,
         'assessment_name' => $request->assessment_name,
         'framework_id' => $request->framework_id,
         'vendor_id' => $request->vendor_id,
@@ -177,13 +182,17 @@ $activities = ActivityLog::latest()
      $vendors = Vendor::all();
 
 $frameworks = \App\Models\Framework::all();
+$reviewers = User::where('role', 'reviewer')
+                ->orderBy('name')
+                ->get();
 
 return view(
     'assessments.edit',
     compact(
         'assessment',
         'vendors',
-        'frameworks'
+        'frameworks',
+        'reviewers'
     )
 );
     }
@@ -194,7 +203,7 @@ return view(
     public function update(Request $request, Assessment $assessment)
 {
     $request->validate([
-
+         'reviewer' => 'required',
         'assessment_name' => 'required|max:255',
         'framework_id' => 'required|exists:frameworks,id',
         'vendor_id' => 'required|exists:vendors,id',
@@ -217,6 +226,7 @@ return view(
         'priority'        => $request->priority,
         'due_date'        => $request->due_date,
         'status'          => $request->status,
+        'reviewer' => $request->reviewer,
 
     ]);
 

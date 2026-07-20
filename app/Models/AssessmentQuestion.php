@@ -13,8 +13,7 @@ class AssessmentQuestion extends Model
     'question_id',
     'response',
      'score',
-     'reviewer_comment',
-    'explanation'
+      'reviewer_comment'
 ];
 public function assessment()
 {
@@ -25,5 +24,4 @@ public function question()
 {
     return $this->belongsTo(Question::class);
 }
-
 }

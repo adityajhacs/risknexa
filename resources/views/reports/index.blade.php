@@ -7,19 +7,6 @@
 </head>
 
 <body>
-    <body class="bg-slate-50">
-
-<div class="bg-white h-16 rounded-2xl shadow-sm border border-slate-200 mb-6 flex items-center justify-between px-6">
-    ...
-</div>
-
-<div class="flex min-h-screen">
-
-<aside class="w-64 bg-slate-900 text-white shadow-2xl border-r border-slate-800">
-    ...
-</aside>
-
-<main class="flex-1 p-8">
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
 
     <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">

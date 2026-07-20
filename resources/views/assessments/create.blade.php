@@ -131,10 +131,34 @@
                 <div class="mb-4">
                     <label class="block mb-2 font-medium">Reviewer</label>
 
-                    <input type="text"
-                           name="reviewer"
-                           value="{{ old('reviewer') }}"
-                           class="w-full border rounded-lg p-2">
+                  <div class="mb-4">
+    <label class="block mb-2 font-medium">
+        Assign Reviewer
+    </label>
+
+    <select
+        name="reviewer"
+        class="w-full border rounded-lg p-2"
+        required>
+
+        <option value="">
+            Select Reviewer
+        </option>
+
+        @foreach($reviewers as $reviewer)
+
+            <option
+                value="{{ $reviewer->name }}"
+                {{ old('reviewer') == $reviewer->name ? 'selected' : '' }}>
+
+                {{ $reviewer->name }} ({{ $reviewer->email }})
+
+            </option>
+
+        @endforeach
+
+    </select>
+</div>
                 </div>
 
                 <div class="mb-4">

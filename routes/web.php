@@ -15,9 +15,13 @@ use App\Http\Controllers\VendorUserController;
 use App\Http\Controllers\VendorDashboardController;
 use App\Http\Controllers\FrameworkController;
 use App\Http\Controllers\DomainController;
+use App\Http\Controllers\ReviewerController;
+use App\Http\Controllers\ReviewerDashboardController;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/reviewer-test/{assessment}', [ReviewerDashboardController::class, 'review'])
+    ->name('reviewers.review');
 
 Route::get('/assessment-test', [AssessmentController::class, 'test']);
 Route::get('/dashboard', [DashboardController::class, 'index'])
@@ -79,12 +83,18 @@ Route::get(
 Route::get(
     '/my-assessments/{assessment}',
     [VendorPortalController::class,'show']
-)->name('vendor.assessments.show');
-
+)->name('vendor.assessments.show');Route::get(
+    '/reviewer-dashboard',
+    [ReviewerDashboardController::class, 'index']
+)->name('reviewer.dashboard');
 Route::post(
     '/assessments/{assessment}/evidence',
     [EvidenceUploadController::class, 'store']
 );
+Route::get(
+    '/reviewer/assessment/{assessment}',
+    [ReviewerDashboardController::class, 'review']
+)->name('reviewers.review');
 
 
 Route::post(
@@ -93,6 +103,7 @@ Route::post(
 )->name('vendor.assessments.saveQuestion');
 
 Route::resource('users', UserController::class);
+Route::resource('reviewers', ReviewerController::class);
 
 Route::get(
     '/reports',

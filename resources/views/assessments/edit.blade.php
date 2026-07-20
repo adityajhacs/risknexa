@@ -150,6 +150,36 @@
                 class="w-full border rounded-lg p-3">{{ $assessment->description }}</textarea>
 
         </div>
+        <!-- Assign Reviewer -->
+
+<div class="mb-5">
+
+    <label class="block font-semibold mb-2">
+        Assign Reviewer
+    </label>
+
+    <select
+        name="reviewer"
+        class="w-full border rounded-lg p-3"
+        required>
+
+        <option value="">Select Reviewer</option>
+
+        @foreach($reviewers as $reviewer)
+
+            <option
+                value="{{ $reviewer->name }}"
+                {{ old('reviewer', $assessment->reviewer) == $reviewer->name ? 'selected' : '' }}>
+
+                {{ $reviewer->name }} ({{ $reviewer->email }})
+
+            </option>
+
+        @endforeach
+
+    </select>
+
+</div>
 
         <!-- Status -->
 
