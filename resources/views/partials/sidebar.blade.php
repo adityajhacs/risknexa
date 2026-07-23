@@ -1,92 +1,130 @@
-<aside class="w-64 bg-slate-900 text-white shadow-2xl border-r border-slate-800">
+<aside class="w-64 bg-slate-900 text-white shadow-xl border-r border-slate-800 flex flex-col">
 
+    {{-- Logo --}}
     <div class="p-6 border-b border-slate-800">
+        <h1 class="text-3xl font-bold text-blue-400">RiskNexa</h1>
 
-        <h1 class="text-3xl font-bold tracking-tight">
-            RiskNexa
-        </h1>
-
-        <p class="text-slate-400 text-sm mt-2">
+        <p class="text-slate-400 text-sm mt-1">
             Vendor Risk Platform
         </p>
-
-        <div class="mt-4 text-xs uppercase tracking-widest text-slate-500">
-            Governance & Compliance
-        </div>
-
     </div>
 
-    <nav class="p-4 space-y-2">
+    {{-- Menu --}}
+    <nav class="flex-1 p-4 space-y-2">
 
-        <p class="text-xs uppercase tracking-widest text-slate-500 px-4 mb-3">
-            Main Menu
-        </p>
+        {{-- ================= ADMIN ================= --}}
+       @if(in_array(auth()->user()->role, [
+    'admin',
+    'company_admin',
+    'super_admin'
+]))
 
-        <a href="/dashboard"
-class="flex items-center gap-3 px-4 py-3 rounded-xl transition
-{{ request()->is('dashboard')
-? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg'
-: 'hover:bg-slate-800 text-white' }}">
-            <span>📊</span>
-            <span>Dashboard</span>
-        </a>
+            <a href="{{ route('dashboard') }}"
+                class="block px-4 py-3 rounded-lg {{ request()->routeIs('dashboard') ? 'bg-blue-600 text-white' : 'hover:bg-slate-800 text-slate-300' }}">
+                📊 Dashboard
+            </a>
 
-         <a href="/vendors"
-class="flex items-center gap-3 px-4 py-3 rounded-xl transition
-{{ request()->is('vendors*')
-? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg'
-: 'hover:bg-slate-800 text-white' }}">
-            <span>👥</span>
-            <span>Vendors</span>
-        </a>
+            <a href="{{ route('vendors.index') }}"
+                class="block px-4 py-3 rounded-lg {{ request()->is('vendors*') ? 'bg-blue-600 text-white' : 'hover:bg-slate-800 text-slate-300' }}">
+                👥 Vendors
+            </a>
 
-        <a href="/assessments"
-           class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition">
-            <span>📋</span>
-            <span>Assessments</span>
-        </a>
-        <a href="/frameworks"
-   class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition">
-    <span>🛡️</span>
-    <span>Frameworks</span>
-</a>
+            <a href="{{ route('assessments.index') }}"
+                class="block px-4 py-3 rounded-lg {{ request()->is('assessments*') ? 'bg-blue-600 text-white' : 'hover:bg-slate-800 text-slate-300' }}">
+                📋 Assessments
+            </a>
 
-<a href="/domains"
-   class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition">
-    <span>🌐</span>
-    <span>Domains</span>
-</a>
+            <a href="{{ route('frameworks.index') }}"
+                class="block px-4 py-3 rounded-lg {{ request()->is('frameworks*') ? 'bg-blue-600 text-white' : 'hover:bg-slate-800 text-slate-300' }}">
+                🛡️ Frameworks
+            </a>
 
-        <a href="/categories"
-           class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition">
-            <span>📂</span>
-            <span>Categories</span>
-        </a>
+            <a href="{{ route('domains.index') }}"
+                class="block px-4 py-3 rounded-lg {{ request()->is('domains*') ? 'bg-blue-600 text-white' : 'hover:bg-slate-800 text-slate-300' }}">
+                🌐 Domains
+            </a>
 
-        <a href="/questions"
-           class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition">
-            <span>❓</span>
-            <span>Questions</span>
-        </a>
+            <a href="{{ route('categories.index') }}"
+                class="block px-4 py-3 rounded-lg {{ request()->is('categories*') ? 'bg-blue-600 text-white' : 'hover:bg-slate-800 text-slate-300' }}">
+                📂 Categories
+            </a>
 
-        <a href="/assessment-questions"
-           class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition">
-            <span>✅</span>
-            <span>Assessment Questions</span>
-        </a>
+            <a href="{{ route('questions.index') }}"
+                class="block px-4 py-3 rounded-lg {{ request()->is('questions*') ? 'bg-blue-600 text-white' : 'hover:bg-slate-800 text-slate-300' }}">
+                ❓ Questions
+            </a>
 
-        <a href="/users"
-           class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition">
-            <span>👤</span>
-            <span>Users</span>
-        </a>
+            <a href="{{ route('reviewers.index') }}"
+                class="block px-4 py-3 rounded-lg {{ request()->is('reviewers*') ? 'bg-blue-600 text-white' : 'hover:bg-slate-800 text-slate-300' }}">
+                🧑‍💼 Reviewers
+            </a>
 
-        <a href="/reports"
-           class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition">
-            <span>📄</span>
-            <span>Reports</span>
-        </a>
+            <a href="{{ route('users.index') }}"
+                class="block px-4 py-3 rounded-lg {{ request()->is('users*') ? 'bg-blue-600 text-white' : 'hover:bg-slate-800 text-slate-300' }}">
+                👤 Users
+            </a>
+
+            <a href="{{ route('reports.index') }}"
+                class="block px-4 py-3 rounded-lg {{ request()->is('reports*') ? 'bg-blue-600 text-white' : 'hover:bg-slate-800 text-slate-300' }}">
+                📄 Reports
+            </a>
+
+        {{-- ================= REVIEWER ================= --}}
+        @elseif(auth()->user()->role == 'reviewer')
+
+            <a href="{{ route('reviewer.dashboard') }}"
+                class="block px-4 py-3 rounded-lg {{ request()->routeIs('reviewer.dashboard') ? 'bg-blue-600 text-white' : 'hover:bg-slate-800 text-slate-300' }}">
+                📊 Dashboard
+            </a>
+
+            <a href="{{ route('reviewer.dashboard') }}"
+                class="block px-4 py-3 rounded-lg {{ request()->routeIs('reviewers.review') ? 'bg-blue-600 text-white' : 'hover:bg-slate-800 text-slate-300' }}">
+                📝 My Reviews
+            </a>
+
+            <a href="{{ route('reports.index') }}"
+                class="block px-4 py-3 rounded-lg {{ request()->is('reports*') ? 'bg-blue-600 text-white' : 'hover:bg-slate-800 text-slate-300' }}">
+                📄 Reports
+            </a>
+
+        {{-- ================= VENDOR ================= --}}
+        @elseif(auth()->user()->role == 'vendor')
+
+            <a href="{{ route('vendor.dashboard') }}"
+                class="block px-4 py-3 rounded-lg {{ request()->routeIs('vendor.dashboard') ? 'bg-blue-600 text-white' : 'hover:bg-slate-800 text-slate-300' }}">
+                📊 Dashboard
+            </a>
+
+            <a href="{{ route('my.assessments') }}"
+                class="block px-4 py-3 rounded-lg {{ request()->is('my-assessments*') ? 'bg-blue-600 text-white' : 'hover:bg-slate-800 text-slate-300' }}">
+                📋 My Assessments
+            </a>
+
+        @endif
 
     </nav>
+
+    {{-- Footer --}}
+    <div class="border-t border-slate-800 p-5">
+
+        <div class="font-semibold">
+            {{ auth()->user()->name }}
+        </div>
+
+        <div class="text-sm text-slate-400 capitalize">
+            {{ auth()->user()->role }}
+        </div>
+
+        <form action="{{ route('logout') }}" method="POST" class="mt-4">
+            @csrf
+
+            <button
+                type="submit"
+                class="w-full bg-red-600 hover:bg-red-700 py-2 rounded-lg">
+                Logout
+            </button>
+        </form>
+
+    </div>
 
 </aside>

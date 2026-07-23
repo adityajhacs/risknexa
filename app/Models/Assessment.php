@@ -66,4 +66,12 @@ public function responses()
         AssessmentResponse::class
     );
 }
+public function domains()
+{
+    return Domain::whereHas('questions', function ($query) {
+        $query->whereHas('assessments', function ($assessment) {
+            $assessment->where('assessment_id', $this->id);
+        });
+    });
+}
 }

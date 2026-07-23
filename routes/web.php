@@ -20,8 +20,7 @@ use App\Http\Controllers\ReviewerDashboardController;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/reviewer-test/{assessment}', [ReviewerDashboardController::class, 'review'])
-    ->name('reviewers.review');
+
 
 Route::get('/assessment-test', [AssessmentController::class, 'test']);
 Route::get('/dashboard', [DashboardController::class, 'index'])
@@ -95,12 +94,23 @@ Route::get(
     '/reviewer/assessment/{assessment}',
     [ReviewerDashboardController::class, 'review']
 )->name('reviewers.review');
-
+Route::post(
+    '/reviewer/assessment/{assessment}/save',
+    [ReviewerDashboardController::class, 'saveReview']
+)->name('reviewers.save');
+Route::get('/reviewer/assessment/{assessment}/overview',
+    [ReviewerController::class, 'assessmentOverview'])
+    ->name('reviewer.assessment.overview');
 
 Route::post(
     '/my-assessments/{assessment}/question/{question}/save',
     [VendorPortalController::class, 'saveQuestion']
 )->name('vendor.assessments.saveQuestion');
+
+Route::get(
+    '/reviewer/assessment/{assessment}/overview',
+    [ReviewerDashboardController::class, 'assessmentOverview']
+)->name('reviewers.assessment.overview');
 
 Route::resource('users', UserController::class);
 Route::resource('reviewers', ReviewerController::class);

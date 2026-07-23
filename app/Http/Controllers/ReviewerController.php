@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Assessment;
 
 class ReviewerController extends Controller
 {
@@ -83,4 +84,22 @@ return redirect()
     {
         //
     }
+    public function assessmentOverview(Assessment $assessment)
+{
+    $assessment->load([
+        'vendor',
+        'framework',
+        'questions.domain'
+    ]);
+
+    $domains = $assessment->questions
+        ->groupBy(function ($question) {
+            return $question->domain->id;
+        });
+
+    return view(
+        'reviewers.assessment-overview',
+        compact('assessment', 'domains')
+    );
+}
 }

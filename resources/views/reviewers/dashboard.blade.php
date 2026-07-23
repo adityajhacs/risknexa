@@ -26,11 +26,10 @@
 
         <br><br>
 
-        <a href="{{ route('reviewers.review', $assessment->id) }}"
-           class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
-            Review Assessment
-        </a>
-
+       <a href="{{ route('reviewers.assessment.overview', $assessment->id) }}"
+   class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+    Review Assessment
+</a>
     </div>
 
 @empty
