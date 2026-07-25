@@ -2,49 +2,546 @@
 <html>
 <head>
     <title>Assessment Details</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 
-<div class="container mt-5">
+<div class="container-fluid px-5 mt-4">
 
-    <div class="card shadow">
-        <div class="card-header">
-            <h3>Assessment Details</h3>
+    <div class="card shadow-lg border-0">
+
+        <div class="card-header bg-dark text-white py-3">
+            <h2 class="fw-bold">Assessment Details</h2>
+            <div class="row mb-4">
+
+    <div class="col-md-4">
+        <div class="card border-primary shadow-sm">
+            <div class="card-body text-center">
+                <h6>Total Questions</h6>
+                <h2>{{ $totalQuestions }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card border-success shadow-sm">
+            <div class="card-body text-center">
+                <h6>Answered Questions</h6>
+                <h2>{{ $answeredQuestions }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card border-info shadow-sm">
+            <div class="card-body text-center">
+                <h6>Evidence Files</h6>
+                <h2>{{ $evidenceCount }}</h2>
+            </div>
+        </div>
+    </div>
+
+</div>
         </div>
 
         <div class="card-body">
+<table class="table table-bordered table-striped">
 
-            <p><strong>ID:</strong> {{ $assessment->id }}</p>
+    <tr>
+        <th width="30%">ID</th>
+        <td>{{ $assessment->id }}</td>
+    </tr>
 
-            <p><strong>Assessment Name:</strong>
-                {{ $assessment->assessment_name }}
-            </p>
+    <tr>
+        <th>Assessment Name</th>
+        <td>{{ $assessment->assessment_name }}</td>
+    </tr>
 
-            <p><strong>Risk Score:</strong>
-                {{ $assessment->risk_score }}
-            </p>
+    <tr>
+        <th>Vendor</th>
+        <td>{{ $assessment->vendor->vendor_name }}</td>
+    </tr>
 
-            <p><strong>Risk Level:</strong>
-                {{ $assessment->risk_level }}
-            </p>
-<h3>Assigned Questions</h3>
+    <tr>
+        <th>Due Date</th>
+        <td>{{ $assessment->due_date }}</td>
+    </tr>
 
-@if($assessment->questions->count())
-    <ol>
-        @foreach($assessment->questions as $question)
-            <li>{{ $question->question }}</li>
+    <tr>
+        <th>Status</th>
+        <td>
+            <span class="badge bg-primary">
+                {{ $assessment->status }}
+            </span>
+        </td>
+    </tr>
+    <tr>
+    <th>Framework</th>
+    <td>{{ $assessment->framework->name ?? 'N/A' }}</td>
+</tr>
+
+<tr>
+    <th>Priority</th>
+    <td>{{ $assessment->priority ?? 'Low' }}</td>
+</tr>
+
+<tr>
+    <th>Reviewer</th>
+    <td>{{ $assessment->reviewer ?? 'Not Assigned' }}</td>
+</tr>
+
+<tr>
+    <th>Assigned By</th>
+    <td>{{ $assessment->assigned_by ?? 'Admin' }}</td>
+</tr>
+   <tr>
+    <th>Review Status</th>
+    <td>
+        {{ $assessment->review_status }}
+    </td>
+</tr>
+
+<tr>
+    <th>Governance Outcome</th>
+    <td>
+        {{ $assessment->governance_outcome ?? 'Not Decided' }}
+    </td>
+</tr>
+
+<tr>
+    <th>Review Actions</th>
+
+    <td>
+
+        <form action="{{ route('assessments.review', $assessment->id) }}"
+              method="POST"
+              class="d-inline">
+
+            @csrf
+
+            <input type="hidden"
+                   name="review_status"
+                   value="Approved">
+
+            <button class="btn btn-success btn-sm">
+                Approve
+            </button>
+
+        </form>
+
+        <form action="{{ route('assessments.review', $assessment->id) }}"
+              method="POST"
+              class="d-inline">
+
+            @csrf
+
+            <input type="hidden"
+                   name="review_status"
+                   value="Rejected">
+
+            <button class="btn btn-danger btn-sm">
+                Reject
+            </button>
+
+        </form>
+
+    </td>
+
+</tr>
+
+</table>
+
+            <hr>
+
+            <hr>
+
+<div class="row mb-4">
+
+    <div class="col-md-3">
+        <div class="card border-primary shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="text-muted">Risk Score</h6>
+                <h2 class="text-primary">
+                    {{ $riskScore }}
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card border-danger shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="text-muted">Risk Level</h6>
+                <h2 class="text-danger">
+                    {{ $riskLevel }}
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card border-success shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="text-muted">Questions</h6>
+                <h2 class="text-success">
+                    {{ $assessment->assessmentQuestions->count() }}
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card border-info shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="text-muted">Evidence Files</h6>
+                <h2 class="text-info">
+                    {{ $assessment->evidenceUploads->count() }}
+                </h2>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+            <hr>
+<hr>
+
+<h4 class="fw-bold text-dark mb-3">
+    Framework Structure
+</h4>
+
+@foreach($assessment->framework->categories as $category)
+
+<div class="card mb-3">
+
+    <div class="card-header bg-primary text-white">
+        <strong>{{ $category->name }}</strong>
+    </div>
+
+    <div class="card-body">
+
+        @foreach($category->domains as $domain)
+
+            <h6 class="fw-bold text-success">
+                {{ $domain->name }}
+            </h6>
+
+            <ul>
+
+                @foreach($domain->questions as $question)
+
+                    <li>
+                        {{ $question->question }}
+                    </li>
+
+                @endforeach
+
+            </ul>
+
         @endforeach
-    </ol>
-@else
-    <p>No questions assigned.</p>
+
+    </div>
+
+</div>
+
+@endforeach
+            <h4 class="fw-bold text-primary mb-3">
+    Assigned Questions
+</h4>
+
+            @if($assessment->assessmentQuestions->count())
+
+    <table class="table table-bordered">
+
+        <thead>
+
+            <tr>
+                <th>Question</th>
+                <th>Response</th>
+                <th>Score</th>
+                <th>Reviewer Comment</th>
+                <th>Action</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+            <h4 class="fw-bold text-success mb-3">
+    Vendor Responses
+</h4>
+
+<table class="table table-bordered">
+
+    <thead>
+        <tr>
+            <th>Question</th>
+            <th>Answer</th>
+            <th>Evidence</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+    @foreach($assessment->responses as $response)
+
+        <tr>
+
+            <td>
+                {{ $response->question->question }}
+            </td>
+
+            <td>
+                {{ $response->answer }}
+            </td>
+
+            <td>
+
+                @if($response->evidence_file)
+
+                    <a href="{{ asset('storage/'.$response->evidence_file) }}"
+                       target="_blank"
+                       class="btn btn-primary btn-sm">
+
+                        View File
+
+                    </a>
+
+                @else
+
+                    No File
+
+                @endif
+
+            </td>
+
+        </tr>
+
+    @endforeach
+
+    </tbody>
+
+</table>
+
+       @foreach($assessment->assessmentQuestions as $item)
+
+<tr>
+
+    <td>
+        {{ $item->question->question }}
+    </td>
+
+    <td>
+
+        <form action="{{ route('assessment-questions.update', $item->id) }}"
+              method="POST">
+
+            @csrf
+            @method('PUT')
+@if($item->question->response_type == 'Yes/No')
+
+    <select name="response" class="form-select">
+        <option value="">Select</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+    </select>
+
+@elseif($item->question->response_type == 'Radio')
+
+    <input type="radio" name="response" value="Yes"> Yes
+    <input type="radio" name="response" value="No"> No
+
+@elseif($item->question->response_type == 'Checkbox')
+
+    <input type="checkbox" name="response[]" value="Option 1"> Option 1
+    <input type="checkbox" name="response[]" value="Option 2"> Option 2
+
+@elseif($item->question->response_type == 'Text')
+
+    <input type="text"
+           name="response"
+           class="form-control">
+
+@elseif($item->question->response_type == 'Textarea')
+
+    <textarea
+        name="response"
+        class="form-control"></textarea>
+
 @endif
-            <a href="/assessments" class="btn btn-secondary">
-                Back
-            </a>
+
+    </td>
+@if($item->question->requires_explanation)
+
+<div class="mt-2">
+    <label class="form-label">
+        Explanation
+    </label>
+
+    <textarea
+        name="explanation"
+        class="form-control"
+        rows="2">{{ $item->explanation }}</textarea>
+</div>
+
+@endif
+    <td>
+        {{ $item->score }}
+    </td>
+<td>
+
+    <textarea
+        name="reviewer_comment"
+        class="form-control"
+        rows="2">{{ $item->reviewer_comment }}</textarea>
+
+</td>
+    <td>
+
+        <button type="submit"
+                class="btn btn-primary btn-sm">
+            Save
+        </button>
+      @if($item->question->evidence_mandatory)
+
+    <a href="/assessments/{{ $assessment->id }}/evidence/create"
+       class="btn btn-success btn-sm mt-2">
+        Upload Evidence
+    </a>
+
+@endif
+        </form>
+
+    </td>
+
+</tr>
+
+@endforeach
+        </tbody>
+
+    </table>
+
+@else
+
+    <div class="alert alert-warning">
+        No questions assigned.
+    </div>
+
+@endif
+
+<br><br>
+<hr>
+
+<h4 class="fw-bold text-success mb-3">
+    Uploaded Evidence
+</h4>
+
+@if($assessment->evidenceUploads->count())
+
+    <table class="table table-bordered">
+
+       <thead>
+<tr>
+    <th>File Name</th>
+    <th>Action</th>
+    <th>Delete</th>
+</tr>
+</thead>
+
+        <tbody>
+
+        @foreach($assessment->evidenceUploads as $file)
+
+            <tr>
+                <td>
+    {{ $file->file_name }}
+</td>
+
+<td>
+    <a href="{{ asset('storage/' . $file->file_path) }}"
+       target="_blank"
+       class="btn btn-primary btn-sm">
+        View
+    </a>
+</td>
+<td>
+
+    <form action="{{ route('evidence.destroy', $file->id) }}"
+      method="POST">
+
+        @csrf
+        @method('DELETE')
+
+        <button type="submit"
+                class="btn btn-danger btn-sm">
+            Delete
+        </button>
+
+    </form>
+
+</td>
+            </tr>
+
+        @endforeach
+
+        </tbody>
+
+    </table>
+
+@else
+
+    <div class="alert alert-warning">
+        No evidence uploaded.
+    </div>
+
+@endif
+<hr>
+
+<h4 class="fw-bold text-primary mb-3">
+    Assessment Timeline
+</h4>
+
+<div class="card border-0 shadow-sm mb-4">
+
+    <div class="card-body">
+
+        @forelse($activities as $activity)
+
+            <div class="border-bottom pb-2 mb-2">
+
+                <strong>
+                    {{ $activity->description }}
+                </strong>
+
+                <br>
+
+                <small class="text-muted">
+                    {{ $activity->created_at->diffForHumans() }}
+                </small>
+
+            </div>
+
+        @empty
+
+            <p class="text-muted">
+                No activity found.
+            </p>
+
+        @endforelse
+
+    </div>
+
+</div>
+<a href="{{ route('assessments.report', $assessment->id) }}"
+   class="btn btn-success">
+    Generate Report
+</a>
+<a href="/assessments" class="btn btn-dark">
+    Back
+</a>
 
         </div>
-        
+
     </div>
 
 </div>

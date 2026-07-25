@@ -1,187 +1,564 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>RiskNexa Dashboard</title>
+@extends('layouts.app')
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
+@section('content')
 
-<div class="container mt-5">
+        <!-- Header -->
+<div class="bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 rounded-3xl p-8 text-white mb-8 shadow-2xl">
 
-    <h1 class="mb-4 text-center">RiskNexa Dashboard</h1>
+    <div class="flex justify-between items-center">
 
-    <div class="row g-4">
+        <div>
 
-        <div class="col-md-3">
-            <div class="card bg-primary text-white shadow">
-                <div class="card-body text-center">
-                    <h5>Total Vendors</h5>
-                    <h2>{{ $totalVendors }}</h2>
-                </div>
-            </div>
+            <p class="text-blue-200 text-sm uppercase tracking-widest">
+                Enterprise Vendor Risk Management
+            </p>
+
+            <h1 class="text-5xl font-bold mt-3">
+                Welcome Back,
+                {{ auth()->user()->name }}
+            </h1>
+
+            <p class="mt-4 text-slate-300 text-lg">
+                Manage vendors, assessments, governance and compliance
+                from one centralized platform.
+            </p>
+
         </div>
 
-        <div class="col-md-3">
-            <div class="card bg-success text-white shadow">
-                <div class="card-body text-center">
-                    <h5>Active Vendors</h5>
-                    <h2>{{ $activeVendors }}</h2>
-                </div>
+        <div class="hidden lg:block">
+
+            <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6">
+
+              
+<p class="text-slate-300 text-sm">
+    Pending Reviews
+</p>
+
+<h2 class="text-4xl font-bold mt-2">
+    {{ $pendingReviews }}
+</h2>
+<p class="text-yellow-300 mt-2">
+    Requires Attention
+</p>
+
+                
+
+
             </div>
+
         </div>
 
-        <div class="col-md-3">
-            <div class="card bg-secondary text-white shadow">
-                <div class="card-body text-center">
-                    <h5>Inactive Vendors</h5>
-                    <h2>{{ $inactiveVendors }}</h2>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card bg-danger text-white shadow">
-                <div class="card-body text-center">
-                    <h5>High Risk Vendors</h5>
-                    <h2>{{ $highRiskVendors }}</h2>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="row g-4 mt-3">
-
-        <div class="col-md-4">
-            <div class="card bg-info text-white shadow">
-                <div class="card-body text-center">
-                    <h5>Total Assessments</h5>
-                    <h2>{{ $totalAssessments }}</h2>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card bg-warning text-dark shadow">
-                <div class="card-body text-center">
-                    <h5>Pending Assessments</h5>
-                    <h2>{{ $pendingAssessments }}</h2>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card bg-success text-white shadow">
-                <div class="card-body text-center">
-                    <h5>Completed Assessments</h5>
-                    <h2>{{ $completedAssessments }}</h2>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="mt-5">
-        <a href="/vendors" class="btn btn-primary me-2">
-            Manage Vendors
-        </a>
-
-        <a href="/assessments" class="btn btn-success">
-            Manage Assessments
-        </a>
-    </div>
-
-    <!-- Recent Assessments -->
-
-    <div class="mt-5">
-        <h3>Recent Assessments</h3>
-
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Assessment Name</th>
-                    <th>Status</th>
-                    <th>Due Date</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                @foreach($recentAssessments as $assessment)
-                <tr>
-                    <td>{{ $assessment->id }}</td>
-                    <td>{{ $assessment->assessment_name }}</td>
-
-                    <td>
-                        @if($assessment->status == 'Pending')
-                            <span class="badge bg-warning text-dark">
-                                Pending
-                            </span>
-                        @elseif($assessment->status == 'Completed')
-                            <span class="badge bg-success">
-                                Completed
-                            </span>
-                        @else
-                            <span class="badge bg-info">
-                                {{ $assessment->status }}
-                            </span>
-                        @endif
-                    </td>
-
-                    <td>{{ $assessment->due_date }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Chart -->
-
-    <div class="mt-5">
-        <h3 class="text-center mb-4">
-            Assessment Status Chart
-        </h3>
-
-        <canvas id="assessmentChart"></canvas>
     </div>
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <!-- Dashboard Overview -->
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+
+    <!-- Main Overview -->
+
+    <div class="lg:col-span-2 bg-white rounded-3xl border border-slate-200 shadow-sm p-8">
+
+        <div class="flex justify-between items-center mb-8">
+
+            <div>
+
+                <h2 class="text-2xl font-bold text-slate-900">
+                    Dashboard Overview
+                </h2>
+
+                <p class="text-slate-500 mt-1">
+                    Vendor risk and compliance summary
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="grid grid-cols-2 gap-6">
+
+            <div class="border border-slate-200 rounded-2xl p-5">
+                <p class="text-slate-500 text-sm">Total Vendors</p>
+                <h3 class="text-3xl font-bold mt-2">{{ $totalVendors }}</h3>
+            </div>
+
+            <div class="border border-slate-200 rounded-2xl p-5">
+                <p class="text-slate-500 text-sm">Assessments</p>
+                <h3 class="text-3xl font-bold mt-2">{{ $totalAssessments }}</h3>
+            </div>
+
+            <div class="border border-slate-200 rounded-2xl p-5">
+                <p class="text-slate-500 text-sm">Reports</p>
+                <h3 class="text-3xl font-bold mt-2">{{ $reportsGenerated }}</h3>
+            </div>
+
+            <div class="border border-slate-200 rounded-2xl p-5">
+                <p class="text-slate-500 text-sm">Pending Reviews</p>
+                <h3 class="text-3xl font-bold mt-2 text-red-600">
+                    {{ $pendingReviews }}
+                </h3>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Compliance Card -->
+
+    <div class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-8 text-white">
+
+        <p class="text-blue-100">
+            Compliance Score
+        </p>
+
+        <h1 class="text-6xl font-bold mt-4">
+            87%
+        </h1>
+
+        <p class="mt-4 text-blue-100">
+            Strong compliance posture across vendors and assessments.
+        </p>
+
+        <div class="mt-8 border-t border-white/20 pt-4">
+
+            <p class="text-sm">
+                Approved Assessments
+            </p>
+
+            <h3 class="text-2xl font-bold">
+                {{ $approvedAssessments }}
+            </h3>
+
+        </div>
+
+    </div>
+
+</div>
+    <!-- Risk Analytics Cards -->
+
+  <!-- Analytics Section -->
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+
+    <!-- Chart -->
+
+    <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+
+        <div class="flex justify-between items-center mb-6">
+
+            <h2 class="text-xl font-bold text-slate-800">
+                Assessment Analytics
+            </h2>
+
+            <span class="text-sm text-slate-500">
+                Current Overview
+            </span>
+
+        </div>
+
+        <div style="height:350px">
+
+            <canvas id="assessmentChart"></canvas>
+
+        </div>
+
+    </div>
+
+    <!-- Risk Overview -->
+
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+
+        <h2 class="text-xl font-bold text-slate-800 mb-6">
+            Risk Overview
+        </h2>
+
+        <div class="space-y-5">
+
+            <div>
+                <div class="flex justify-between mb-2">
+                    <span>Low Risk</span>
+                    <span class="font-semibold text-green-600">
+                        {{ $lowRiskAssessments }}
+                    </span>
+                </div>
+
+                <div class="w-full bg-slate-200 rounded-full h-3">
+                    <div class="bg-green-500 h-3 rounded-full w-3/4"></div>
+                </div>
+            </div>
+
+            <div>
+                <div class="flex justify-between mb-2">
+                    <span>Medium Risk</span>
+                    <span class="font-semibold text-yellow-500">
+                        {{ $mediumRiskAssessments }}
+                    </span>
+                </div>
+
+                <div class="w-full bg-slate-200 rounded-full h-3">
+                    <div class="bg-yellow-500 h-3 rounded-full w-1/2"></div>
+                </div>
+            </div>
+
+            <div>
+                <div class="flex justify-between mb-2">
+                    <span>High Risk</span>
+                    <span class="font-semibold text-red-500">
+                        {{ $highRiskAssessments }}
+                    </span>
+                </div>
+
+                <div class="w-full bg-slate-200 rounded-full h-3">
+                    <div class="bg-red-500 h-3 rounded-full w-1/3"></div>
+                </div>
+            </div>
+
+            <div>
+                <div class="flex justify-between mb-2">
+                    <span>Critical Risk</span>
+                    <span class="font-semibold text-black">
+                        {{ $criticalRiskAssessments }}
+                    </span>
+                </div>
+
+                <div class="w-full bg-slate-200 rounded-full h-3">
+                    <div class="bg-slate-900 h-3 rounded-full w-1/4"></div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8">
+
+    <h2 class="text-xl font-bold text-slate-800 mb-6">
+        Quick Actions
+    </h2>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+        <a href="/vendors/create"
+           class="bg-blue-600 text-white p-4 rounded-xl text-center hover:bg-blue-700">
+            + Vendor
+        </a>
+
+        <a href="/assessments/create"
+           class="bg-green-600 text-white p-4 rounded-xl text-center hover:bg-green-700">
+            + Assessment
+        </a>
+
+        <a href="/users/create"
+           class="bg-purple-600 text-white p-4 rounded-xl text-center hover:bg-purple-700">
+            + User
+        </a>
+
+        <a href="/reports"
+           class="bg-slate-800 text-white p-4 rounded-xl text-center hover:bg-slate-900">
+            View Reports
+        </a>
+
+    </div>
+
+</div>
+
+
+
+<!-- Recent Activities -->
+
+<div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8">
+
+    <h2 class="text-xl font-bold text-slate-800 mb-6">
+        Recent Activities
+    </h2>
+<p class="text-slate-500 text-sm mb-6">
+    Latest platform activities and vendor events
+</p>
+    @forelse($recentActivities as $activity)
+
+    <div class="flex items-start gap-4 py-4 border-b border-slate-100">
+
+        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+            🔔
+        </div>
+
+        <div class="flex-1">
+
+            <p class="font-semibold text-slate-800">
+                {{ $activity->description }}
+            </p>
+
+            <p class="text-sm text-slate-500 mt-1">
+                {{ $activity->created_at->diffForHumans() }}
+            </p>
+
+        </div>
+
+    </div>
+
+    @empty
+
+    <p class="text-slate-500">
+        No recent activities found.
+    </p>
+
+    @endforelse
+
+</div>
+<!-- Recent Assessments -->
+
+<div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8">
+
+    <div class="flex justify-between items-center mb-6">
+
+        <h2 class="text-xl font-bold text-slate-800">
+            Recent Assessments
+        </h2>
+
+       
+
+        <span class="text-sm text-slate-500">
+            Latest Records
+        </span>
+
+    </div>
+
+    <div class="overflow-x-auto">
+
+        <table class="min-w-full">
+
+            <thead class="bg-slate-50">
+
+                <tr>
+
+                    <th class="text-left px-4 py-3 font-semibold">
+                        ID
+                    </th>
+
+                    <th class="text-left px-4 py-3 font-semibold">
+                        Assessment Name
+                    </th>
+
+                    <th class="text-left px-4 py-3 font-semibold">
+                        Status
+                    </th>
+
+                    <th class="text-left px-4 py-3 font-semibold">
+                        Due Date
+                    </th>
+                    <th class="text-left px-4 py-3 font-semibold">
+    Review Status
+</th>
+<th class="text-left px-4 py-3 font-semibold">
+    Risk Level
+</th>
+<th class="text-left px-4 py-3 font-semibold">
+    Action
+</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach($recentAssessments as $assessment)
+
+                <tr class="border-b hover:bg-slate-50 transition">
+
+                    <td class="px-4 py-4">
+                        {{ $assessment->id }}
+                    </td>
+
+                    <td class="px-4 py-4 font-medium">
+                        {{ $assessment->assessment_name }}
+                    </td>
+
+                    <td class="px-4 py-4">
+
+                        @if($assessment->status == 'Pending')
+
+                        <span class="px-3 py-1 rounded-full text-xs bg-yellow-100 text-yellow-800">
+                            Pending
+                        </span>
+
+                        @elseif($assessment->status == 'Completed')
+
+                        <span class="px-3 py-1 rounded-full text-xs bg-green-100 text-green-800">
+                            Completed
+                        </span>
+
+                        @else
+
+                        <span class="px-3 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
+                            {{ $assessment->status }}
+                        </span>
+
+                        @endif
+
+                    </td>
+             <td class="px-4 py-4">
+
+    <a href="/assessments/{{ $assessment->id }}"
+       class="px-3 py-2 rounded-lg bg-slate-900 text-white text-sm hover:bg-slate-700">
+
+        View
+
+    </a>
+
+</td>
+
+
+                    <td class="px-4 py-4">
+                        {{ \Carbon\Carbon::parse($assessment->due_date)->format('d M Y') }}
+                    </td>
+                    <td class="px-4 py-4">
+
+    @if($assessment->review_status == 'Approved')
+
+        <span class="px-3 py-1 rounded-full text-xs bg-green-100 text-green-800">
+            Approved
+        </span>
+
+    @elseif($assessment->review_status == 'Rejected')
+
+        <span class="px-3 py-1 rounded-full text-xs bg-red-100 text-red-800">
+            Rejected
+        </span>
+
+    @else
+
+        <span class="px-3 py-1 rounded-full text-xs bg-yellow-100 text-yellow-800">
+            Pending Review
+        </span>
+
+    @endif
+
+</td>
+<td class="px-4 py-4">
+
+@if($assessment->risk_level == 'Low')
+
+<span class="px-3 py-1 rounded-full text-xs bg-green-100 text-green-800">
+    Low
+</span>
+
+@elseif($assessment->risk_level == 'Medium')
+
+<span class="px-3 py-1 rounded-full text-xs bg-yellow-100 text-yellow-800">
+    Medium
+</span>
+
+@elseif($assessment->risk_level == 'High')
+
+<span class="px-3 py-1 rounded-full text-xs bg-red-100 text-red-800">
+    High
+</span>
+
+@else
+
+<span class="px-3 py-1 rounded-full text-xs bg-slate-900 text-white">
+    Critical
+</span>
+
+@endif
+
+</td>
+
+                </tr>
+
+                @endforeach
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
 
 <script>
+
 const ctx = document.getElementById('assessmentChart');
 
 new Chart(ctx, {
+
     type: 'bar',
 
     data: {
-        labels: ['Pending', 'Completed'],
+
+        labels: [
+            'Pending',
+            'Completed',
+            'Low Risk',
+            'Medium Risk',
+            'High Risk',
+            'Critical'
+        ],
+
         datasets: [{
-            label: 'Assessments',
+
+            label: 'Assessment Metrics',
+
             data: [
+
                 {{ $pendingAssessments }},
-                {{ $completedAssessments }}
+                {{ $completedAssessments }},
+                {{ $lowRiskAssessments }},
+                {{ $mediumRiskAssessments }},
+                {{ $highRiskAssessments }},
+                {{ $criticalRiskAssessments }}
+
             ],
+
             backgroundColor: [
-                '#ffc107',
-                '#198754'
-            ],
-            borderWidth: 1
+
+                '#f59e0b',
+                '#22c55e',
+                '#16a34a',
+                '#eab308',
+                '#ef4444',
+                '#0f172a'
+
+            ]
+
         }]
+
     },
 
     options: {
+
         responsive: true,
-        scales: {
-            y: {
-                beginAtZero: true
+
+        maintainAspectRatio: false,
+
+        plugins: {
+
+            legend: {
+
+                display: false
+
             }
+
+        },
+
+        scales: {
+
+            y: {
+
+                beginAtZero: true
+
+            }
+
         }
+
     }
+
 });
+
 </script>
 
-</body>
-</html>
+@endsection

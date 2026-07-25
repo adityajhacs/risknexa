@@ -1,45 +1,126 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Add Vendor</title>
-</head>
-<body>
+@extends('layouts.vendor')
 
-<h1>Add Vendor</h1>
+@section('content')
+    <div class="max-w-7xl mx-auto p-6">
+        <div class="bg-gradient-to-r from-slate-900 to-blue-700 text-white rounded-3xl p-8 mb-8">
+    <h1 class="text-5xl font-bold">
+    Vendor Onboarding
+</h1>
 
-<form action="/vendors" method="POST">
+<p class="mt-3 text-blue-100">
+    Create vendor accounts, assign assessments and manage third-party risk.
+</p>
+</div>
+<div class="bg-white rounded-3xl shadow-lg p-8">
+    <form action="/vendors" method="POST">
     @csrf
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+    <label class="block font-medium mb-2">
+        Vendor Name
+    </label>
 
-    <label>Vendor Name:</label>
-    <input type="text" name="vendor_name">
-    <label>Contact Person:</label>
-<input type="text" name="contact_person"><br><br>
+    <input
+        type="text"
+        name="vendor_name"
+        class="w-full border rounded-xl p-3"
+    >
+</div>
+<div>
+    <label class="block font-medium mb-2">
+        Contact Person
+    </label>
 
-<label>Email:</label>
-<input type="email" name="email"><br><br>
+    <input
+        type="text"
+        name="contact_person"
+        class="w-full border rounded-xl p-3"
+    >
+</div>
+<div>
+    <label class="block font-medium mb-2">
+        Email
+    </label>
 
-<label>Phone:</label>
-<input type="text" name="phone"><br><br>
+    <input
+        type="email"
+        name="email"
+        class="w-full border rounded-xl p-3"
+    >
+</div>
+<div>
+    <label class="block font-medium mb-2">
+        Phone
+    </label>
 
-<label>Country:</label>
-<input type="text" name="country"><br><br>
+    <input
+        type="text"
+        name="phone"
+        class="w-full border rounded-xl p-3"
+    >
+</div>
+<div>
+    <label class="block font-medium mb-2">
+        Country
+    </label>
 
-<label>Criticality:</label>
-<select name="criticality">
-    <option value="Low">Low</option>
-    <option value="Medium">Medium</option>
-    <option value="High">High</option>
-    <option value="Critical">Critical</option>
-</select><br><br>
+    <input
+        type="text"
+        name="country"
+        class="w-full border rounded-xl p-3"
+    >
+</div>
+<div>
+    <label class="block font-medium mb-2">
+        Password
+    </label>
 
-<label>Status:</label>
-<select name="status">
-    <option value="Active">Active</option>
-    <option value="Inactive">Inactive</option>
-</select><br><br>
+    <input
+        type="password"
+        name="password"
+        class="w-full border rounded-xl p-3"
+    >
+</div>
+<div>
+    <label class="block font-medium mb-2">
+        Criticality
+    </label>
 
-    <button type="submit">Save Vendor</button>
+    <select
+        name="criticality"
+        class="w-full border rounded-xl p-3"
+    >
+        <option>Low</option>
+        <option>Medium</option>
+        <option>High</option>
+        <option>Critical</option>
+    </select>
+</div>
+<div>
+    <label class="block font-medium mb-2">
+        Status
+    </label>
+
+    <select
+        name="status"
+        class="w-full border rounded-xl p-3"
+    >
+        <option>Active</option>
+        <option>Inactive</option>
+    </select>
+</div>
+</div>
+<div class="mt-8 flex justify-end">
+
+    <button
+        type="submit"
+        class="bg-blue-600 text-white px-8 py-3 rounded-xl"
+    >
+        Create Vendor
+    </button>
+
+</div>
 </form>
-
-</body>
-</html>
+</div>
+</div>
+@endsection

@@ -12,14 +12,68 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('questions', function (Blueprint $table) {
+
             $table->id();
-            $table->foreignId('category_id')
-                ->constrained()
-                ->onDelete('cascade');
+
+            // Domain Relationship
+            $table->foreignId('domain_id')
+                  ->constrained()
+                  ->cascadeOnDelete();
+
+            // Question Details
+            $table->string('control_code')->nullable();
+
             $table->text('question');
-            $table->integer('risk_weight'); 
-            $table->string('status')->default('active');
+
+            $table->text('description')->nullable();
+
+            // Response Configuration
+            $table->enum('response_type', [
+                'Yes/No',
+                'Yes/No/NA',
+                'Text',
+                'Textarea',
+                'Number',
+                'Date',
+                'Dropdown',
+                'Multi Select',
+                'File Upload'
+            ])->default('Yes/No');
+
+            // Validation
+            $table->boolean('is_required')->default(true);
+
+            $table->boolean('evidence_required')->default(false);
+
+            // Risk
+            $table->integer('risk_weight')->default(1);
+
+            $table->enum('risk_level', [
+                'Low',
+                'Medium',
+                'High',
+                'Critical'
+            ])->default('Low');
+
+            // Guidance
+            $table->text('guidance')->nullable();
+
+            // UI
+            $table->integer('display_order')->default(1);
+
+            $table->enum('status', [
+                'Active',
+                'Inactive'
+            ])->default('Active');
+
+            // Audit
+            $table->foreignId('created_by')
+                  ->nullable()
+                  ->constrained('users')
+                  ->nullOnDelete();
+
             $table->timestamps();
+
         });
     }
 

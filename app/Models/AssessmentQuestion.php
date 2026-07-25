@@ -9,8 +9,19 @@ use App\Models\Question;
 class AssessmentQuestion extends Model
 {
     protected $fillable = [
+
     'assessment_id',
-    'question_id'
+
+    'question_id',
+
+    'response',
+
+    'score',
+
+    'reviewer_comment',
+
+    'review_decision',
+
 ];
 public function assessment()
 {

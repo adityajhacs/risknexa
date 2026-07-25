@@ -7,6 +7,8 @@ use App\Models\Assessment;
 use App\Models\Question;
 use App\Models\AssessmentQuestion;
 
+use App\Services\RiskScoringService;
+
 class AssessmentQuestionController extends Controller
 {
     /**
@@ -44,9 +46,43 @@ class AssessmentQuestionController extends Controller
      */
    public function store(Request $request)
 {
+  $riskService = new RiskScoringService();
+   $score = $riskService->calculateScore(
+    $request->response
+);
+    
+
     AssessmentQuestion::create([
         'assessment_id' => $request->assessment_id,
         'question_id' => $request->question_id,
+        'response' => $request->response,
+        'score' => $score
+    ]);
+
+    // Total score calculate karo
+    $totalScore = AssessmentQuestion::where(
+        'assessment_id',
+        $request->assessment_id
+    )->sum('score');
+
+    // Risk level calculate karo
+    if ($totalScore <= 20) {
+        $riskLevel = 'Low';
+    } elseif ($totalScore <= 50) {
+        $riskLevel = 'Medium';
+    } elseif ($totalScore <= 80) {
+        $riskLevel = 'High';
+    } else {
+        $riskLevel = 'Critical';
+    }
+
+    // Assessment update karo
+    Assessment::where(
+        'id',
+        $request->assessment_id
+    )->update([
+        'risk_score' => $totalScore,
+        'risk_level' => $riskLevel
     ]);
 
     return redirect()->route('assessment-questions.index');
@@ -73,7 +109,39 @@ class AssessmentQuestionController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+         $item = AssessmentQuestion::findOrFail($id);
+
+    $riskService = new RiskScoringService();
+
+    $score = $riskService->calculateScore(
+        $request->response
+    );
+
+   $item->update([
+    'response' => $request->response,
+    'score' => $score,
+    'reviewer_comment' => $request->reviewer_comment
+]);
+
+    $assessment = Assessment::find(
+        $item->assessment_id
+    );
+
+    $totalScore = AssessmentQuestion::where(
+        'assessment_id',
+        $assessment->id
+    )->sum('score');
+
+    $riskLevel = $riskService->calculateRiskLevel(
+        $totalScore
+    );
+
+    $assessment->update([
+        'risk_score' => $totalScore,
+        'risk_level' => $riskLevel
+    ]);
+
+    return back();
     }
 
     /**
