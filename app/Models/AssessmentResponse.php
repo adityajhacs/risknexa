@@ -9,7 +9,7 @@ use App\Models\User;
 
 class AssessmentResponse extends Model
 {
-    protected $fillable = [
+   protected $fillable = [
     'assessment_id',
     'question_id',
     'answer',
@@ -18,6 +18,11 @@ class AssessmentResponse extends Model
     'review_comment',
     'review_status',
     'implementation_status',
+
+    'review_decision',
+    'review_score',
+    'reviewed_by',
+    'reviewed_at',
 ];
 
     public function question()

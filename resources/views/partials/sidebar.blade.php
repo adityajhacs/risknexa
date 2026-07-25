@@ -77,8 +77,8 @@
                 📊 Dashboard
             </a>
 
-            <a href="{{ route('reviewer.dashboard') }}"
-                class="block px-4 py-3 rounded-lg {{ request()->routeIs('reviewers.review') ? 'bg-blue-600 text-white' : 'hover:bg-slate-800 text-slate-300' }}">
+            <a href="{{ route('reviewers.assessment.overview',$assessment->id) }}"
+                class="block px-4 py-3 rounded-lg {{ request()->routeIs('reviewers.assessment.overview') ? 'bg-blue-600 text-white' : 'hover:bg-slate-800 text-slate-300' }}">
                 📝 My Reviews
             </a>
 

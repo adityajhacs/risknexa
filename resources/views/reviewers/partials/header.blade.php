@@ -5,20 +5,40 @@
         <div>
 
             <h1 class="text-3xl font-bold text-slate-800">
+
                 {{ $assessment->assessment_name }}
+
             </h1>
 
             <p class="text-slate-500 mt-2">
+
                 Vendor Risk Assessment Review Workspace
+
             </p>
 
         </div>
 
         <div>
 
-            <span class="bg-yellow-100 text-yellow-700 px-4 py-2 rounded-full font-semibold">
+            @php
 
-                {{ $assessment->review_status }}
+                $statusColor = match($assessment->review_status){
+
+                    'Accepted' => 'bg-green-100 text-green-700',
+
+                    'Rejected' => 'bg-red-100 text-red-700',
+
+                    'Clarification Required' => 'bg-yellow-100 text-yellow-700',
+
+                    default => 'bg-blue-100 text-blue-700'
+
+                };
+
+            @endphp
+
+            <span class="px-4 py-2 rounded-full font-semibold {{ $statusColor }}">
+
+                {{ $assessment->review_status ?? 'Pending Review' }}
 
             </span>
 
@@ -26,17 +46,29 @@
 
     </div>
 
+
     <div class="grid grid-cols-4 gap-6 mt-8">
 
+        {{-- Vendor --}}
+
         <div>
-            <p class="text-slate-500 text-sm">Vendor</p>
+
+            <p class="text-slate-500 text-sm">
+
+                Vendor
+
+            </p>
 
             <h3 class="font-bold text-lg">
 
                 {{ $assessment->vendor->vendor_name }}
 
             </h3>
+
         </div>
+
+
+        {{-- Framework --}}
 
         <div>
 
@@ -54,6 +86,9 @@
 
         </div>
 
+
+        {{-- Priority --}}
+
         <div>
 
             <p class="text-slate-500 text-sm">
@@ -69,6 +104,9 @@
             </h3>
 
         </div>
+
+
+        {{-- Due Date --}}
 
         <div>
 

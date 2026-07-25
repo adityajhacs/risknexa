@@ -36,7 +36,9 @@ class AuthenticatedSessionController extends Controller
     return redirect()->route('vendor.dashboard');
 }
 
-    return redirect()->route('dashboard');
+     if (auth()->user()->role === 'reviewer') {
+    return redirect()->route('reviewer.dashboard');
+}
 }
     /**
      * Destroy an authenticated session.

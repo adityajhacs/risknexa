@@ -74,49 +74,95 @@
     </div>
 
     <!-- Domains -->
-    <h2 class="text-2xl font-bold mb-5">
-        Review Domains
-    </h2>
+    <!-- Domains -->
+<h2 class="text-2xl font-bold mb-5">
+    Review Domains
+</h2>
 
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-        @foreach($domains as $domainQuestions)
+    @foreach($domains as $domainQuestions)
 
-            @php
-                $domain = $domainQuestions->first()->question->domain;
-            @endphp
+        @php
+            $domain = $domainQuestions->first()->question->domain;
+        @endphp
 
-            <div class="bg-white rounded-xl shadow hover:shadow-xl transition p-6">
+        <div class="bg-white rounded-xl shadow hover:shadow-xl transition p-6">
 
-                <h3 class="text-xl font-bold mb-2">
-                    {{ $domain->name }}
-                </h3>
+            <h3 class="text-xl font-bold mb-2">
+                {{ $domain->name }}
+            </h3>
 
-                <p class="text-gray-600 mb-4">
-                    Questions :
-                    {{ $domainQuestions->count() }}
-                </p>
+            <p class="text-gray-600 mb-4">
+                Questions :
+                {{ $domainQuestions->count() }}
+            </p>
 
-                <div class="mb-5">
+
+            <div class="mb-5">
+
+                @php
+                    $answered = $domainQuestions
+                        ->whereNotNull('response.answer')
+                        ->count();
+
+                    $total = $domainQuestions->count();
+                @endphp
+
+
+                @if($answered == 0)
 
                     <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm">
                         Not Started
                     </span>
 
-                </div>
+                @elseif($answered < $total)
 
-                <a href="{{ route('reviewers.review', $assessment->id) }}"
-                   class="w-full block text-center bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg">
+                    <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">
+                        In Progress
+                    </span>
 
-                    Start Review
+                @else
 
-                </a>
+                    <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
+                        Completed
+                    </span>
+
+                @endif
 
             </div>
 
-        @endforeach
 
-    </div>
+             @foreach($domains as $domainName => $domainQuestions)
+
+        <button
+            type="button"
+            onclick="showDomain({{ $loop->index }})"
+            id="domainBtn{{ $loop->index }}"
+            class="domain-btn w-full text-left mb-3 rounded-xl border p-4 hover:bg-blue-50">
+
+            <div class="flex justify-between">
+
+                <span class="font-semibold">
+                    {{ $domainName }}
+                </span>
+
+                <span class="text-sm text-slate-500">
+                    {{ $domainQuestions->count() }}
+                </span>
+
+            </div>
+
+        </button>
+
+    @endforeach
+
+
+        </div>
+
+    @endforeach
+
+</div>
 
 </div>
 

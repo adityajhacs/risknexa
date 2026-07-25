@@ -98,9 +98,7 @@ Route::post(
     '/reviewer/assessment/{assessment}/save',
     [ReviewerDashboardController::class, 'saveReview']
 )->name('reviewers.save');
-Route::get('/reviewer/assessment/{assessment}/overview',
-    [ReviewerController::class, 'assessmentOverview'])
-    ->name('reviewer.assessment.overview');
+
 
 Route::post(
     '/my-assessments/{assessment}/question/{question}/save',
